@@ -3,9 +3,9 @@ import { ReactNode } from "react";
 import { Noto_Sans, Oxanium } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { cn } from "@/lib/utils";
-import { ConvexClientProvider } from "@/components/ConvexProvider";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import ConvexClientProvider from "@/components/ConvexProvider";
 
 const oxaniumHeading = Oxanium({ subsets: ['latin'], variable: '--font-heading', display: 'swap' });
 
@@ -24,10 +24,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("h-full", "antialiased", notoSans.variable, oxaniumHeading.variable)}
+      className={cn("antialiased", notoSans.variable, oxaniumHeading.variable)}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
+      <body>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -35,7 +35,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ClerkProvider>
-            <ConvexClientProvider>{children}</ConvexClientProvider>
+            <ConvexClientProvider>
+              {children}
+            </ConvexClientProvider>
           </ClerkProvider>
         </ThemeProvider>
       </body>
