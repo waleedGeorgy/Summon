@@ -1,12 +1,12 @@
-import type { Metadata } from "next";
 import { ReactNode } from "react";
+import type { Metadata } from "next";
 import { Noto_Sans, Oxanium } from "next/font/google";
 import { ThemeProvider } from "next-themes";
-import { cn } from "@/lib/utils";
-import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import { cn } from "@/lib/utils";
 import ConvexClientProvider from "@/components/ConvexProvider";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import "./globals.css";
 
 const oxaniumHeading = Oxanium({ subsets: ['latin'], variable: '--font-heading', display: 'swap' });
 
@@ -14,7 +14,7 @@ const notoSans = Noto_Sans({ subsets: ['latin'], variable: '--font-sans', displa
 
 export const metadata: Metadata = {
   title: "Summon",
-  description: "An AI agent building tool for developers.",
+  description: "An AI agent building SaaS.",
 };
 
 export default function RootLayout({
@@ -35,13 +35,13 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ClerkProvider>
-            <ConvexClientProvider>
-              <TooltipProvider>
+          <TooltipProvider>
+            <ClerkProvider>
+              <ConvexClientProvider>
                 {children}
-              </TooltipProvider>
-            </ConvexClientProvider>
-          </ClerkProvider>
+              </ConvexClientProvider>
+            </ClerkProvider>
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>

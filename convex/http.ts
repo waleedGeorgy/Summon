@@ -1,8 +1,8 @@
+import { WebhookEvent } from "@clerk/nextjs/server";
+import { Webhook } from "svix";
 import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
 import { api } from "./_generated/api";
-import { Webhook } from "svix";
-import { WebhookEvent } from "@clerk/nextjs/server";
 
 const http = httpRouter();
 

@@ -1,4 +1,3 @@
-// convex/user.ts
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
@@ -18,7 +17,6 @@ export const createNewUser = mutation({
       if (existingUser.name !== args.name) {
         await ctx.db.patch(existingUser._id, { name: args.name });
       }
-      return existingUser;
     }
 
     if (!existingUser) {
@@ -41,22 +39,19 @@ export const getUserById = query({
       .query("Users")
       .filter((q) => q.eq(q.field("userId"), args.userId))
       .first();
+
     if (user) return user;
   },
 });
 
 export const deleteUser = mutation({
-  args: {
-    userId: v.string(),
-  },
+  args: { userId: v.string() },
   handler: async (ctx, args) => {
     const userToDelete = await ctx.db
       .query("Users")
       .filter((q) => q.eq(q.field("userId"), args.userId))
       .first();
 
-    if (userToDelete) {
-      await ctx.db.delete("Users", userToDelete._id);
-    }
+    if (userToDelete) await ctx.db.delete("Users", userToDelete._id);
   },
 });

@@ -1,6 +1,6 @@
 'use client'
-import { SidebarProvider } from "@/components/ui/sidebar"
 import { ReactNode } from "react"
+import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "./_components/DashboardSidebar"
 import Header from "./_components/Header"
 

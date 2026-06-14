@@ -1,6 +1,6 @@
+import { Show, SignInButton, UserButton } from "@clerk/nextjs";
 import { ThemeToggleButton } from "@/components/ThemeToggleButton"
 import { Button } from "@/components/ui/button";
-import { Show, SignInButton, UserButton } from "@clerk/nextjs";
 
 export default function Home() {
   return (

@@ -13,11 +13,11 @@ import {
 } from "@/components/ui/sidebar"
 import Image from "next/image"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { LayoutDashboard, Wallet2, UserKey, Database, User2, Gem } from "lucide-react"
 import { useUser } from "@clerk/nextjs"
 import { useQuery } from "convex/react"
 import { api } from "@/convex/_generated/api"
-import { usePathname } from "next/navigation"
 
 export function AppSidebar() {
     const { user, isLoaded } = useUser();
@@ -82,11 +82,11 @@ export function AppSidebar() {
             {open &&
                 <SidebarFooter className="flex flex-row items-center gap-2 pb-5 px-5">
                     <Gem className="size-4" />
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-2">
                         <span className="text-sm">
                             Available credits:
                         </span>
-                        {!currentUser || !isLoaded ? <div className="w-12 h-3.5 rounded-md bg-neutral-600 animate-pulse" /> : <span className="text-sm">{currentUser?.token}</span>}
+                        {!currentUser || !isLoaded ? <div className="w-10 h-3.5 rounded bg-neutral-600 animate-pulse" /> : <span className="text-sm">{currentUser?.token}</span>}
                     </div>
                 </SidebarFooter>
             }
