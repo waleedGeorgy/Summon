@@ -12,4 +12,4 @@ export default defineSchema({
   }).index("by_user_id", ["userId"]),
 });
 
-export type UserType = Doc<"Users">;
+export type User = Doc<"Users">;

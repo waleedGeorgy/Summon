@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import ConvexClientProvider from "@/components/ConvexProvider";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const oxaniumHeading = Oxanium({ subsets: ['latin'], variable: '--font-heading', display: 'swap' });
 
@@ -36,7 +37,9 @@ export default function RootLayout({
         >
           <ClerkProvider>
             <ConvexClientProvider>
-              {children}
+              <TooltipProvider>
+                {children}
+              </TooltipProvider>
             </ConvexClientProvider>
           </ClerkProvider>
         </ThemeProvider>

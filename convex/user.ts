@@ -1,6 +1,6 @@
 // convex/user.ts
 import { v } from "convex/values";
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 
 export const createNewUser = mutation({
   args: {
@@ -20,7 +20,7 @@ export const createNewUser = mutation({
       }
       return existingUser;
     }
-    
+
     if (!existingUser) {
       const newUser = {
         userId: args.userId,
@@ -31,6 +31,17 @@ export const createNewUser = mutation({
       };
       await ctx.db.insert("Users", newUser);
     }
+  },
+});
+
+export const getUserById = query({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("Users")
+      .filter((q) => q.eq(q.field("userId"), args.userId))
+      .first();
+    if (user) return user;
   },
 });
 

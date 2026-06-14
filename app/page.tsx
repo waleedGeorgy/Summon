@@ -4,7 +4,7 @@ import { Show, SignInButton, UserButton } from "@clerk/nextjs";
 
 export default function Home() {
   return (
-    <div className="flex items-center gap-3">
+    <main className="flex items-center gap-3">
       <h1>Hello World!</h1>
       <ThemeToggleButton />
       <Show when="signed-out">
@@ -17,6 +17,6 @@ export default function Home() {
       <Show when="signed-in">
         <UserButton />
       </Show>
-    </div>
+    </main>
   );
 }
