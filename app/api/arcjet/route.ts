@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { aj } from "@/config/Arcjet";
+import { aj } from "@/config/arcjet";
 
 export async function GET(req: Request) {
   const userId = "user123"; // Replace with your authenticated user ID

@@ -21,7 +21,7 @@ import { api } from "@/convex/_generated/api"
 
 export function AppSidebar() {
     const { user, isLoaded } = useUser();
-    const currentUser = useQuery(api.user.getUserById, { userId: user?.id ?? "" })
+    const currentUser = useQuery(api.user.getUserById, { userId: user?.id ?? "skip" })
 
     const { open } = useSidebar();
 
@@ -81,10 +81,10 @@ export function AppSidebar() {
             </SidebarContent>
             {open &&
                 <SidebarFooter className="flex flex-row items-center gap-2 pb-5 px-5">
-                    <Gem className="size-4" />
-                    <div className="flex items-center gap-2">
+                    <Gem className="size-3.5" />
+                    <div className="flex items-center gap-1">
                         <span className="text-sm">
-                            Available credits:
+                            Credits:
                         </span>
                         {!currentUser || !isLoaded ?
                             <div className="w-10 h-3.5 rounded bg-neutral-600 animate-pulse" />

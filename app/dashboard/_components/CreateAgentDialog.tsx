@@ -50,7 +50,6 @@ const CreateAgentDialog = () => {
 
         setIsAgentCreating(false);
         setIsDialogOpen(false);
-        setAgentDetails({ name: '', description: '' });
 
         toast.success("AI agent created successfully!", {
             icon: <CheckCircle className="text-emerald-500" size={20} />
@@ -60,7 +59,7 @@ const CreateAgentDialog = () => {
     }
 
     return (
-        <div className="flex flex-col justify-center items-center gap-1 mt-28">
+        <div className="flex flex-col justify-center items-center gap-1 mt-14">
             <h2 className="text-3xl">Create a new AI agent</h2>
             <p>Build your custom AI agent workflow</p>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

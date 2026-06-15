@@ -14,11 +14,13 @@ const AgentCard = (agent: Agent) => {
     return (
         <Link
             href={`/agent-builder/${agent._id}`}
-            className="group hover:-translate-y-2 dark:hover:brightness-125 transition-all duration-300"
+            className="group hover:-translate-y-1 dark:hover:brightness-125 transition-all duration-300"
         >
             <Card size="sm" className="min-w-2xs shadow hover:shadow-lg transition-shadow duration-300">
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><HatGlasses className="size-4 text-emerald-600" />{agent.name}</CardTitle>
+                    <CardTitle className="flex items-center gap-2">
+                        <HatGlasses className="size-4 text-emerald-600" />{agent.name}
+                    </CardTitle>
                     {agent.description && agent.description?.length > 0 ?
                         <CardDescription className="line-clamp-1">
                             {agent.description}
