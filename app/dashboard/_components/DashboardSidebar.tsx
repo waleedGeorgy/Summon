@@ -14,7 +14,7 @@ import {
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, Wallet2, UserKey, Database, User2, Gem } from "lucide-react"
+import { LayoutDashboard, Wallet2, Database, User2, Gem, HatGlasses } from "lucide-react"
 import { useUser } from "@clerk/nextjs"
 import { useQuery } from "convex/react"
 import { api } from "@/convex/_generated/api"
@@ -36,7 +36,7 @@ export function AppSidebar() {
         {
             name: 'AI Agents',
             href: '/ai-agents',
-            icon: UserKey,
+            icon: HatGlasses,
         },
         {
             name: 'Data',
@@ -86,7 +86,11 @@ export function AppSidebar() {
                         <span className="text-sm">
                             Available credits:
                         </span>
-                        {!currentUser || !isLoaded ? <div className="w-10 h-3.5 rounded bg-neutral-600 animate-pulse" /> : <span className="text-sm">{currentUser?.token}</span>}
+                        {!currentUser || !isLoaded ?
+                            <div className="w-10 h-3.5 rounded bg-neutral-600 animate-pulse" />
+                            :
+                            <span className="text-sm">{currentUser?.tokens}</span>
+                        }
                     </div>
                 </SidebarFooter>
             }

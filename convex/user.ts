@@ -10,7 +10,7 @@ export const createNewUser = mutation({
   handler: async (ctx, args) => {
     const existingUser = await ctx.db
       .query("Users")
-      .filter((q) => q.eq(q.field("userId"), args.userId))
+      .withIndex("by_user_id", (q) => q.eq("userId", args.userId))
       .first();
 
     if (existingUser) {
@@ -25,7 +25,7 @@ export const createNewUser = mutation({
         name: args.name,
         email: args.email,
         subscription: "free",
-        token: 5000,
+        tokens: 5000,
       };
       await ctx.db.insert("Users", newUser);
     }
@@ -37,7 +37,7 @@ export const getUserById = query({
   handler: async (ctx, args) => {
     const user = await ctx.db
       .query("Users")
-      .filter((q) => q.eq(q.field("userId"), args.userId))
+      .withIndex("by_user_id", (q) => q.eq("userId", args.userId))
       .first();
 
     if (user) return user;
@@ -49,7 +49,7 @@ export const deleteUser = mutation({
   handler: async (ctx, args) => {
     const userToDelete = await ctx.db
       .query("Users")
-      .filter((q) => q.eq(q.field("userId"), args.userId))
+      .withIndex("by_user_id", (q) => q.eq("userId", args.userId))
       .first();
 
     if (userToDelete) await ctx.db.delete("Users", userToDelete._id);
