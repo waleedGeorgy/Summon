@@ -10,14 +10,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import type { Node, Edge } from "@xyflow/react";
 
 const AgentBuilderPage = () => {
-    const [nodes, setNodes] = useState<Node[]>([
-        {
-            id: 'start',
-            position: { x: 0, y: 0 },
-            data: { label: 'Start' },
-            type: 'StartNode'
-        }
-    ]);
+    const [nodes, setNodes] = useState<Node[]>([]);
 
     const [edges, setEdges] = useState<Edge[]>([]);
 

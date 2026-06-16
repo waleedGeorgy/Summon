@@ -26,17 +26,11 @@ import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Loader2, Save, XCircle } from "lucide-react";
 import { toast } from "sonner";
-import { AgentNode, StartNode } from "./AgentBuilderNodeList";
-
-const nodeTypes = {
-    StartNode: StartNode,
-    AgentNode: AgentNode
-}
+import { nodeTypes } from "./AgentBuilderNodeList";
 
 const AgentBuilderBody = ({ agent }: { agent: Agent }) => {
     const { resolvedTheme } = useTheme();
 
-    const [isClient, setIsClient] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
 
     const context = useContext(NodesContext);
@@ -51,24 +45,16 @@ const AgentBuilderBody = ({ agent }: { agent: Agent }) => {
         }
     }, [agent, setNodes, setEdges]);
 
-    useEffect(() => {
-        queueMicrotask(() => {
-            setIsClient(true);
-        });
-    }, []);
-
     const onNodesChange = useCallback(
         (changes: NodeChange[]) => setNodes((nds) => applyNodeChanges(changes, nds)),
         [setNodes],
     );
-
     const onEdgesChange = useCallback(
         (changes: EdgeChange[]) => setEdges((eds) => applyEdgeChanges(changes, eds)),
         [setEdges],
     );
-
     const onConnect = useCallback(
-        (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
+        (connection: Connection) => setEdges((eds) => addEdge(connection, eds ?? [])),
         [setEdges],
     );
 
@@ -105,20 +91,10 @@ const AgentBuilderBody = ({ agent }: { agent: Agent }) => {
 
         window.addEventListener('keydown', handleKeyDown);
 
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
+        return () => { window.removeEventListener('keydown', handleKeyDown) };
     }, [saveAgentState]);
 
     const flowColorMode = resolvedTheme === 'dark' ? 'dark' : 'light';
-
-    if (!isClient) {
-        return (
-            <div className="h-screen flex flex-col bg-background text-foreground">
-                <div className="flex-1 w-full bg-background" />
-            </div>
-        )
-    }
 
     return (
         <div className="flex-1 w-full relative">

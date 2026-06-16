@@ -14,6 +14,13 @@ const agentTools = [
     type: 'StartNode'
   },
   {
+    name: 'End',
+    icon: Pause,
+    color: '#f43f5e',
+    id: 'end',
+    type: 'EndNode'
+  },
+  {
     name: 'Agent',
     icon: HatGlasses,
     color: '#6366f1',
@@ -21,11 +28,11 @@ const agentTools = [
     type: 'AgentNode'
   },
   {
-    name: 'End',
-    icon: Pause,
-    color: '#f43f5e',
-    id: 'end',
-    type: 'EndNode'
+    name: 'API',
+    icon: Webhook,
+    color: '#3b82f6',
+    id: 'api',
+    type: 'ApiNode'
   },
   {
     name: 'If/Else',
@@ -42,26 +49,19 @@ const agentTools = [
     type: 'WhileNode'
   },
   {
-    name: 'User Approval',
+    name: 'Approval',
     icon: ThumbsUp,
     color: '#f59e0b',
-    id: 'userApproval',
-    type: 'UserApprovalNode'
-  },
-  {
-    name: 'API',
-    icon: Webhook,
-    color: '#3b82f6',
-    id: 'api',
-    type: 'ApiNode'
+    id: 'approval',
+    type: 'ApprovalNode'
   },
 ];
 
 const getPositionForNewNode = (existingNodes: Node[]) => {
   const baseX = 0;
   const baseY = 0;
-  const offset = existingNodes.length * 20;
-  
+  const offset = existingNodes?.length ? existingNodes.length * 20 : 0;
+
   return {
     x: baseX + (offset % 400),
     y: baseY + Math.floor(offset / 300) * 50
@@ -85,13 +85,14 @@ const AgentToolsPanel = () => {
       type: tool.type
     }
 
-    setNodes((prev) => [...prev, newNode])
+    if (!nodes) setNodes([newNode]);
+    else setNodes(prev => [...prev, newNode])
   }, [context]);
 
   if (!context) return null;
 
   return (
-    <div className="bg-sidebar/85 backdrop-blur-lg p-3 flex flex-col gap-1 justify-center rounded-lg shadow-md">
+    <div className="bg-sidebar/80 brightness-115 backdrop-blur-lg px-4 py-3 flex flex-col gap-1 justify-center rounded-lg shadow-md">
       <h3 className="font-semibold text-center">Agent Tools</h3>
       <Separator />
       {agentTools.map(tool => (

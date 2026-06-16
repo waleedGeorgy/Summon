@@ -10,7 +10,7 @@ const AgentBuilderHeader = ({ agent }: { agent: Agent }) => {
   const formattedDate = formatDistance(agent._creationTime, new Date(), { addSuffix: true });
 
   return (
-    <div className="flex items-center gap-2 justify-between px-4 py-2.5 bg-sidebar">
+    <nav className="flex items-center gap-2 justify-between px-4 py-2.5 bg-sidebar">
       <div className="flex items-center gap-2">
         <Link href='/dashboard'>
           <ChevronLeft className="hover:text-emerald-500 transition duration-300" />
@@ -32,7 +32,7 @@ const AgentBuilderHeader = ({ agent }: { agent: Agent }) => {
         <Button size='sm' variant='outline'><Eye />Preview</Button>
         <Button size='sm'><BookOpenCheck />Publish</Button>
       </div>
-    </div>
+    </nav>
   )
 }
 
