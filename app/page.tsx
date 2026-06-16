@@ -17,8 +17,8 @@ export default function Home() {
       </Show>
       <Show when="signed-in">
         <UserButton />
+        <Link href='/dashboard'>Dashboard</Link>
       </Show>
-      <Link href='/dashboard'>Dashboard</Link>
     </main>
   );
 }

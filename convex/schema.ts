@@ -12,13 +12,14 @@ export default defineSchema({
   }).index("by_user_id", ["userId"]),
 
   Agents: defineTable({
-    agentId: v.string(),
     name: v.string(),
     description: v.optional(v.string()),
     config: v.optional(v.any()),
+    nodes: v.optional(v.any()),
+    edges: v.optional(v.any()),
     isPublished: v.boolean(),
     createdBy: v.id("Users"),
-  }).index("by_agent_id", ["agentId"]),
+  }),
 });
 
 export type User = Doc<"Users">;

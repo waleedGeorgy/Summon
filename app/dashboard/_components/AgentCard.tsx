@@ -8,9 +8,12 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { CheckCircle2, HatGlasses, XCircle, CalendarCheck2 } from "lucide-react"
+import { HatGlasses, CalendarCheck2, Circle } from "lucide-react"
+import { formatDistance } from "date-fns";
 
 const AgentCard = (agent: Agent) => {
+    const formattedDate = formatDistance(agent._creationTime, new Date(), { addSuffix: true });
+
     return (
         <Link
             href={`/agent-builder/${agent._id}`}
@@ -32,14 +35,14 @@ const AgentCard = (agent: Agent) => {
                 <CardContent className="flex items-center gap-2">
                     <span>Published</span>
                     {agent.isPublished ?
-                        <small><CheckCircle2 className="text-green-500 size-4" /></small>
+                        <small><Circle className="size-4 text-green-400 fill-green-500" /></small>
                         :
-                        <small><XCircle className="text-red-500 size-4" /></small>
+                        <small><Circle className="size-4 text-red-400 fill-red-500" /></small>
                     }
                 </CardContent>
                 <CardFooter className="flex items-center gap-2">
-                    <CalendarCheck2 className="size-4" />
-                    <time>{new Date(agent._creationTime).toLocaleDateString("en-GB")}</time>
+                    <CalendarCheck2 className="size-3.5" />
+                    <time className="text-xs">{formattedDate}</time>
                 </CardFooter>
             </Card>
         </Link>

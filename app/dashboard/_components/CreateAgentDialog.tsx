@@ -3,7 +3,6 @@ import { SubmitEvent, useState } from "react"
 import { useMutation, useQuery } from "convex/react"
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
-import { v4 as uuidv4 } from "uuid";
 import { PlusCircleIcon, Loader2, CheckCircle } from "lucide-react"
 import { api } from "@/convex/_generated/api"
 import {
@@ -34,28 +33,29 @@ const CreateAgentDialog = () => {
 
     const createNewAgentMutation = useMutation(api.agent.createNewAgent);
 
-    const createNewMutation = async (e: SubmitEvent<HTMLFormElement>) => {
+    const createNewAgent = async (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         setIsAgentCreating(true);
 
-        const agentId = uuidv4();
+        let agentURL;
 
-        if (currentUser) await createNewAgentMutation({
-            name: agentDetails.name,
-            description: agentDetails.description,
-            agentId: agentId,
-            userId: currentUser?._id
-        });
+        if (currentUser) {
+            agentURL = await createNewAgentMutation({
+                name: agentDetails.name,
+                description: agentDetails.description,
+                userId: currentUser?._id
+            })
+        };
 
         setIsAgentCreating(false);
         setIsDialogOpen(false);
 
         toast.success("AI agent created successfully!", {
-            icon: <CheckCircle className="text-emerald-500" size={20} />
+            icon: <CheckCircle className="text-emerald-500" size={18} />
         })
 
-        router.push('/agent-builder/' + agentId);
+        router.push('/agent-builder/' + agentURL);
     }
 
     return (
@@ -70,7 +70,7 @@ const CreateAgentDialog = () => {
                     </Button>
                 } />
                 <DialogContent>
-                    <form onSubmit={createNewMutation}>
+                    <form onSubmit={createNewAgent}>
                         <DialogHeader>
                             <DialogTitle className='text-xl'>Enter agent details</DialogTitle>
                             <DialogDescription>

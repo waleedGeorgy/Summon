@@ -18,8 +18,8 @@ const Header = () => {
                             avatarBox: {
                                 width: "2.1rem",
                                 height: "2.1rem",
-                            },
-                        },
+                            }
+                        }
                     }} />
                 }
             </div>

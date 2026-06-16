@@ -5,14 +5,12 @@ export const createNewAgent = mutation({
   args: {
     name: v.string(),
     description: v.string(),
-    agentId: v.string(),
     userId: v.id("Users"),
   },
   handler: async (ctx, args) => {
     const result = await ctx.db.insert("Agents", {
       name: args.name,
       description: args.description,
-      agentId: args.agentId,
       isPublished: false,
       createdBy: args.userId,
     });
@@ -29,5 +27,28 @@ export const fetchAllAgents = query({
       .order("desc")
       .collect();
     return results;
+  },
+});
+
+export const getAgentById = query({
+  args: { agentId: v.id("Agents") },
+  handler: async (ctx, args) => {
+    const agent = await ctx.db.get(args.agentId);
+
+    if (agent) return agent;
+  },
+});
+
+export const updateAgentDetails = mutation({
+  args: {
+    agentId: v.id("Agents"),
+    nodes: v.any(),
+    edges: v.any(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.agentId, {
+      nodes: args.nodes,
+      edges: args.edges,
+    });
   },
 });
