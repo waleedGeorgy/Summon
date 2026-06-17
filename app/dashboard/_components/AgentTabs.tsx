@@ -18,22 +18,20 @@ const AgentTabs = () => {
     );
 
     return (
-        <div>
-            <Tabs defaultValue="my-agents">
-                <TabsList className="mx-auto">
-                    <TabsTrigger value="my-agents">
-                        <HatGlasses />My Agents
-                    </TabsTrigger>
-                    <TabsTrigger value="templates">
-                        <NotepadText />Templates
-                    </TabsTrigger>
-                </TabsList>
-                <TabsContent value='my-agents' className='mx-auto md:px-6 px-12 py-4'>
-                    <MyAgents agents={agents ?? []} isLoading={!agents} />
-                </TabsContent>
-                <TabsContent value='templates' className='mx-auto md:px-6 px-12 py-4'><AgentTemplates /></TabsContent>
-            </Tabs>
-        </div>
+        <Tabs defaultValue="my-agents">
+            <TabsList className="mx-auto">
+                <TabsTrigger value="my-agents">
+                    <HatGlasses />My Agents
+                </TabsTrigger>
+                <TabsTrigger value="templates">
+                    <NotepadText />Templates
+                </TabsTrigger>
+            </TabsList>
+            <TabsContent value='my-agents' className='mx-auto md:px-12 px-6 py-4'>
+                <MyAgents agents={agents ?? []} isLoading={!agents} />
+            </TabsContent>
+            <TabsContent value='templates' className='mx-auto md:px-12 px-6 py-4'><AgentTemplates /></TabsContent>
+        </Tabs>
     )
 }
 

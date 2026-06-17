@@ -26,6 +26,8 @@ const CreateAgentDialog = () => {
     const [isAgentCreating, setIsAgentCreating] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+    const maxDescriptionChars = 80;
+
     const { user } = useUser();
     const currentUser = useQuery(api.user.getUserById, { userId: user?.id ?? "skip" })
 
@@ -89,9 +91,15 @@ const CreateAgentDialog = () => {
                                 />
                             </Field>
                             <Field>
-                                <Label htmlFor="agent-desc">Description</Label>
+                                <Label htmlFor="agent-desc">
+                                    Description
+                                    <span className="text-sm text-muted-foreground ml-auto">
+                                        {agentDetails.description.length}/{maxDescriptionChars}
+                                    </span>
+                                </Label>
                                 <Input
                                     id="agent-desc"
+                                    maxLength={80}
                                     name="desc"
                                     onChange={e => setAgentDetails({ ...agentDetails, description: e.target.value })}
                                     disabled={isAgentCreating}

@@ -37,7 +37,7 @@ const agentTools = [
   {
     name: 'If/Else',
     icon: Split,
-    color: '#06b6d4',
+    color: '#f97316',
     id: 'ifElse',
     type: 'IfElseNode'
   },
@@ -75,6 +75,7 @@ const AgentToolsPanel = () => {
     if (!context) return;
 
     const { nodes, setNodes } = context;
+    
     const nodeRandomString = uuidv4();
     const nodeId = `${tool.id}-${nodeRandomString}`;
 
@@ -92,8 +93,8 @@ const AgentToolsPanel = () => {
   if (!context) return null;
 
   return (
-    <div className="bg-sidebar/80 brightness-115 backdrop-blur-lg px-4 py-3 flex flex-col gap-1 justify-center rounded-lg shadow-md">
-      <h3 className="font-semibold text-center">Agent Tools</h3>
+    <div className="bg-sidebar/80 backdrop-blur-lg min-w-44 p-3 flex flex-col gap-1 justify-center rounded-lg border">
+      <h3 className="font-semibold text-center">Nodes</h3>
       <Separator />
       {agentTools.map(tool => (
         <div

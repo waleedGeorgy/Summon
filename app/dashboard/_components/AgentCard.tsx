@@ -1,5 +1,4 @@
 'use client'
-import { useRouter } from "next/navigation"
 import { Agent } from "@/convex/schema"
 import {
     Card,
@@ -17,9 +16,9 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { MouseEvent, useState } from "react";
+import Link from "next/link"
 
 const AgentCard = (agent: Agent) => {
-    const router = useRouter();
     const formattedDate = formatDistance(agent._creationTime, new Date(), { addSuffix: true });
 
     const deleteAgentMutation = useMutation(api.agent.deleteAgent);
@@ -34,7 +33,7 @@ const AgentCard = (agent: Agent) => {
 
         try {
             await deleteAgentMutation({ agentId: agent._id });
-            toast.success('Agent deleted', {
+            toast.success('Agent deleted successfully', {
                 icon: <CheckCircle className="text-emerald-500" size={18} />
             })
         } catch (error) {
@@ -47,15 +46,10 @@ const AgentCard = (agent: Agent) => {
         }
     }
 
-    const handleCardClick = (e: MouseEvent) => {
-        e.preventDefault();
-        router.push(`/agent-builder/${agent._id}`);
-    }
-
     return (
-        <div
+        <Link
             className={`group hover:-translate-y-1 dark:hover:brightness-125 transition-all duration-300 cursor-pointer ${isDeleting && 'pointer-events-none'}`}
-            onClick={handleCardClick}
+            href={`/agent-builder/${agent._id}`}
         >
             <Card size="sm" className="min-w-2xs shadow hover:shadow-lg transition-shadow duration-300">
                 <CardHeader>
@@ -67,7 +61,7 @@ const AgentCard = (agent: Agent) => {
                             {agent.description}
                         </CardDescription>
                         :
-                        <span className="italic text-gray-400">No description</span>
+                        <span className="italic text-neutral-400">No description</span>
                     }
                     <CardAction>
                         <Button
@@ -93,7 +87,7 @@ const AgentCard = (agent: Agent) => {
                     <time className="text-xs">{formattedDate}</time>
                 </CardFooter>
             </Card>
-        </div>
+        </Link>
     )
 }
 

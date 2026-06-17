@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { formatDistance } from "date-fns";
-import { BookOpenCheck, CalendarCheck, ChevronLeft, Circle, Code2, Eye } from "lucide-react";
+import { ArrowLeft, BookOpenCheck, CalendarCheck, Circle, Code2, Eye } from "lucide-react";
 import { Agent } from "@/convex/schema";
 import { ThemeToggleButton } from "@/components/ThemeToggleButton";
 import { Button } from "@/components/ui/button";
@@ -10,27 +10,27 @@ const AgentBuilderHeader = ({ agent }: { agent: Agent }) => {
   const formattedDate = formatDistance(agent._creationTime, new Date(), { addSuffix: true });
 
   return (
-    <nav className="flex items-center gap-2 justify-between px-4 py-2.5 bg-sidebar">
+    <nav className="flex items-center gap-2 justify-between px-4 py-2.5 bg-sidebar border-b">
       <div className="flex items-center gap-2">
-        <Link href='/dashboard'>
-          <ChevronLeft className="hover:text-emerald-500 transition duration-300" />
+        <Link href='/dashboard' title="Back to dashboard">
+          <ArrowLeft className="hover:text-emerald-500 transition duration-300" />
         </Link>
         <div className="flex items-center gap-3">
-          <h2 className="text-xl">{agent.name}</h2>
-          <Separator orientation="vertical" />
-          <p className="text-xs text-neutral-400 truncate">{agent.description}</p>
+          <h2 className="md:text-2xl text-lg">{agent.name}</h2>
+          <Separator orientation="vertical" className='lg:inline hidden' />
+          <p className="text-xs dark:text-neutral-300 text-neutral-700 lg:inline hidden max-w-2xs">{agent.description}</p>
         </div>
       </div>
       <div className="flex items-center gap-3">
-        <time className="flex items-center gap-2 text-sm"><CalendarCheck className="size-4" />{formattedDate}</time>
+        <time className="flex items-center gap-2 lg:text-sm text-xs"><CalendarCheck className="lg:size-4 size-3.5" />{formattedDate}</time>
         <Separator orientation="vertical" />
-        <span className="flex items-center gap-2 text-sm">Published {agent.isPublished ? <Circle className="fill-green-500 text-green-400 size-4" /> : <Circle className="fill-red-500 text-red-400 size-4" />}</span>
+        <span className="flex items-center gap-2 text-sm"><p className='hidden lg:inline'>Published</p> {agent.isPublished ? <Circle className="fill-green-500 text-green-400 size-4" /> : <Circle className="fill-red-500 text-red-400 size-4" />}</span>
       </div>
       <div className="flex items-center gap-2">
         <ThemeToggleButton />
-        <Button size='sm' variant='outline'><Code2 />Code</Button>
-        <Button size='sm' variant='outline'><Eye />Preview</Button>
-        <Button size='sm'><BookOpenCheck />Publish</Button>
+        <Button size='sm' variant='outline'><Code2 /><span className='hidden md:inline'>Code</span></Button>
+        <Button size='sm' variant='outline'><Eye /><span className='hidden md:inline'>Preview</span></Button>
+        <Button size='sm'><BookOpenCheck /><span className='hidden md:inline'>Publish</span></Button>
       </div>
     </nav>
   )

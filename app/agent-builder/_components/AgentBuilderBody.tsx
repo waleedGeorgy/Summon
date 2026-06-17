@@ -14,19 +14,23 @@ import {
     type EdgeChange,
     type Connection,
     type Node,
-    type Edge
+    type Edge,
+    type OnSelectionChangeParams,
+    useOnSelectionChange
 } from '@xyflow/react';
-import { useTheme } from "next-themes";
-import AgentToolsPanel from "./AgentToolsPanel";
-import AgentSettingsPanel from "./AgentSettingsPanel";
-import { NodesContext } from "@/context/NodesContext";
-import { Agent } from "@/convex/schema";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { Button } from "@/components/ui/button";
 import { CheckCircle, Loader2, Save, XCircle } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useMutation } from "convex/react";
+import { Agent } from "@/convex/schema";
+import { api } from "@/convex/_generated/api";
+import { NodesContext } from "@/context/NodesContext";
+import AgentToolsPanel from "./AgentToolsPanel";
+import AgentSettingsPanel from "./SettingsPanel";
+import { nodeTypes } from "./AgentBuilderNodesList";
+import { Button } from "@/components/ui/button";
+import { Kbd, KbdGroup } from "@/components/ui/kbd"
 import { toast } from "sonner";
-import { nodeTypes } from "./AgentBuilderNodeList";
+import { Separator } from "@/components/ui/separator";
 
 const AgentBuilderBody = ({ agent }: { agent: Agent }) => {
     const { resolvedTheme } = useTheme();
@@ -36,7 +40,7 @@ const AgentBuilderBody = ({ agent }: { agent: Agent }) => {
     const context = useContext(NodesContext);
     if (!context) throw new Error("NodesContext must be used within a Provider");
 
-    const { nodes, setNodes, edges, setEdges } = context;
+    const { nodes, setNodes, edges, setEdges, setSelectedNode } = context;
 
     useEffect(() => {
         if (agent) {
@@ -94,6 +98,14 @@ const AgentBuilderBody = ({ agent }: { agent: Agent }) => {
         return () => { window.removeEventListener('keydown', handleKeyDown) };
     }, [saveAgentState]);
 
+    const onNodeSelect = useCallback(({ nodes }: OnSelectionChangeParams) => {
+        setSelectedNode(nodes[0]);
+    }, [setSelectedNode]);
+
+    useOnSelectionChange({
+        onChange: onNodeSelect
+    })
+
     const flowColorMode = resolvedTheme === 'dark' ? 'dark' : 'light';
 
     return (
@@ -105,26 +117,43 @@ const AgentBuilderBody = ({ agent }: { agent: Agent }) => {
                 onEdgesChange={onEdgesChange}
                 onConnect={onConnect}
                 colorMode={flowColorMode}
-                fitView
+                fitView={true}
                 nodeTypes={nodeTypes}
+                deleteKeyCode={['Delete', 'Backspace']}
+                autoPanOnNodeFocus={true}
+                connectionDragThreshold={5}
             >
-                <Controls />
-                <MiniMap />
                 <Background variant={BackgroundVariant.Dots} size={1} gap={25} />
+                <MiniMap />
+                <Controls />
                 <Panel position="top-left">
                     <AgentToolsPanel />
                 </Panel>
                 <Panel position="top-right">
                     <AgentSettingsPanel />
                 </Panel>
-                <Panel position="bottom-center">
-                    <Button onClick={saveAgentState} size='sm' disabled={isSaving}>
+                <Panel position="bottom-center" className="flex items-center gap-2">
+                    <Button onClick={saveAgentState} disabled={isSaving}>
                         {isSaving ?
                             <><Loader2 className="animate-spin" />Saving</>
                             :
-                            <><Save />Save (Ctrl + S)</>
+                            <>
+                                <Save />Save
+                                <KbdGroup>
+                                    <Kbd>Ctrl</Kbd>
+                                    <span>+</span>
+                                    <Kbd>S</Kbd>
+                                </KbdGroup>
+                            </>
                         }
                     </Button>
+                    <Separator orientation="vertical" />
+                    <KbdGroup className="text-xs dark:text-neutral-400 text-neutral-600">
+                        <Kbd>Delete</Kbd>
+                        <span>or</span>
+                        <Kbd>Backspace</Kbd>
+                        <span>to delete node</span>
+                    </KbdGroup>
                 </Panel>
             </ReactFlow>
         </div>
