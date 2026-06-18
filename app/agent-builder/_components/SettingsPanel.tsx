@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { NodesContext } from "@/context/NodesContext";
 import { CustomNode } from "@/convex/schema";
-import { AgentNodeSettings, AgentNodeSettingsDataProps } from "./AgentNodeSettings";
+import { AgentNodeSettings, AgentNodeSettingsDataProps } from "./_custom-nodes-settings/AgentNodeSettings";
 
 const SettingsPanel = () => {
   const context = useContext(NodesContext);
@@ -32,6 +32,7 @@ const SettingsPanel = () => {
     <div className="bg-sidebar/80 backdrop-blur-lg py-3 flex flex-col gap-1 justify-center rounded-lg border">
       {selectedNode?.type === 'AgentNode' &&
         <AgentNodeSettings
+          key={selectedNode.id}
           selectedNode={selectedNode}
           updateAgentNodeSettings={(settings: AgentNodeSettingsDataProps) => {
             onUpdateAgentSettings(settings)

@@ -71,7 +71,7 @@ export const AgentNodeSettings = ({ selectedNode, updateAgentNodeSettings }: Age
                         <Input
                             id="agent-name"
                             name="name"
-                            value={agentSettingsData.name}
+                            value={agentSettingsData?.name}
                             onChange={(e) => handleChange('name', e.target.value)}
                         />
                     </Field>
@@ -82,7 +82,7 @@ export const AgentNodeSettings = ({ selectedNode, updateAgentNodeSettings }: Age
                         <Textarea
                             id="agent-instructions"
                             name='instructions'
-                            value={agentSettingsData.instructions}
+                            value={agentSettingsData?.instructions}
                             onChange={(e) => handleChange('instructions', e.target.value)}
                         />
                         <span className="flex items-center gap-2 text-sm">Add context <FileJson2 className="size-4" /></span>
@@ -91,18 +91,18 @@ export const AgentNodeSettings = ({ selectedNode, updateAgentNodeSettings }: Age
                 <Separator />
                 <div className="flex items-center justify-between gap-1">
                     <span className="text-sm">Include chat history</span>
-                    <Switch onCheckedChange={(checked) => handleChange('includeHistory', checked)} checked={agentSettingsData.includeHistory} />
+                    <Switch onCheckedChange={(checked) => handleChange('includeHistory', checked)} checked={agentSettingsData?.includeHistory} />
                 </div>
                 <Separator />
                 <div className="flex items-center justify-between gap-1">
                     <span className="text-sm">Model</span>
                     <Select
                         onValueChange={(value) => handleChange('model', value as string)}
-                        value={agentSettingsData.model}
+                        value={agentSettingsData?.model}
                     >
                         <SelectTrigger className="w-full max-w-36 text-xs" size="sm">
                             <SelectValue placeholder="Select a model">
-                                {agentSettingsData.model ? MODELS[agentSettingsData.model as keyof typeof MODELS] : undefined}
+                                {agentSettingsData?.model ? MODELS[agentSettingsData.model as keyof typeof MODELS] : undefined}
                             </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
@@ -116,7 +116,7 @@ export const AgentNodeSettings = ({ selectedNode, updateAgentNodeSettings }: Age
                 </div>
                 <Separator />
                 <div className="flex flex-col justify-between gap-1">
-                    <Tabs defaultValue="text" onValueChange={(value) => handleChange('output', value)} value={agentSettingsData.output}>
+                    <Tabs defaultValue="text" onValueChange={(value) => handleChange('output', value)} value={agentSettingsData?.output}>
                         <div className="flex items-center gap-1 justify-between">
                             <span className="text-sm">Output format</span>
                             <TabsList>
@@ -130,7 +130,7 @@ export const AgentNodeSettings = ({ selectedNode, updateAgentNodeSettings }: Age
                         </div>
                         <TabsContent value='json'>
                             <span>JSON schema</span>
-                            <Textarea className="mt-2" onChange={(e) => handleChange('schema', e.target.value)} />
+                            <Textarea className="mt-2" onChange={(e) => handleChange('schema', e.target.value)} value={agentSettingsData?.schema} />
                         </TabsContent>
                     </Tabs>
                 </div>

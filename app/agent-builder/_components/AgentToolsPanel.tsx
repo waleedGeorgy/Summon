@@ -3,7 +3,7 @@ import { NodesContext } from "@/context/NodesContext";
 import { HatGlasses, Pause, Play, Repeat2, Split, ThumbsUp, Webhook } from "lucide-react"
 import { useCallback, useContext } from "react";
 import { v4 as uuidv4 } from "uuid";
-import type { Node } from '@xyflow/react';
+import type { CustomNode } from "@/convex/schema"
 
 const agentTools = [
   {
@@ -57,7 +57,7 @@ const agentTools = [
   },
 ];
 
-const getPositionForNewNode = (existingNodes: Node[]) => {
+const getPositionForNewNode = (existingNodes: CustomNode[]) => {
   const baseX = 0;
   const baseY = 0;
   const offset = existingNodes?.length ? existingNodes.length * 20 : 0;
@@ -79,11 +79,13 @@ const AgentToolsPanel = () => {
     const nodeRandomString = uuidv4();
     const nodeId = `${tool.id}-${nodeRandomString}`;
 
-    const newNode: Node = {
+    const newNode: CustomNode = {
       id: nodeId,
+      type: tool.type,
       position: getPositionForNewNode(nodes),
       data: { label: tool.name, color: tool.color, id: tool.id, type: tool.type },
-      type: tool.type
+      selected: false,
+      measured: { width: 0, height: 0 },
     }
 
     if (!nodes) setNodes([newNode]);
