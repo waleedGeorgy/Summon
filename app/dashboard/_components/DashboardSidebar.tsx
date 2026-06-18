@@ -19,6 +19,34 @@ import { useUser } from "@clerk/nextjs"
 import { useQuery } from "convex/react"
 import { api } from "@/convex/_generated/api"
 
+const menuItems = [
+    {
+        name: 'Dashboard',
+        href: '/dashboard',
+        icon: LayoutDashboard,
+    },
+    {
+        name: 'AI Agents',
+        href: '/ai-agents',
+        icon: HatGlasses,
+    },
+    {
+        name: 'Data',
+        href: '/data',
+        icon: Database,
+    },
+    {
+        name: 'Pricing',
+        href: '/pricing',
+        icon: Wallet2,
+    },
+    {
+        name: 'Profile',
+        href: '/profile',
+        icon: User2,
+    },
+]
+
 export function AppSidebar() {
     const { user, isLoaded } = useUser();
     const currentUser = useQuery(api.user.getUserById, { userId: user?.id ?? "skip" })
@@ -26,34 +54,6 @@ export function AppSidebar() {
     const { open } = useSidebar();
 
     const pathname = usePathname();
-
-    const menuItems = [
-        {
-            name: 'Dashboard',
-            href: '/dashboard',
-            icon: LayoutDashboard,
-        },
-        {
-            name: 'AI Agents',
-            href: '/ai-agents',
-            icon: HatGlasses,
-        },
-        {
-            name: 'Data',
-            href: '/data',
-            icon: Database,
-        },
-        {
-            name: 'Pricing',
-            href: '/pricing',
-            icon: Wallet2,
-        },
-        {
-            name: 'Profile',
-            href: '/profile',
-            icon: User2,
-        },
-    ]
 
     return (
         <Sidebar collapsible="icon">

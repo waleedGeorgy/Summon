@@ -1,11 +1,10 @@
-// context/NodesContext.tsx
 import { createContext, type Dispatch, type SetStateAction } from "react";
-import { Node, Edge } from '@xyflow/react';
-import { CustomNode } from "@/types";
+import { Edge } from '@xyflow/react';
+import { CustomNode } from "@/convex/schema";
 
 interface NodesContextType {
-    nodes: Node[];
-    setNodes: Dispatch<SetStateAction<Node[]>>;
+    nodes: CustomNode[];
+    setNodes: Dispatch<SetStateAction<CustomNode[]>>;
     edges: Edge[];
     setEdges: Dispatch<SetStateAction<Edge[]>>;
     selectedNode: CustomNode | null,

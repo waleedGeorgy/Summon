@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { CustomNode } from "./schema";
 
 export const createNewAgent = mutation({
   args: {
@@ -42,7 +43,7 @@ export const getAgentById = query({
 export const updateAgentDetails = mutation({
   args: {
     agentId: v.id("Agents"),
-    nodes: v.any(),
+    nodes: v.array(CustomNode),
     edges: v.any(),
   },
   handler: async (ctx, args) => {

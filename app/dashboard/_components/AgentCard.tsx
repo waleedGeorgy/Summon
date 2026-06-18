@@ -1,5 +1,11 @@
 'use client'
+import { MouseEvent, useTransition } from "react";
+import Link from "next/link"
 import { Agent } from "@/convex/schema"
+import { useMutation } from "convex/react";
+import { HatGlasses, CalendarCheck2, Circle, Trash2, CheckCircle, XCircle, Loader2 } from "lucide-react"
+import { formatDistance } from "date-fns";
+import { api } from "@/convex/_generated/api";
 import {
     Card,
     CardAction,
@@ -9,42 +15,34 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { HatGlasses, CalendarCheck2, Circle, Trash2, CheckCircle, XCircle, Loader2 } from "lucide-react"
-import { formatDistance } from "date-fns";
 import { Button } from "@/components/ui/button";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
-import { MouseEvent, useState } from "react";
-import Link from "next/link"
 
 const AgentCard = (agent: Agent) => {
     const formattedDate = formatDistance(agent._creationTime, new Date(), { addSuffix: true });
 
     const deleteAgentMutation = useMutation(api.agent.deleteAgent);
 
-    const [isDeleting, setIsDeleting] = useState(false);
+    const [isDeleting, startDeletingAgent] = useTransition();
 
     const deleteAgent = async (e: MouseEvent) => {
-        setIsDeleting(true);
-
         e.preventDefault();
         e.stopPropagation();
 
-        try {
-            await deleteAgentMutation({ agentId: agent._id });
-            toast.success('Agent deleted successfully', {
-                icon: <CheckCircle className="text-emerald-500" size={18} />
-            })
-        } catch (error) {
-            console.log("Error deleting agent: " + error);
-            toast.error('Failed to delete agent', {
-                icon: <XCircle className="text-red-500" size={18} />
-            });
-        } finally {
-            setIsDeleting(false);
-        }
-    }
+        startDeletingAgent(async () => {
+            try {
+                await deleteAgentMutation({ agentId: agent._id });
+                toast.success('Agent deleted successfully', {
+                    icon: <CheckCircle className="text-emerald-500" size={18} />
+                })
+            } catch (error) {
+                console.log("Error deleting agent: " + error);
+                toast.error('Failed to delete agent', {
+                    icon: <XCircle className="text-red-500" size={18} />
+                });
+            }
+        });
+    };
 
     return (
         <Link

@@ -5,13 +5,13 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { Node } from "@xyflow/react"
-import { FileJson2 } from "lucide-react"
+import { CheckCircle, FileJson2, Loader } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { CustomNode } from "@/types"
+import { CustomNode } from "@/convex/schema"
+import { toast } from "sonner"
 
 const MODELS = {
     'deepseek': 'DeepSeek-V3.2',
@@ -20,22 +20,42 @@ const MODELS = {
     'gemini': 'Gemini 3.5 Flash'
 } as const;
 
-export const AgentNodeSettings = ({ selectedNode }: { selectedNode: CustomNode }) => {
-    const [agentSettingsData, setAgentSettingsData] = useState({
-        name: '',
-        instructions: '',
-        includeHistory: true,
-        model: '',
-        output: 'text',
-        schema: ''
+export type AgentNodeSettingsDataProps = {
+    name: string,
+    instructions: string,
+    includeHistory: boolean,
+    model: string,
+    output: string,
+    schema: string
+}
+type AgentNodeSettingsProps = {
+    selectedNode: CustomNode,
+    updateAgentNodeSettings: (data: AgentNodeSettingsDataProps) => void
+}
+
+export const AgentNodeSettings = ({ selectedNode, updateAgentNodeSettings }: AgentNodeSettingsProps) => {
+    const [agentSettingsData, setAgentSettingsData] = useState<AgentNodeSettingsDataProps>({
+        name: selectedNode.data.settings?.name || '',
+        instructions: selectedNode.data.settings?.instructions || '',
+        includeHistory: selectedNode.data.settings?.includeHistory || true,
+        model: selectedNode.data.settings?.model || '',
+        output: selectedNode.data.settings?.output || 'text',
+        schema: selectedNode.data.settings?.schema || '',
     });
+
+    const [isAgentSettingsSaving, startAgentSettingsSaving] = useTransition();
 
     const handleChange = (key: string, value: string | boolean) => {
         setAgentSettingsData(prev => ({ ...prev, [key]: value }));
     }
 
     const saveAgentSetting = () => {
-        console.log(agentSettingsData);
+        startAgentSettingsSaving(() => {
+            updateAgentNodeSettings(agentSettingsData);
+        });
+        toast.success('Settings saved', {
+            icon: <CheckCircle className="text-emerald-500" size={18} />
+        });
     }
 
     return (
@@ -115,7 +135,9 @@ export const AgentNodeSettings = ({ selectedNode }: { selectedNode: CustomNode }
                     </Tabs>
                 </div>
                 <Separator />
-                <Button onClick={saveAgentSetting}>Save</Button>
+                <Button onClick={saveAgentSetting} disabled={isAgentSettingsSaving}>
+                    {isAgentSettingsSaving ? <Loader className="animate-spin" /> : "Save"}
+                </Button>
             </div>
         </ScrollArea>
     )

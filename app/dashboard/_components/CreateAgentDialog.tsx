@@ -1,9 +1,9 @@
 'use client'
-import { SubmitEvent, useState } from "react"
+import { SubmitEvent, useState, useTransition } from "react"
 import { useMutation, useQuery } from "convex/react"
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
-import { PlusCircleIcon, Loader2, CheckCircle } from "lucide-react"
+import { PlusCircleIcon, Loader2, CheckCircle, XCircle } from "lucide-react"
 import { api } from "@/convex/_generated/api"
 import {
     Dialog,
@@ -23,8 +23,9 @@ import { toast } from "sonner"
 
 const CreateAgentDialog = () => {
     const [agentDetails, setAgentDetails] = useState({ name: '', description: '' });
-    const [isAgentCreating, setIsAgentCreating] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+    const [isAgentCreating, startCreatingAgent] = useTransition();
 
     const maxDescriptionChars = 80;
 
@@ -38,26 +39,31 @@ const CreateAgentDialog = () => {
     const createNewAgent = async (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        setIsAgentCreating(true);
+        startCreatingAgent(async () => {
+            let agentURL;
 
-        let agentURL;
+            try {
+                if (currentUser) {
+                    agentURL = await createNewAgentMutation({
+                        name: agentDetails.name,
+                        description: agentDetails.description,
+                        userId: currentUser?._id
+                    });
+                };
+                setIsDialogOpen(false);
 
-        if (currentUser) {
-            agentURL = await createNewAgentMutation({
-                name: agentDetails.name,
-                description: agentDetails.description,
-                userId: currentUser?._id
-            })
-        };
+                toast.success("AI agent created successfully!", {
+                    icon: <CheckCircle className="text-emerald-500" size={18} />
+                });
 
-        setIsAgentCreating(false);
-        setIsDialogOpen(false);
-
-        toast.success("AI agent created successfully!", {
-            icon: <CheckCircle className="text-emerald-500" size={18} />
-        })
-
-        router.push('/agent-builder/' + agentURL);
+                router.push('/agent-builder/' + agentURL);
+            } catch (error) {
+                console.log("Error deleting agent: " + error);
+                toast.error('Failed to delete agent', {
+                    icon: <XCircle className="text-red-500" size={18} />
+                });
+            }
+        });
     }
 
     return (

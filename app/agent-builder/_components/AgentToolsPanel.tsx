@@ -75,7 +75,7 @@ const AgentToolsPanel = () => {
     if (!context) return;
 
     const { nodes, setNodes } = context;
-    
+
     const nodeRandomString = uuidv4();
     const nodeId = `${tool.id}-${nodeRandomString}`;
 

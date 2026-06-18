@@ -1,18 +1,19 @@
 'use client'
-import AgentBuilderHeader from "../_components/AgentBuilderHeader"
-import AgentBuilderBody from "../_components/AgentBuilderBody";
 import { useState } from "react";
-import { NodesContext } from "@/context/NodesContext";
 import { useParams } from "next/navigation";
+import { type Edge, ReactFlowProvider } from "@xyflow/react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { type Node, type Edge, ReactFlowProvider } from "@xyflow/react";
+import { NodesContext } from "@/context/NodesContext";
+import AgentBuilderHeader from "../_components/AgentBuilderHeader"
+import AgentBuilderBody from "../_components/AgentBuilderBody";
+import type { CustomNode } from "@/convex/schema"
 
 const AgentBuilderPage = () => {
-    const [nodes, setNodes] = useState<Node[]>([]);
+    const [nodes, setNodes] = useState<CustomNode[]>([]);
     const [edges, setEdges] = useState<Edge[]>([]);
-    const [selectedNode, setSelectedNode] = useState<Node | null>(null);
+    const [selectedNode, setSelectedNode] = useState<CustomNode | null>(null);
 
     const { agentId } = useParams();
     const agent = useQuery(api.agent.getAgentById, {

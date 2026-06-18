@@ -1,5 +1,5 @@
 'use client'
-import { useCallback, useState, useEffect, useContext } from "react";
+import { useCallback, useEffect, useContext, useTransition } from "react";
 import {
     ReactFlow,
     applyNodeChanges,
@@ -13,29 +13,27 @@ import {
     type NodeChange,
     type EdgeChange,
     type Connection,
-    type Node,
     type Edge,
     type OnSelectionChangeParams,
-    useOnSelectionChange
+    useOnSelectionChange,
 } from '@xyflow/react';
 import { CheckCircle, Loader2, Save, XCircle } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useMutation } from "convex/react";
-import { Agent } from "@/convex/schema";
+import { Agent, CustomNode } from "@/convex/schema";
 import { api } from "@/convex/_generated/api";
 import { NodesContext } from "@/context/NodesContext";
 import AgentToolsPanel from "./AgentToolsPanel";
-import AgentSettingsPanel from "./SettingsPanel";
+import SettingsPanel from "./SettingsPanel";
 import { nodeTypes } from "./AgentBuilderNodesList";
 import { Button } from "@/components/ui/button";
 import { Kbd, KbdGroup } from "@/components/ui/kbd"
 import { toast } from "sonner";
-import { Separator } from "@/components/ui/separator";
 
 const AgentBuilderBody = ({ agent }: { agent: Agent }) => {
     const { resolvedTheme } = useTheme();
 
-    const [isSaving, setIsSaving] = useState(false);
+    const [isAgentSaving, startAgentSaving] = useTransition();
 
     const context = useContext(NodesContext);
     if (!context) throw new Error("NodesContext must be used within a Provider");
@@ -44,13 +42,13 @@ const AgentBuilderBody = ({ agent }: { agent: Agent }) => {
 
     useEffect(() => {
         if (agent) {
-            setNodes(agent.nodes as Node[]);
+            setNodes(agent.nodes as CustomNode[]);
             setEdges(agent.edges as Edge[]);
         }
     }, [agent, setNodes, setEdges]);
 
     const onNodesChange = useCallback(
-        (changes: NodeChange[]) => setNodes((nds) => applyNodeChanges(changes, nds)),
+        (changes: NodeChange[]) => setNodes((nds) => applyNodeChanges(changes, nds) as CustomNode[]),
         [setNodes],
     );
     const onEdgesChange = useCallback(
@@ -65,24 +63,23 @@ const AgentBuilderBody = ({ agent }: { agent: Agent }) => {
     const updateAgentMutation = useMutation(api.agent.updateAgentDetails);
 
     const saveAgentState = useCallback(async () => {
-        setIsSaving(true)
-        try {
-            await updateAgentMutation({
-                agentId: agent._id,
-                nodes,
-                edges
-            });
-            toast.success('Progress saved', {
-                icon: <CheckCircle className="text-emerald-500" size={18} />
-            });
-        } catch (error) {
-            console.log("Error saving progress " + error);
-            toast.error('Failed to save progress', {
-                icon: <XCircle className="text-red-500" size={18} />
-            });
-        } finally {
-            setIsSaving(false)
-        }
+        startAgentSaving(async () => {
+            try {
+                await updateAgentMutation({
+                    agentId: agent._id,
+                    nodes,
+                    edges
+                });
+                toast.success('Progress saved', {
+                    icon: <CheckCircle className="text-emerald-500" size={18} />
+                });
+            } catch (error) {
+                console.log("Error saving progress " + error);
+                toast.error('Failed to save progress', {
+                    icon: <XCircle className="text-red-500" size={18} />
+                });
+            }
+        })
     }, [updateAgentMutation, agent._id, nodes, edges]);
 
     useEffect(() => {
@@ -99,12 +96,12 @@ const AgentBuilderBody = ({ agent }: { agent: Agent }) => {
     }, [saveAgentState]);
 
     const onNodeSelect = useCallback(({ nodes }: OnSelectionChangeParams) => {
-        setSelectedNode(nodes[0]);
+        setSelectedNode(nodes[0] ? (nodes[0] as CustomNode) : null);
     }, [setSelectedNode]);
 
     useOnSelectionChange({
         onChange: onNodeSelect
-    })
+    });
 
     const flowColorMode = resolvedTheme === 'dark' ? 'dark' : 'light';
 
@@ -120,7 +117,6 @@ const AgentBuilderBody = ({ agent }: { agent: Agent }) => {
                 fitView={true}
                 nodeTypes={nodeTypes}
                 deleteKeyCode={['Delete', 'Backspace']}
-                autoPanOnNodeFocus={true}
                 connectionDragThreshold={5}
             >
                 <Background variant={BackgroundVariant.Dots} size={1} gap={25} />
@@ -130,11 +126,11 @@ const AgentBuilderBody = ({ agent }: { agent: Agent }) => {
                     <AgentToolsPanel />
                 </Panel>
                 <Panel position="top-right">
-                    <AgentSettingsPanel />
+                    <SettingsPanel />
                 </Panel>
                 <Panel position="bottom-center" className="flex items-center gap-2">
-                    <Button onClick={saveAgentState} disabled={isSaving}>
-                        {isSaving ?
+                    <Button onClick={saveAgentState} disabled={isAgentSaving}>
+                        {isAgentSaving ?
                             <><Loader2 className="animate-spin" />Saving</>
                             :
                             <>
@@ -147,7 +143,6 @@ const AgentBuilderBody = ({ agent }: { agent: Agent }) => {
                             </>
                         }
                     </Button>
-                    <Separator orientation="vertical" />
                     <KbdGroup className="text-xs dark:text-neutral-400 text-neutral-600">
                         <Kbd>Delete</Kbd>
                         <span>or</span>
