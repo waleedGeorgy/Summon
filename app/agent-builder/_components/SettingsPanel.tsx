@@ -1,7 +1,8 @@
 import { useContext } from "react";
 import { NodesContext } from "@/context/NodesContext";
 import { CustomNode } from "@/convex/schema";
-import { AgentNodeSettings, AgentNodeSettingsDataProps } from "./_custom-nodes-settings/AgentNodeSettings";
+import { AgentNodeSettings, NodeSettingsDataProps } from "./_custom-nodes-settings/AgentNodeSettings";
+import EndNodeSettings from "./_custom-nodes-settings/EndNodeSettings";
 
 const SettingsPanel = () => {
   const context = useContext(NodesContext);
@@ -9,7 +10,7 @@ const SettingsPanel = () => {
 
   const { selectedNode, setNodes } = context;
 
-  const onUpdateAgentSettings = (settingsData: AgentNodeSettingsDataProps) => {
+  const updateNodeData = (settingsData: NodeSettingsDataProps) => {
     if (!selectedNode) return;
 
     setNodes((prevNodes: CustomNode[]) =>
@@ -34,8 +35,17 @@ const SettingsPanel = () => {
         <AgentNodeSettings
           key={selectedNode.id}
           selectedNode={selectedNode}
-          updateAgentNodeSettings={(settings: AgentNodeSettingsDataProps) => {
-            onUpdateAgentSettings(settings)
+          saveFormData={(settings: NodeSettingsDataProps) => {
+            updateNodeData(settings)
+          }}
+        />
+      }
+      {selectedNode?.type === 'EndNode' &&
+        <EndNodeSettings
+          key={selectedNode.id}
+          selectedNode={selectedNode}
+          saveFormData={(settings: NodeSettingsDataProps) => {
+            updateNodeData(settings)
           }}
         />
       }

@@ -27,10 +27,10 @@ const AgentTabs = () => {
                     <NotepadText />Templates
                 </TabsTrigger>
             </TabsList>
-            <TabsContent value='my-agents' className='mx-auto md:px-12 px-6 py-4'>
+            <TabsContent value='my-agents'>
                 <MyAgents agents={agents ?? []} isLoading={!agents} />
             </TabsContent>
-            <TabsContent value='templates' className='mx-auto md:px-12 px-6 py-4'><AgentTemplates /></TabsContent>
+            <TabsContent value='templates'><AgentTemplates /></TabsContent>
         </Tabs>
     )
 }

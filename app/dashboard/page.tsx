@@ -3,7 +3,7 @@ import CreateAgentDialog from "./_components/CreateAgentDialog"
 
 const DashboardPage = () => {
     return (
-        <div className="gap-10 flex flex-col justify-center">
+        <div className="space-y-10">
             <CreateAgentDialog />
             <AgentTabs />
         </div>

@@ -1,3 +1,6 @@
+import { useState, useTransition } from "react"
+import { CheckCircle, FileJson2, Loader } from "lucide-react"
+import { CustomNode } from "@/convex/schema"
 import { Field, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -5,12 +8,9 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { CheckCircle, FileJson2, Loader } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
-import { useState, useTransition } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { CustomNode } from "@/convex/schema"
 import { toast } from "sonner"
 
 const MODELS = {
@@ -20,21 +20,20 @@ const MODELS = {
     'gemini': 'Gemini 3.5 Flash'
 } as const;
 
-export type AgentNodeSettingsDataProps = {
-    name: string,
-    instructions: string,
-    includeHistory: boolean,
-    model: string,
-    output: string,
-    schema: string
-}
-type AgentNodeSettingsProps = {
-    selectedNode: CustomNode,
-    updateAgentNodeSettings: (data: AgentNodeSettingsDataProps) => void
+export type NodeSettingsDataProps = {
+    name?: string,
+    instructions?: string,
+    includeHistory?: boolean,
+    model?: string,
+    output?: string,
+    schema?: string
 }
 
-export const AgentNodeSettings = ({ selectedNode, updateAgentNodeSettings }: AgentNodeSettingsProps) => {
-    const [agentSettingsData, setAgentSettingsData] = useState<AgentNodeSettingsDataProps>({
+export const AgentNodeSettings = ({ selectedNode, saveFormData }: {
+    selectedNode: CustomNode,
+    saveFormData: (data: NodeSettingsDataProps) => void
+}) => {
+    const [agentSettingsData, setAgentSettingsData] = useState<NodeSettingsDataProps>({
         name: selectedNode.data.settings?.name || '',
         instructions: selectedNode.data.settings?.instructions || '',
         includeHistory: selectedNode.data.settings?.includeHistory || true,
@@ -49,9 +48,9 @@ export const AgentNodeSettings = ({ selectedNode, updateAgentNodeSettings }: Age
         setAgentSettingsData(prev => ({ ...prev, [key]: value }));
     }
 
-    const saveAgentSetting = () => {
+    const saveAgentNodeSetting = () => {
         startAgentSettingsSaving(() => {
-            updateAgentNodeSettings(agentSettingsData);
+            saveFormData(agentSettingsData);
         });
         toast.success('Settings saved', {
             icon: <CheckCircle className="text-emerald-500" size={18} />
@@ -59,10 +58,10 @@ export const AgentNodeSettings = ({ selectedNode, updateAgentNodeSettings }: Age
     }
 
     return (
-        <ScrollArea className='h-117 px-4'>
-            <div className="min-w-68 flex flex-col justify-center gap-3">
+        <ScrollArea className='h-117 px-3'>
+            <div className="min-w-68 flex flex-col justify-center gap-3 px-1">
                 <div>
-                    <h4 className="font-semibold text-center">Agent Setting</h4>
+                    <h4 className="font-semibold text-center">{selectedNode.data.settings?.name ? selectedNode.data.settings?.name : "Agent"}</h4>
                     <Separator className='mt-1' />
                 </div>
                 <FieldGroup className="gap-4">
@@ -134,8 +133,7 @@ export const AgentNodeSettings = ({ selectedNode, updateAgentNodeSettings }: Age
                         </TabsContent>
                     </Tabs>
                 </div>
-                <Separator />
-                <Button onClick={saveAgentSetting} disabled={isAgentSettingsSaving}>
+                <Button onClick={saveAgentNodeSetting} disabled={isAgentSettingsSaving} className='mt-2'>
                     {isAgentSettingsSaving ? <Loader className="animate-spin" /> : "Save"}
                 </Button>
             </div>

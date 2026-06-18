@@ -128,7 +128,7 @@ const AgentBuilderBody = ({ agent }: { agent: Agent }) => {
                 <Panel position="top-right">
                     <SettingsPanel />
                 </Panel>
-                <Panel position="bottom-center" className="flex items-center gap-2">
+                <Panel position="bottom-center" className="flex items-center gap-3">
                     <Button onClick={saveAgentState} disabled={isAgentSaving}>
                         {isAgentSaving ?
                             <><Loader2 className="animate-spin" />Saving</>

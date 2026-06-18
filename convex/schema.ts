@@ -10,12 +10,12 @@ const CustomNode = v.object({
     type: v.string(),
     settings: v.optional(
       v.object({
-        includeHistory: v.boolean(),
-        instructions: v.string(),
-        model: v.string(),
-        name: v.string(),
-        output: v.string(),
-        schema: v.string(),
+        includeHistory: v.optional(v.boolean()),
+        instructions: v.optional(v.string()),
+        model: v.optional(v.string()),
+        name: v.optional(v.string()),
+        output: v.optional(v.string()),
+        schema: v.optional(v.string()),
       }),
     ),
   }),
