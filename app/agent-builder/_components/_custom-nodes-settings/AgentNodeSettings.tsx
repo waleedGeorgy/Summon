@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { toast } from "sonner"
+import { NodeSettingsDataProps } from "@/types"
 
 const MODELS = {
     'deepseek': 'DeepSeek-V3.2',
@@ -19,15 +20,6 @@ const MODELS = {
     'kimi': 'Kimi K2.5',
     'gemini': 'Gemini 3.5 Flash'
 } as const;
-
-export type NodeSettingsDataProps = {
-    name?: string,
-    instructions?: string,
-    includeHistory?: boolean,
-    model?: string,
-    output?: string,
-    schema?: string
-}
 
 export const AgentNodeSettings = ({ selectedNode, saveFormData }: {
     selectedNode: CustomNode,
@@ -58,8 +50,8 @@ export const AgentNodeSettings = ({ selectedNode, saveFormData }: {
     }
 
     return (
-        <ScrollArea className='h-117 px-3'>
-            <div className="min-w-68 flex flex-col justify-center gap-3 px-1">
+        <ScrollArea className='h-112 px-3'>
+            <div className="min-w-72 flex flex-col justify-center gap-4 px-1">
                 <div>
                     <h4 className="font-semibold text-center">{selectedNode.data.settings?.name ? selectedNode.data.settings?.name : "Agent"}</h4>
                     <Separator className='mt-1' />
@@ -87,12 +79,10 @@ export const AgentNodeSettings = ({ selectedNode, saveFormData }: {
                         <span className="flex items-center gap-2 text-sm">Add context <FileJson2 className="size-4" /></span>
                     </Field>
                 </FieldGroup>
-                <Separator />
                 <div className="flex items-center justify-between gap-1">
                     <span className="text-sm">Include chat history</span>
                     <Switch onCheckedChange={(checked) => handleChange('includeHistory', checked)} checked={agentSettingsData?.includeHistory} />
                 </div>
-                <Separator />
                 <div className="flex items-center justify-between gap-1">
                     <span className="text-sm">Model</span>
                     <Select
@@ -113,7 +103,6 @@ export const AgentNodeSettings = ({ selectedNode, saveFormData }: {
                         </SelectContent>
                     </Select>
                 </div>
-                <Separator />
                 <div className="flex flex-col justify-between gap-1">
                     <Tabs defaultValue="text" onValueChange={(value) => handleChange('output', value)} value={agentSettingsData?.output}>
                         <div className="flex items-center gap-1 justify-between">

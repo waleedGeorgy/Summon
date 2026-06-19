@@ -1,8 +1,13 @@
 import { useContext } from "react";
 import { NodesContext } from "@/context/NodesContext";
 import { CustomNode } from "@/convex/schema";
-import { AgentNodeSettings, NodeSettingsDataProps } from "./_custom-nodes-settings/AgentNodeSettings";
-import EndNodeSettings from "./_custom-nodes-settings/EndNodeSettings";
+import { AgentNodeSettings } from "./_custom-nodes-settings/AgentNodeSettings";
+import OutputNodeSettings from "./_custom-nodes-settings/OutputNodeSettings";
+import IfElseNodeSettings from "./_custom-nodes-settings/IfElseNodeSettings";
+import { NodeSettingsDataProps } from "@/types";
+import WhileNodeSettings from "./_custom-nodes-settings/WhileNodeSettings";
+import ApprovalNodeSettings from "./_custom-nodes-settings/ApprovalNodeSettings";
+import ApiNodeSettings from "./_custom-nodes-settings/ApiNodeSettings";
 
 const SettingsPanel = () => {
   const context = useContext(NodesContext);
@@ -10,7 +15,7 @@ const SettingsPanel = () => {
 
   const { selectedNode, setNodes } = context;
 
-  const updateNodeData = (settingsData: NodeSettingsDataProps) => {
+  const updateNodeSettingsData = (settingsData: NodeSettingsDataProps) => {
     if (!selectedNode) return;
 
     setNodes((prevNodes: CustomNode[]) =>
@@ -36,16 +41,52 @@ const SettingsPanel = () => {
           key={selectedNode.id}
           selectedNode={selectedNode}
           saveFormData={(settings: NodeSettingsDataProps) => {
-            updateNodeData(settings)
+            updateNodeSettingsData(settings)
           }}
         />
       }
-      {selectedNode?.type === 'EndNode' &&
-        <EndNodeSettings
+      {selectedNode?.type === 'OutputNode' &&
+        <OutputNodeSettings
           key={selectedNode.id}
           selectedNode={selectedNode}
           saveFormData={(settings: NodeSettingsDataProps) => {
-            updateNodeData(settings)
+            updateNodeSettingsData(settings)
+          }}
+        />
+      }
+      {selectedNode?.type === 'IfElseNode' &&
+        <IfElseNodeSettings
+          key={selectedNode.id}
+          selectedNode={selectedNode}
+          saveFormData={(settings: NodeSettingsDataProps) => {
+            updateNodeSettingsData(settings)
+          }}
+        />
+      }
+      {selectedNode?.type === 'WhileNode' &&
+        <WhileNodeSettings
+          key={selectedNode.id}
+          selectedNode={selectedNode}
+          saveFormData={(settings: NodeSettingsDataProps) => {
+            updateNodeSettingsData(settings)
+          }}
+        />
+      }
+      {selectedNode?.type === 'ApprovalNode' &&
+        <ApprovalNodeSettings
+          key={selectedNode.id}
+          selectedNode={selectedNode}
+          saveFormData={(settings: NodeSettingsDataProps) => {
+            updateNodeSettingsData(settings)
+          }}
+        />
+      }
+      {selectedNode?.type === 'ApiNode' &&
+        <ApiNodeSettings
+          key={selectedNode.id}
+          selectedNode={selectedNode}
+          saveFormData={(settings: NodeSettingsDataProps) => {
+            updateNodeSettingsData(settings)
           }}
         />
       }

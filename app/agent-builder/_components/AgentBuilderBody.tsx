@@ -70,12 +70,12 @@ const AgentBuilderBody = ({ agent }: { agent: Agent }) => {
                     nodes,
                     edges
                 });
-                toast.success('Progress saved', {
+                toast.success('Workflow saved', {
                     icon: <CheckCircle className="text-emerald-500" size={18} />
                 });
             } catch (error) {
-                console.log("Error saving progress " + error);
-                toast.error('Failed to save progress', {
+                console.log("Error saving workflow " + error);
+                toast.error('Failed to save workflow', {
                     icon: <XCircle className="text-red-500" size={18} />
                 });
             }

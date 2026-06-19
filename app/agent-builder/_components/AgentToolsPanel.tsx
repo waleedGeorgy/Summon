@@ -1,6 +1,6 @@
 import { Separator } from "@/components/ui/separator"
 import { NodesContext } from "@/context/NodesContext";
-import { HatGlasses, Pause, Play, Repeat2, Split, ThumbsUp, Webhook } from "lucide-react"
+import { HatGlasses, Play, Repeat2, Split, SquareArrowRightExit, ThumbsUp, Webhook } from "lucide-react"
 import { useCallback, useContext } from "react";
 import { v4 as uuidv4 } from "uuid";
 import type { CustomNode } from "@/convex/schema"
@@ -14,11 +14,11 @@ const agentTools = [
     type: 'StartNode'
   },
   {
-    name: 'End',
-    icon: Pause,
+    name: 'Output',
+    icon: SquareArrowRightExit,
     color: '#f43f5e',
-    id: 'end',
-    type: 'EndNode'
+    id: 'output',
+    type: 'OutputNode'
   },
   {
     name: 'Agent',

@@ -5,11 +5,13 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
 import type { CustomNode } from "@/convex/schema"
-import { NodeSettingsDataProps } from "./AgentNodeSettings"
 import { toast } from "sonner"
 import { CheckCircle, Loader } from "lucide-react"
+import { NodeSettingsDataProps } from "@/types"
 
-const EndNodeSettings = ({ selectedNode, saveFormData }: { selectedNode: CustomNode, saveFormData: (data: NodeSettingsDataProps) => void }) => {
+const OutputNodeSettings = ({ selectedNode, saveFormData }: {
+    selectedNode: CustomNode, saveFormData: (data: NodeSettingsDataProps) => void
+}) => {
     const [workflowOutput, setWorkflowOutput] = useState({ schema: selectedNode.data.settings?.schema || '' });
 
     const [isEndNodeSettingsSaving, startEndNodeSettingsSaving] = useTransition();
@@ -24,19 +26,19 @@ const EndNodeSettings = ({ selectedNode, saveFormData }: { selectedNode: CustomN
     }
 
     return (
-        <div className="min-w-74 flex flex-col justify-center gap-3 px-4">
+        <div className="min-w-78 flex flex-col justify-center gap-3 px-4">
             <div>
-                <h4 className="font-semibold text-center">End node</h4>
+                <h4 className="font-semibold text-center">Output</h4>
                 <Separator className='mt-1' />
             </div>
             <div>
                 <Field>
-                    <Label htmlFor="agent-instructions">
+                    <Label htmlFor="output">
                         Workflow output
                     </Label>
                     <Textarea
-                        id="agent-instructions"
-                        name='instructions'
+                        id="output"
+                        name='output'
                         placeholder="{attr: type}"
                         rows={10}
                         value={workflowOutput.schema}
@@ -51,4 +53,4 @@ const EndNodeSettings = ({ selectedNode, saveFormData }: { selectedNode: CustomN
     )
 }
 
-export default EndNodeSettings
+export default OutputNodeSettings

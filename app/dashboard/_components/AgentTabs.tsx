@@ -1,7 +1,7 @@
 'use client'
 import { useUser } from "@clerk/nextjs"
 import { useQuery } from "convex/react"
-import { NotepadText, HatGlasses } from "lucide-react"
+import { NotepadText, Workflow } from "lucide-react"
 import { api } from "@/convex/_generated/api"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import MyAgents from "./MyAgents"
@@ -21,7 +21,7 @@ const AgentTabs = () => {
         <Tabs defaultValue="my-agents">
             <TabsList className="mx-auto">
                 <TabsTrigger value="my-agents">
-                    <HatGlasses />My Agents
+                    <Workflow />My workflows
                 </TabsTrigger>
                 <TabsTrigger value="templates">
                     <NotepadText />Templates

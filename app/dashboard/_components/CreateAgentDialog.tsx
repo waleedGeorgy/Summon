@@ -68,8 +68,8 @@ const CreateAgentDialog = () => {
 
     return (
         <div className="flex flex-col justify-center items-center gap-1 mt-14">
-            <h2 className="text-3xl">Create a new AI agent</h2>
-            <p>Build your custom AI agent workflow</p>
+            <h2 className="text-3xl">Create a new workflow</h2>
+            <p>Build and customize your custom AI workflow</p>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger render={
                     <Button className='mt-3' onClick={() => setIsDialogOpen(true)}>
