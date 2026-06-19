@@ -6,7 +6,7 @@ import { ThemeToggleButton } from "@/components/ThemeToggleButton";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
-const AgentBuilderHeader = ({ agent }: { agent: Agent }) => {
+const AgentBuilderHeader = ({ agent, isPreviewMode = false }: { agent: Agent, isPreviewMode: boolean }) => {
   const formattedDate = formatDistance(agent._creationTime, new Date(), { addSuffix: true });
 
   return (
@@ -29,7 +29,16 @@ const AgentBuilderHeader = ({ agent }: { agent: Agent }) => {
       <div className="flex items-center gap-2">
         <ThemeToggleButton />
         <Button size='sm' variant='outline'><Code2 /><span className='hidden md:inline'>Code</span></Button>
-        <Button size='sm' variant='outline'><Eye /><span className='hidden md:inline'>Preview</span></Button>
+        {isPreviewMode ?
+          <Link href={`/agent-builder/${agent._id}`}>
+            <Button size='sm' variant='outline'><Eye /><span className='hidden md:inline'>Close preview</span></Button>
+          </Link>
+          :
+          <Link href={`/agent-builder/${agent._id}/preview`}>
+            <Button size='sm' variant='outline'><Eye /><span className='hidden md:inline'>Preview</span></Button>
+          </Link>
+        }
+
         <Button size='sm'><BookOpenCheck /><span className='hidden md:inline'>Publish</span></Button>
       </div>
     </nav>

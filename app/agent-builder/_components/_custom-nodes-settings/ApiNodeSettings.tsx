@@ -45,8 +45,8 @@ export const ApiNodeSettings = ({ selectedNode, saveFormData }: {
     }
 
     return (
-        <ScrollArea className='h-85 px-3'>
-            <div className="min-w-72 flex flex-col justify-center gap-4 px-1">
+        <ScrollArea className='h-86 px-2'>
+            <div className="min-w-72 flex flex-col justify-center gap-4 mx-3">
                 <div>
                     <h4 className="font-semibold text-center">{selectedNode.data.settings?.apiName ? selectedNode.data.settings?.apiName : "API"}</h4>
                     <Separator className='mt-1' />

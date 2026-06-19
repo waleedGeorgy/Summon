@@ -24,7 +24,7 @@ const AgentBuilderPage = () => {
         <NodesContext.Provider value={{ nodes, setNodes, edges, setEdges, selectedNode, setSelectedNode }}>
             <ReactFlowProvider>
                 <div className="h-screen flex flex-col">
-                    {agent && <AgentBuilderHeader agent={agent} />}
+                    {agent && <AgentBuilderHeader agent={agent} isPreviewMode={false} />}
                     {agent && <AgentBuilderBody agent={agent} />}
                 </div>
             </ReactFlowProvider>
