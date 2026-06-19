@@ -9,7 +9,7 @@ export default function Home() {
       <h1>Main Page</h1>
       <ThemeToggleButton />
       <Show when="signed-out">
-        <SignInButton mode='modal'>
+        <SignInButton mode='modal' forceRedirectUrl={"/dashboard"}>
           <Button>
             Sign In
           </Button>
