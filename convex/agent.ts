@@ -60,3 +60,15 @@ export const deleteAgent = mutation({
     await ctx.db.delete("Agents", args.agentId);
   },
 });
+
+export const updateAgentToolConfig = mutation({
+  args: {
+    agentId: v.id("Agents"),
+    toolConfig: v.any(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.agentId, {
+      toolConfig: args.toolConfig,
+    });
+  },
+});

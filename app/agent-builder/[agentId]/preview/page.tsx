@@ -1,26 +1,35 @@
 'use client'
+import { useState, useEffect, useCallback, useTransition } from "react";
+import { Background, BackgroundVariant, Controls, Edge, MiniMap, Panel, ReactFlow } from "@xyflow/react";
+import { useParams } from "next/navigation";
+import { useMutation, useQuery } from "convex/react";
+import { Loader2, RefreshCcw } from "lucide-react";
+import { useTheme } from "next-themes";
+import { CustomNode } from "@/convex/schema";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { useQuery } from "convex/react";
-import { useParams } from "next/navigation";
 import AgentBuilderHeader from "../../_components/AgentBuilderHeader";
-import { Background, BackgroundVariant, Controls, Edge, MiniMap, Panel, ReactFlow } from "@xyflow/react";
 import { nodeTypes } from "../../_components/AgentBuilderNodesList";
-import { useTheme } from "next-themes";
-import { useState, useEffect } from "react";
-import { CustomNode } from "@/convex/schema";
+import axios from 'axios'
+import { Button } from "@/components/ui/button";
+import { generatedConfig } from "@/types";
 
 const WorkflowPreviewPage = () => {
     const { resolvedTheme } = useTheme();
 
     const [mounted, setMounted] = useState(false);
+    const [generatedWorkflow, setGeneratedWorkflow] = useState<generatedConfig | null>(null);
+
+    const [isGeneratingConfig, startGeneratingConfig] = useTransition();
+
+    const updateAgentToolConfig = useMutation(api.agent.updateAgentToolConfig);
 
     const { agentId } = useParams();
     const agent = useQuery(api.agent.getAgentById, {
         agentId: agentId as Id<'Agents'> ?? 'skip'
     });
 
-    const generateWorkflow = () => {
+    const generateWorkflow = useCallback(() => {
         const edgeMap = agent?.edges.reduce((acc: Record<string, Edge[]>, edge: Edge) => {
             if (!acc[edge.source]) acc[edge.source] = [];
             acc[edge.source].push(edge);
@@ -91,8 +100,16 @@ const WorkflowPreviewPage = () => {
             startNode: startNode?.id || null,
             flow
         }
+        setGeneratedWorkflow(config);
+    }, [agent]);
 
-        console.log("Workflow config: ", JSON.stringify(config));
+    const generateConfigFromWorkflow = () => {
+        startGeneratingConfig(async () => {
+            const result = await axios.post('/api/generate-config', {
+                generatedWorkflow: generatedWorkflow
+            });
+            if (agent) await updateAgentToolConfig({ agentId: agent?._id, toolConfig: result.data });
+        });
     }
 
     useEffect(() => {
@@ -102,10 +119,18 @@ const WorkflowPreviewPage = () => {
     }, []);
 
     useEffect(() => {
-        if (agent) generateWorkflow();
-    }, [agent]);
+        if (agent) queueMicrotask(() => {
+            generateWorkflow();
+        })
+    }, [agent, generateWorkflow]);
 
     if (!mounted) return null;
+
+    if (!agent) return (
+        <div className="flex items-center justify-center h-screen flex-1">
+            <Loader2 className="size-15 animate-spin text-emerald-500" />
+        </div>
+    )
 
     const flowColorMode = resolvedTheme === 'dark' ? 'dark' : 'light';
 
@@ -130,8 +155,12 @@ const WorkflowPreviewPage = () => {
                         </Panel>
                     </ReactFlow>
                 </div>
-                <div className="col-span-1 border-l p-4 bg-sidebar">
-                    <h4>Chat UI</h4>
+                <div className="col-span-1 border-l p-4 bg-sidebar flex items-center justify-center h-full">
+                    {!agent.toolConfig &&
+                        <Button size='lg' disabled={isGeneratingConfig} onClick={generateConfigFromWorkflow}>
+                            <RefreshCcw className={`${isGeneratingConfig && 'animate-spin'}`} />Reboot agent
+                        </Button>
+                    }
                 </div>
             </div>
         </div>

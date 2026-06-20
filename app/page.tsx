@@ -2,7 +2,7 @@ import { Show, SignInButton, UserButton } from "@clerk/nextjs";
 import { ThemeToggleButton } from "@/components/ThemeToggleButton"
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { callAiAction } from "@/config/openAi";
+import { callAiAction } from "@/config/callAi";
 
 export default function Home() {
   return (

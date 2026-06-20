@@ -20,4 +20,34 @@ export type NodeSettingsDataProps = {
   apiKey?: string;
 };
 
-export type CustomNodeSettings = CustomNode['data']
+export type CustomNodeSettings = CustomNode["data"];
+
+export type generatedConfig = {
+  startNode: string | null;
+  flow:
+    | {
+        id: string;
+        type: string;
+        label: string;
+        settings: {
+          name?: string | undefined;
+          includeHistory?: boolean | undefined;
+          instructions?: string | undefined;
+          model?: string | undefined;
+          output?: string | undefined;
+          schema?: string | undefined;
+          ifCondition?: string | undefined;
+          elseCondition?: string | undefined;
+          whileCondition?: string | undefined;
+          approvalTitle?: string | undefined;
+          approvalMessage?: string | undefined;
+          apiName?: string | undefined;
+          apiUrl?: string | undefined;
+          apiRequestMethod?: string | undefined;
+          apiPostBody?: string | undefined;
+          includeApiKey?: boolean | undefined;
+          apiKey?: string | undefined;
+        };
+      }[]
+    | undefined;
+};

@@ -64,6 +64,7 @@ export default defineSchema({
     edges: v.optional(v.any()),
     isPublished: v.boolean(),
     createdBy: v.id("Users"),
+    toolConfig: v.optional(v.any()),
   }),
 });
 
