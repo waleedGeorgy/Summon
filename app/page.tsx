@@ -2,6 +2,7 @@ import { Show, SignInButton, UserButton } from "@clerk/nextjs";
 import { ThemeToggleButton } from "@/components/ThemeToggleButton"
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { callAiAction } from "@/config/openAi";
 
 export default function Home() {
   return (
@@ -18,6 +19,9 @@ export default function Home() {
       <Show when="signed-in">
         <UserButton />
         <Link href='/dashboard'>Dashboard</Link>
+        <Button onClick={callAiAction}>
+          Call
+        </Button>
       </Show>
     </main>
   );

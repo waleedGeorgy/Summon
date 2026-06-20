@@ -1,9 +1,9 @@
-import { Separator } from "@/components/ui/separator"
-import { NodesContext } from "@/context/NodesContext";
-import { HatGlasses, Play, Repeat2, Split, SquareArrowRightExit, ThumbsUp, Webhook } from "lucide-react"
 import { useCallback, useContext } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { HatGlasses, Play, Repeat2, Split, SquareArrowRightExit, ThumbsUp, Webhook } from "lucide-react"
 import type { CustomNode } from "@/convex/schema"
+import { Separator } from "@/components/ui/separator"
+import { NodesContext } from "@/context/NodesContext";
 
 const agentTools = [
   {

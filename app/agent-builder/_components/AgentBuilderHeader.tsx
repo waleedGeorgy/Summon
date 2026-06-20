@@ -1,9 +1,10 @@
+'use client'
 import Link from "next/link";
 import { formatDistance } from "date-fns";
-import { ArrowLeft, BookOpenCheck, CalendarCheck, Circle, Code2, Eye } from "lucide-react";
+import { ArrowLeft, BookOpenCheck, CalendarCheck, Circle, ClipboardEdit, Code2, Eye } from "lucide-react";
 import { Agent } from "@/convex/schema";
 import { ThemeToggleButton } from "@/components/ThemeToggleButton";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 const AgentBuilderHeader = ({ agent, isPreviewMode = false }: { agent: Agent, isPreviewMode: boolean }) => {
@@ -30,15 +31,20 @@ const AgentBuilderHeader = ({ agent, isPreviewMode = false }: { agent: Agent, is
         <ThemeToggleButton />
         <Button size='sm' variant='outline'><Code2 /><span className='hidden md:inline'>Code</span></Button>
         {isPreviewMode ?
-          <Link href={`/agent-builder/${agent._id}`}>
-            <Button size='sm' variant='outline'><Eye /><span className='hidden md:inline'>Close preview</span></Button>
+          <Link
+            href={`/agent-builder/${agent._id}`}
+            className={buttonVariants({ variant: "outline", size: "sm" })}
+          >
+            <ClipboardEdit /><span className='hidden md:inline'>Editor</span>
           </Link>
           :
-          <Link href={`/agent-builder/${agent._id}/preview`}>
-            <Button size='sm' variant='outline'><Eye /><span className='hidden md:inline'>Preview</span></Button>
+          <Link
+            href={`/agent-builder/${agent._id}/preview`}
+            className={buttonVariants({ variant: "outline", size: "sm" })}
+          >
+            <Eye /><span className='hidden md:inline'>Preview</span>
           </Link>
         }
-
         <Button size='sm'><BookOpenCheck /><span className='hidden md:inline'>Publish</span></Button>
       </div>
     </nav>

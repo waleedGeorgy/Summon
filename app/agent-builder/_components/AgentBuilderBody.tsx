@@ -10,12 +10,12 @@ import {
     MiniMap,
     Controls,
     Panel,
+    useOnSelectionChange,
     type NodeChange,
     type EdgeChange,
     type Connection,
     type Edge,
     type OnSelectionChangeParams,
-    useOnSelectionChange,
 } from '@xyflow/react';
 import { CheckCircle, Loader2, Save, XCircle } from "lucide-react";
 import { useTheme } from "next-themes";

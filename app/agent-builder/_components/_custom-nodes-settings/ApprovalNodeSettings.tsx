@@ -1,14 +1,14 @@
 import { useState, useTransition } from "react"
+import { CheckCircle, Loader } from "lucide-react"
+import type { CustomNode } from "@/convex/schema"
+import { NodeSettingsDataProps } from "@/types"
 import { Button } from "@/components/ui/button"
 import { Field, FieldGroup } from "@/components/ui/field"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import type { CustomNode } from "@/convex/schema"
-import { toast } from "sonner"
-import { CheckCircle, Loader } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { NodeSettingsDataProps } from "@/types"
 import { Textarea } from "@/components/ui/textarea"
+import { toast } from "sonner"
 
 const ApprovalNodeSettings = ({ selectedNode, saveFormData }: {
     selectedNode: CustomNode, saveFormData: (data: NodeSettingsDataProps) => void
@@ -34,7 +34,7 @@ const ApprovalNodeSettings = ({ selectedNode, saveFormData }: {
     }
 
     return (
-        <div className="min-w-78 flex flex-col justify-center gap-3 px-4">
+        <div className="min-w-82 flex flex-col justify-center gap-4 px-5">
             <div>
                 <h4 className="font-semibold text-center">User approval</h4>
                 <Separator className='mt-1' />

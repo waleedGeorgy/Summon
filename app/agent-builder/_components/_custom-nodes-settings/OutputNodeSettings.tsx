@@ -1,13 +1,13 @@
 import { useState, useTransition } from "react"
+import { CheckCircle, Loader } from "lucide-react"
+import type { CustomNode } from "@/convex/schema"
+import { NodeSettingsDataProps } from "@/types"
 import { Button } from "@/components/ui/button"
 import { Field } from "@/components/ui/field"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
-import type { CustomNode } from "@/convex/schema"
 import { toast } from "sonner"
-import { CheckCircle, Loader } from "lucide-react"
-import { NodeSettingsDataProps } from "@/types"
 
 const OutputNodeSettings = ({ selectedNode, saveFormData }: {
     selectedNode: CustomNode, saveFormData: (data: NodeSettingsDataProps) => void
@@ -26,7 +26,7 @@ const OutputNodeSettings = ({ selectedNode, saveFormData }: {
     }
 
     return (
-        <div className="min-w-78 flex flex-col justify-center gap-3 px-4">
+        <div className="min-w-82 flex flex-col justify-center gap-4 px-5">
             <div>
                 <h4 className="font-semibold text-center">Output</h4>
                 <Separator className='mt-1' />

@@ -1,3 +1,5 @@
+import { useState, useTransition } from "react";
+import { NodeSettingsDataProps } from "@/types";
 import { Button } from "@/components/ui/button";
 import { FieldGroup, Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -9,9 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { CustomNode } from "@/convex/schema"
-import { NodeSettingsDataProps } from "@/types";
 import { CheckCircle, Eye, EyeOff, Loader } from "lucide-react";
-import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
 export const ApiNodeSettings = ({ selectedNode, saveFormData }: {

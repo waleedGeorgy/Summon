@@ -40,7 +40,7 @@ export default function RootLayout({
             <ClerkProvider>
               <ConvexClientProvider>
                 {children}
-                <Toaster />
+                <Toaster position="bottom-left" />
               </ConvexClientProvider>
             </ClerkProvider>
           </TooltipProvider>

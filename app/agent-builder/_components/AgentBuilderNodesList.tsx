@@ -1,8 +1,8 @@
+import { Handle, Position } from "@xyflow/react"
+import { HatGlasses, Play, Repeat2, Split, SquareArrowRightExit, ThumbsUp, Webhook } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { CustomNodeSettings } from "@/types"
-import { Handle, Position } from "@xyflow/react"
-import { HatGlasses, Play, Repeat2, Split, SquareArrowRightExit, ThumbsUp, Webhook } from "lucide-react"
 
 const AgentNode = ({ selected, data }: { selected: boolean, data: CustomNodeSettings }) => {
     return (
@@ -43,8 +43,8 @@ const IfElseNode = ({ selected, data }: { selected: boolean, data: CustomNodeSet
                 <span>If/Else</span>
             </div>
             <div className="max-w-56 bg-sidebar p-3 rounded-lg space-y-2">
-                <Input value={data.settings?.ifCondition || "If condition"} disabled />
-                <Input value={data.settings?.elseCondition || "Else condition"} disabled />
+                <Input value={data.settings?.ifCondition || "If condition"} className={`pointer-events-none ${!data.settings?.ifCondition && 'text-gray-500'}`} />
+                <Input value={data.settings?.elseCondition || "Else condition"} className={`pointer-events-none ${!data.settings?.ifCondition && 'text-gray-500'}`} />
             </div>
             <Handle type="target" position={Position.Left} style={{ top: 90 }} />
             <Handle type="source" position={Position.Right} id={'if'} style={{ top: 90 }} />

@@ -1,10 +1,10 @@
 import { useContext } from "react";
 import { NodesContext } from "@/context/NodesContext";
 import { CustomNode } from "@/convex/schema";
+import { NodeSettingsDataProps } from "@/types";
 import { AgentNodeSettings } from "./_custom-nodes-settings/AgentNodeSettings";
 import OutputNodeSettings from "./_custom-nodes-settings/OutputNodeSettings";
 import IfElseNodeSettings from "./_custom-nodes-settings/IfElseNodeSettings";
-import { NodeSettingsDataProps } from "@/types";
 import WhileNodeSettings from "./_custom-nodes-settings/WhileNodeSettings";
 import ApprovalNodeSettings from "./_custom-nodes-settings/ApprovalNodeSettings";
 import ApiNodeSettings from "./_custom-nodes-settings/ApiNodeSettings";
