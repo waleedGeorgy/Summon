@@ -15,10 +15,9 @@ import { toast } from "sonner"
 import { NodeSettingsDataProps } from "@/types"
 
 const MODELS = {
-    'deepseek': 'DeepSeek-V3.2',
     'gemma': 'Google Gemma 4',
-    'kimi': 'Kimi K2.5',
-    'gemini': 'Gemini 3.5 Flash'
+    'deepseek': 'DeepSeek-Chat',
+    'gptoss': 'OpenAI GPT-OSS'
 } as const;
 
 export const AgentNodeSettings = ({ selectedNode, saveFormData }: {

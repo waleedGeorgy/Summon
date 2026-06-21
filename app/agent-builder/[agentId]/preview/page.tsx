@@ -2,16 +2,22 @@
 import { useState, useEffect, useCallback, useTransition } from "react";
 import { Background, BackgroundVariant, Controls, Edge, MiniMap, Panel, ReactFlow } from "@xyflow/react";
 import { useParams } from "next/navigation";
+import axios from 'axios'
 import { useMutation, useQuery } from "convex/react";
-import { Loader2, RefreshCcw } from "lucide-react";
+import { Cog, Loader2 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { CustomNode } from "@/convex/schema";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import AgentBuilderHeader from "../../_components/AgentBuilderHeader";
 import { nodeTypes } from "../../_components/AgentBuilderNodesList";
-import axios from 'axios'
 import { Button } from "@/components/ui/button";
+import PreviewChat from "./_components/PreviewChat";
+import {
+    ResizableHandle,
+    ResizablePanel,
+    ResizablePanelGroup,
+} from "@/components/ui/resizable";
 import { generatedConfig } from "@/types";
 
 const WorkflowPreviewPage = () => {
@@ -19,6 +25,7 @@ const WorkflowPreviewPage = () => {
 
     const [mounted, setMounted] = useState(false);
     const [generatedWorkflow, setGeneratedWorkflow] = useState<generatedConfig | null>(null);
+    const [conversationId, setConversationId] = useState<string | null>(null);
 
     const [isGeneratingConfig, startGeneratingConfig] = useTransition();
 
@@ -28,6 +35,11 @@ const WorkflowPreviewPage = () => {
     const agent = useQuery(api.agent.getAgentById, {
         agentId: agentId as Id<'Agents'> ?? 'skip'
     });
+
+    const getConversationId = async () => {
+        const res = await axios.get('/api/agent-chat');
+        setConversationId(res.data.conversationId);
+    }
 
     const generateWorkflow = useCallback(() => {
         const edgeMap = agent?.edges.reduce((acc: Record<string, Edge[]>, edge: Edge) => {
@@ -124,6 +136,12 @@ const WorkflowPreviewPage = () => {
         })
     }, [agent, generateWorkflow]);
 
+    useEffect(() => {
+        if (agent) queueMicrotask(() => {
+            getConversationId();
+        })
+    }, [agent]);
+
     if (!mounted) return null;
 
     if (!agent) return (
@@ -137,32 +155,50 @@ const WorkflowPreviewPage = () => {
     return (
         <div className="h-screen flex flex-col">
             {agent && <AgentBuilderHeader agent={agent} isPreviewMode={true} />}
-            <div className="flex-1 w-full relative grid grid-cols-4">
-                <div className="col-span-3">
-                    <ReactFlow
-                        nodes={agent?.nodes || []}
-                        edges={agent?.edges || []}
-                        fitView={true}
-                        nodeTypes={nodeTypes}
-                        colorMode={flowColorMode}
-                        draggable={false}
-                    >
-                        <Background variant={BackgroundVariant.Dots} size={1} gap={45} />
-                        <MiniMap />
-                        <Controls />
-                        <Panel position="top-left">
-                            <h3 className="text-xl">Preview mode</h3>
-                        </Panel>
-                    </ReactFlow>
-                </div>
-                <div className="col-span-1 border-l p-4 bg-sidebar flex items-center justify-center h-full">
-                    {!agent.toolConfig &&
-                        <Button size='lg' disabled={isGeneratingConfig} onClick={generateConfigFromWorkflow}>
-                            <RefreshCcw className={`${isGeneratingConfig && 'animate-spin'}`} />Reboot agent
-                        </Button>
-                    }
-                </div>
-            </div>
+            <ResizablePanelGroup orientation="horizontal" className="flex-1 w-full">
+                <ResizablePanel defaultSize='70%' minSize='40%' collapsible={true}>
+                    <div className="h-full w-full">
+                        <ReactFlow
+                            nodes={agent?.nodes || []}
+                            edges={agent?.edges || []}
+                            fitView={true}
+                            nodeTypes={nodeTypes}
+                            colorMode={flowColorMode}
+                            draggable={false}
+                        >
+                            <Background variant={BackgroundVariant.Dots} size={1} gap={45} />
+                            <MiniMap position="bottom-left" />
+                            <Controls position="bottom-right" />
+                            <Panel position="top-left">
+                                <h3 className="text-xl font-semibold">Preview mode</h3>
+                            </Panel>
+                        </ReactFlow>
+                    </div>
+                </ResizablePanel>
+                <ResizableHandle withHandle className="px-1.5 hover:bg-primary transition duration-200" />
+                <ResizablePanel defaultSize='30%' minSize='25%' collapsible={true}>
+                    <div className="h-full border-l bg-sidebar">
+                        {!agent.toolConfig ?
+                            <div className="flex items-center justify-center h-full">
+                                <Button
+                                    size="lg"
+                                    disabled={isGeneratingConfig}
+                                    onClick={generateConfigFromWorkflow}
+                                >
+                                    <Cog className={`${isGeneratingConfig && 'animate-spin'}`} />Generate configuration
+                                </Button>
+                            </div>
+                            :
+                            <PreviewChat
+                                generateConfigFromWorkflow={generateConfigFromWorkflow}
+                                isGeneratingConfig={isGeneratingConfig}
+                                agent={agent}
+                                conversationId={conversationId}
+                            />
+                        }
+                    </div>
+                </ResizablePanel>
+            </ResizablePanelGroup>
         </div>
     )
 }
