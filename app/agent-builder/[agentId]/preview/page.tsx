@@ -23,18 +23,18 @@ import { generatedConfig } from "@/types";
 const WorkflowPreviewPage = () => {
     const { resolvedTheme } = useTheme();
 
+    const { agentId } = useParams();
+    const agent = useQuery(api.agent.getAgentById, {
+        agentId: agentId as Id<'Agents'> ?? 'skip'
+    });
+
+    const updateAgentToolConfig = useMutation(api.agent.updateAgentToolConfig);
+
     const [mounted, setMounted] = useState(false);
     const [generatedWorkflow, setGeneratedWorkflow] = useState<generatedConfig | null>(null);
     const [conversationId, setConversationId] = useState<string | null>(null);
 
     const [isGeneratingConfig, startGeneratingConfig] = useTransition();
-
-    const updateAgentToolConfig = useMutation(api.agent.updateAgentToolConfig);
-
-    const { agentId } = useParams();
-    const agent = useQuery(api.agent.getAgentById, {
-        agentId: agentId as Id<'Agents'> ?? 'skip'
-    });
 
     const getConversationId = async () => {
         const res = await axios.get('/api/agent-chat');
@@ -170,7 +170,7 @@ const WorkflowPreviewPage = () => {
                             <MiniMap position="bottom-left" />
                             <Controls position="bottom-right" />
                             <Panel position="top-left">
-                                <h3 className="text-xl font-semibold">Preview mode</h3>
+                                <h3 className="text-xl font-light italic">Preview mode</h3>
                             </Panel>
                         </ReactFlow>
                     </div>
