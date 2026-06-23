@@ -115,8 +115,7 @@ export const AgentNodeSettings = ({ selectedNode, saveFormData }: {
                             </TabsList>
                         </div>
                         <TabsContent value='json'>
-                            <span>JSON schema</span>
-                            <Textarea className="mt-2" onChange={(e) => handleChange('schema', e.target.value)} value={agentSettingsData?.schema} />
+                            <Textarea className="mt-2" placeholder="JSON schema..." onChange={(e) => handleChange('schema', e.target.value)} value={agentSettingsData?.schema} />
                         </TabsContent>
                     </Tabs>
                 </div>

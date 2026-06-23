@@ -39,7 +39,6 @@ const OutputNodeSettings = ({ selectedNode, saveFormData }: {
                     <Textarea
                         id="output"
                         name='output'
-                        placeholder="{attr: type}"
                         rows={10}
                         value={workflowOutput.schema}
                         onChange={(e) => setWorkflowOutput({ schema: e.target.value })}

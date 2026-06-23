@@ -75,9 +75,9 @@ const AgentCard = (agent: Agent) => {
                 <CardContent className="flex items-center gap-2">
                     <span>Published</span>
                     {agent.isPublished ?
-                        <small><Circle className="size-3.5 text-green-400 fill-green-500" /></small>
+                        <small><Circle className="size-3.5 text-green-500 fill-green-500" /></small>
                         :
-                        <small><Circle className="size-3.5 text-red-400 fill-red-500" /></small>
+                        <small><Circle className="size-3.5 text-red-500 fill-red-500" /></small>
                     }
                 </CardContent>
                 <CardFooter className="flex items-center gap-2">

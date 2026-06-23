@@ -4,7 +4,7 @@ import { Background, BackgroundVariant, Controls, Edge, MiniMap, Panel, ReactFlo
 import { useParams, useRouter } from "next/navigation";
 import axios from 'axios'
 import { useMutation, useQuery } from "convex/react";
-import { CheckCircle, Cog, Loader2, XCircle } from "lucide-react";
+import { CheckCircle, Circle, Cog, XCircle } from "lucide-react";
 import { useTheme } from "next-themes";
 import { CustomNode } from "@/convex/schema";
 import { api } from "@/convex/_generated/api";
@@ -171,7 +171,11 @@ const WorkflowPreviewPage = () => {
 
     if (!agent || hasNoNodes) return (
         <div className="flex items-center justify-center h-screen flex-1">
-            <Loader2 className="size-15 animate-spin text-emerald-500" />
+            <div className="flex items-center space-x-4">
+                <Circle className="size-6 animate-bounce fill-emerald-500 text-emerald-500" style={{ animationDelay: '0ms' }} />
+                <Circle className="size-6 animate-bounce fill-emerald-500 text-emerald-500" style={{ animationDelay: '150ms' }} />
+                <Circle className="size-6 animate-bounce fill-emerald-500 text-emerald-500" style={{ animationDelay: '300ms' }} />
+            </div>
         </div>
     );
 

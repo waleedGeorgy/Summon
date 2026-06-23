@@ -25,7 +25,7 @@ const AgentBuilderHeader = ({ agent, isPreviewMode = false }: { agent: Agent, is
       <div className="flex items-center gap-3">
         <time className="flex items-center gap-2 lg:text-sm text-xs"><CalendarCheck className="lg:size-4 size-3.5" />{formattedDate}</time>
         <Separator orientation="vertical" />
-        <span className="flex items-center gap-2 text-sm"><p className='hidden lg:inline'>Published</p> {agent.isPublished ? <Circle className="fill-green-500 text-green-400 size-4" /> : <Circle className="fill-red-500 text-red-400 size-4" />}</span>
+        <span className="flex items-center gap-2 text-sm"><p className='hidden lg:inline'>Published</p> {agent.isPublished ? <Circle className="fill-green-500 text-green-400 size-4" /> : <Circle className="fill-red-500 text-red-500 size-4" />}</span>
       </div>
       <div className="flex items-center gap-2">
         <ThemeToggleButton />
