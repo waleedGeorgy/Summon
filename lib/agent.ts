@@ -41,10 +41,8 @@ export const createAgentFromWorkflow = async (
     systemPrompt,
   } = workflowConfig;
 
-  // Create LangChain tools
   const langchainTools = toolsConfig.map((cfg) => createToolFromConfig(cfg));
 
-  // Build system prompt
   let systemMessage =
     systemPrompt || `You are ${primaryAgentName}, an AI assistant.`;
 
@@ -61,12 +59,11 @@ export const createAgentFromWorkflow = async (
     });
   }
 
-  // Create the agent using LangChain v1.5+ createAgent
   const agent = createAgent({
     model,
     tools: langchainTools,
     systemPrompt: systemMessage,
   });
 
-  return agent; // has streamEvents() method
+  return agent;
 };

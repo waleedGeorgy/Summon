@@ -4,7 +4,7 @@ import { Background, BackgroundVariant, Controls, Edge, MiniMap, Panel, ReactFlo
 import { useParams, useRouter } from "next/navigation";
 import axios from 'axios'
 import { useMutation, useQuery } from "convex/react";
-import { Cog, Loader2 } from "lucide-react";
+import { CheckCircle, Cog, Loader2, XCircle } from "lucide-react";
 import { useTheme } from "next-themes";
 import { CustomNode } from "@/convex/schema";
 import { api } from "@/convex/_generated/api";
@@ -18,7 +18,8 @@ import {
     ResizablePanel,
     ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { generatedConfig } from "@/types";
+import { toast } from "sonner";
+import { GeneratedConfig } from "@/types";
 
 const WorkflowPreviewPage = () => {
     const { resolvedTheme } = useTheme();
@@ -41,7 +42,7 @@ const WorkflowPreviewPage = () => {
     const updateAgentConfig = useMutation(api.agent.updateAgentConfig);
 
     const [mounted, setMounted] = useState(false);
-    const [generatedWorkflow, setGeneratedWorkflow] = useState<generatedConfig | null>(null);
+    const [generatedWorkflow, setGeneratedWorkflow] = useState<GeneratedConfig | null>(null);
     const [conversationId, setConversationId] = useState<string | null>(null);
 
     const [isGeneratingConfig, startGeneratingConfig] = useTransition();
@@ -127,10 +128,24 @@ const WorkflowPreviewPage = () => {
 
     const generateConfigFromWorkflow = () => {
         startGeneratingConfig(async () => {
-            const result = await axios.post('/api/generate-config', {
-                generatedWorkflow: generatedWorkflow
-            });
-            if (agent) await updateAgentConfig({ agentId: agent?._id, config: result.data });
+            try {
+                const result = await axios.post('/api/generate-config', {
+                    generatedWorkflow: generatedWorkflow
+                });
+                if (agent) {
+                    await updateAgentConfig({ agentId: agent?._id, config: result.data });
+
+                    toast.success('Agent configuration generated', {
+                        icon: <CheckCircle className="text-emerald-500" size={18} />
+                    });
+                }
+            } catch (error) {
+                toast.error('Error generating agent configuration', {
+                    icon: <XCircle className="text-red-500" size={18} />
+                });
+                console.log('Error generating agent configuration ' + error)
+            }
+
         });
     }
 

@@ -75,3 +75,4 @@ export default defineSchema({
 
 export type User = Doc<"Users">;
 export type Agent = Doc<"Agents">;
+export type Conversation = Doc<"Conversations">;

@@ -6,8 +6,8 @@ import { Loader2 } from "lucide-react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { NodesContext } from "@/context/NodesContext";
 import type { CustomNode } from "@/convex/schema"
+import { NodesContext } from "@/context/NodesContext";
 import AgentBuilderHeader from "../_components/AgentBuilderHeader"
 import AgentBuilderBody from "../_components/AgentBuilderBody";
 
@@ -25,7 +25,7 @@ const AgentBuilderPage = () => {
         <div className="flex items-center justify-center h-screen flex-1">
             <Loader2 className="size-15 animate-spin text-emerald-500" />
         </div>
-    )
+    );
 
     return (
         <NodesContext.Provider value={{ nodes, setNodes, edges, setEdges, selectedNode, setSelectedNode }}>

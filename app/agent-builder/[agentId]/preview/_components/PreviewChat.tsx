@@ -33,6 +33,8 @@ const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, agent, co
     }, [chatMessages, isSendingMessage]);
 
     const sendMessage = () => {
+        if (!userChatInput.trim() || isSendingMessage) return;
+
         setChatMessages([...chatMessages, { role: 'user', contents: userChatInput }]);
         setUserChatInput('');
 
@@ -85,6 +87,13 @@ const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, agent, co
         })
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    };
+
     return (
         <div className="w-full h-full px-2 py-3 flex flex-col">
             <div className="flex items-center gap-2 px-1 justify-between">
@@ -96,7 +105,7 @@ const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, agent, co
             <Separator className='mt-2' />
             <div
                 ref={chatContainerRef}
-                className="flex-1 overflow-y-auto space-y-3 flex flex-col px-2 py-3"
+                className="flex-1 overflow-y-auto space-y-3 flex flex-col px-1 py-3"
             >
                 {chatMessages.length === 0 ?
                     <div className="flex items-center justify-center flex-1">
@@ -106,7 +115,7 @@ const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, agent, co
                     chatMessages.map((message, idx) => (
                         <div
                             key={idx}
-                            className={`flex px-3 py-2 max-w-[75%] rounded-lg 
+                            className={`flex px-3.5 py-2 max-w-[75%] rounded-lg 
                             ${message.role === 'user' ? 'self-end bg-secondary shadow' : 'self-start'}`}
                         >
                             <div
@@ -134,6 +143,7 @@ const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, agent, co
                     className="flex-1 border rounded-lg px-3 py-2"
                     value={userChatInput}
                     onChange={(e) => setUserChatInput(e.target.value)}
+                    onKeyDown={handleKeyDown}
                 />
                 <Button onClick={sendMessage} disabled={!userChatInput.trim() || isSendingMessage}>
                     {isSendingMessage ? <Loader2 className="animate-spin" /> : <SendHorizonal />}

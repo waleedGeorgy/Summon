@@ -19,7 +19,7 @@ export const createToolFromConfig = (config: ToolConfig) => {
     Object.fromEntries(
       Object.entries(config.parameters).map(([key, type]) => {
         if (type === "number") return [key, z.number()];
-        return [key, z.string()];   // default / "string" / "any"
+        return [key, z.string()];
       })
     )
   );

@@ -22,7 +22,7 @@ export type NodeSettingsDataProps = {
 
 export type CustomNodeSettings = CustomNode["data"];
 
-export type generatedConfig = {
+export type GeneratedConfig = {
   startNode: string | null;
   flow:
     | {
