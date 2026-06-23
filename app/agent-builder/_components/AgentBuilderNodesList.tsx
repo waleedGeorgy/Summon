@@ -44,12 +44,12 @@ const IfElseNode = ({ selected, data }: { selected: boolean, data: CustomNodeSet
             </div>
             <div className="max-w-56 bg-sidebar p-3 rounded-lg space-y-2">
                 <Input
-                    value={data.settings?.ifCondition || "If condition"}
-                    className={`pointer-events-none ${data.settings?.ifCondition === undefined || data.settings?.ifCondition?.length === 0 ? 'text-gray-500' : 'text-primary-foreground'}`}
+                    value={data.settings?.ifCondition || "if condition"}
+                    className={`pointer-events-none ${data.settings?.ifCondition === undefined || data.settings?.ifCondition?.length === 0 ? 'text-gray-500 italic' : ''}`}
                 />
                 <Input
-                    value={data.settings?.elseCondition || "Else condition"}
-                    className={`pointer-events-none ${data.settings?.elseCondition === undefined || data.settings?.elseCondition?.length === 0 ? 'text-gray-500' : 'text-primary-foreground'}`}
+                    value={data.settings?.elseCondition || "else condition"}
+                    className={`pointer-events-none ${data.settings?.elseCondition === undefined || data.settings?.elseCondition?.length === 0 ? 'text-gray-500 italic' : ''}`}
                 />
             </div>
             <Handle type="target" position={Position.Left} style={{ top: 90 }} />
@@ -60,7 +60,6 @@ const IfElseNode = ({ selected, data }: { selected: boolean, data: CustomNodeSet
 }
 
 const WhileNode = ({ selected, data }: { selected: boolean, data: CustomNodeSettings }) => {
-    console.log(data.settings?.whileCondition)
     return (
         <div className={`flex flex-col justify-center items-center gap-4 dark:bg-lime-700 dark:text-lime-50 bg-lime-200 pt-3 rounded-lg border relative dark:hover:brightness-110 hover:brightness-97 transition-all duration-200 ${selected && 'ring-2 ring-lime-500 dark:ring-lime-400'}`}>
             <div className="flex items-center gap-2">
@@ -69,8 +68,8 @@ const WhileNode = ({ selected, data }: { selected: boolean, data: CustomNodeSett
             </div>
             <div className="max-w-56 bg-sidebar p-3 rounded-lg">
                 <Input
-                    value={data.settings?.whileCondition || "While condition"}
-                    className={`pointer-events-none ${data.settings?.whileCondition === undefined || data.settings?.whileCondition?.length === 0 ? 'text-gray-500' : 'text-primary-foreground'}`}
+                    value={data.settings?.whileCondition || "while condition"}
+                    className={`pointer-events-none ${data.settings?.whileCondition === undefined || data.settings?.whileCondition?.length === 0 ? 'text-gray-500 italic' : ''}`}
                 />
             </div>
             <Handle type="target" position={Position.Left} style={{ top: 90 }} />

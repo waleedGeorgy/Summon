@@ -1,5 +1,5 @@
 import { useState, useTransition } from "react"
-import { CheckCircle, FileJson2, Loader } from "lucide-react"
+import { CheckCircle, Loader } from "lucide-react"
 import { CustomNode } from "@/convex/schema"
 import { Field, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
@@ -75,7 +75,6 @@ export const AgentNodeSettings = ({ selectedNode, saveFormData }: {
                             value={agentSettingsData?.instructions}
                             onChange={(e) => handleChange('instructions', e.target.value)}
                         />
-                        <span className="flex items-center gap-2 text-sm">Add context <FileJson2 className="size-4" /></span>
                     </Field>
                 </FieldGroup>
                 <div className="flex items-center justify-between gap-1">

@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, useCallback, useTransition } from "react";
 import { Background, BackgroundVariant, Controls, Edge, MiniMap, Panel, ReactFlow } from "@xyflow/react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import axios from 'axios'
 import { useMutation, useQuery } from "convex/react";
 import { Cog, Loader2 } from "lucide-react";
@@ -23,12 +23,22 @@ import { generatedConfig } from "@/types";
 const WorkflowPreviewPage = () => {
     const { resolvedTheme } = useTheme();
 
+    const router = useRouter();
+
     const { agentId } = useParams();
     const agent = useQuery(api.agent.getAgentById, {
         agentId: agentId as Id<'Agents'> ?? 'skip'
     });
 
-    const updateAgentToolConfig = useMutation(api.agent.updateAgentToolConfig);
+    const hasNoNodes = agent && (!agent.nodes || agent.nodes.length === 0);
+
+    useEffect(() => {
+        if (hasNoNodes) {
+            router.replace(`/dashboard/workflows`);
+        }
+    }, [hasNoNodes, agentId, router]);
+
+    const updateAgentConfig = useMutation(api.agent.updateAgentConfig);
 
     const [mounted, setMounted] = useState(false);
     const [generatedWorkflow, setGeneratedWorkflow] = useState<generatedConfig | null>(null);
@@ -120,7 +130,7 @@ const WorkflowPreviewPage = () => {
             const result = await axios.post('/api/generate-config', {
                 generatedWorkflow: generatedWorkflow
             });
-            if (agent) await updateAgentToolConfig({ agentId: agent?._id, toolConfig: result.data });
+            if (agent) await updateAgentConfig({ agentId: agent?._id, config: result.data });
         });
     }
 
@@ -144,11 +154,11 @@ const WorkflowPreviewPage = () => {
 
     if (!mounted) return null;
 
-    if (!agent) return (
+    if (!agent || hasNoNodes) return (
         <div className="flex items-center justify-center h-screen flex-1">
             <Loader2 className="size-15 animate-spin text-emerald-500" />
         </div>
-    )
+    );
 
     const flowColorMode = resolvedTheme === 'dark' ? 'dark' : 'light';
 
@@ -178,7 +188,7 @@ const WorkflowPreviewPage = () => {
                 <ResizableHandle withHandle className="px-1.5 hover:bg-primary transition duration-200" />
                 <ResizablePanel defaultSize='30%' minSize='25%' collapsible={true}>
                     <div className="h-full border-l bg-sidebar">
-                        {!agent.toolConfig ?
+                        {!agent.config ?
                             <div className="flex items-center justify-center h-full">
                                 <Button
                                     size="lg"

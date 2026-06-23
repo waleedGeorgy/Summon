@@ -1,4 +1,11 @@
 'use client'
+import Image from "next/image"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { Wallet2, User2, Gem, HatGlasses, Workflow } from "lucide-react"
+import { useUser } from "@clerk/nextjs"
+import { useQuery } from "convex/react"
+import { api } from "@/convex/_generated/api"
 import {
     Sidebar,
     SidebarContent,
@@ -11,43 +18,31 @@ import {
     SidebarMenuItem,
     useSidebar,
 } from "@/components/ui/sidebar"
-import Image from "next/image"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { LayoutDashboard, Wallet2, Database, User2, Gem, HatGlasses } from "lucide-react"
-import { useUser } from "@clerk/nextjs"
-import { useQuery } from "convex/react"
-import { api } from "@/convex/_generated/api"
 
 const menuItems = [
     {
-        name: 'Dashboard',
-        href: '/dashboard',
-        icon: LayoutDashboard,
+        name: 'Workflows',
+        href: '/dashboard/workflows',
+        icon: Workflow,
     },
     {
         name: 'AI Agents',
-        href: '/ai-agents',
+        href: '/dashboard/ai-agents',
         icon: HatGlasses,
     },
     {
-        name: 'Data',
-        href: '/data',
-        icon: Database,
-    },
-    {
         name: 'Pricing',
-        href: '/pricing',
+        href: '/dashboard/pricing',
         icon: Wallet2,
     },
     {
         name: 'Profile',
-        href: '/profile',
+        href: '/dashboard/profile',
         icon: User2,
     },
-]
+];
 
-export function AppSidebar() {
+export function DashboardSidebar() {
     const { user, isLoaded } = useUser();
     const currentUser = useQuery(api.user.getUserById, { userId: user?.id ?? "skip" })
 
@@ -59,7 +54,7 @@ export function AppSidebar() {
         <Sidebar collapsible="icon">
             <SidebarHeader className="flex flex-row items-center gap-3 px-4">
                 <Image alt="Summon Logo" src={'/logo.svg'} width={30} height={30} />
-                {open && <h1 className="text-xl tracking-wide">Summon</h1>}
+                {open && <h1 className="text-2xl tracking-wider">Summon</h1>}
             </SidebarHeader>
             <SidebarContent>
                 <SidebarGroup>

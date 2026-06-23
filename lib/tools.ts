@@ -7,7 +7,7 @@ interface ToolConfig {
   description: string;
   url: string;
   method?: string;
-  parameters: Record<string, string>;   // e.g. { cityName: "string" }
+  parameters: Record<string, string>;
   apiKey?: string;
   includeApiKey?: boolean;
   assignedAgent?: string;
@@ -49,7 +49,6 @@ export const createToolFromConfig = (config: ToolConfig) => {
           method: config.method || "GET",
         });
         const data = await response.json();
-        console.log(`Tool ${config.name} response:`, data);
 
         // Return a string – LangChain tools must return string
         return JSON.stringify(data, null, 2);

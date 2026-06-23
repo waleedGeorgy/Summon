@@ -59,12 +59,17 @@ export default defineSchema({
   Agents: defineTable({
     name: v.string(),
     description: v.optional(v.string()),
-    config: v.optional(v.any()),
     nodes: v.optional(v.array(CustomNode)),
     edges: v.optional(v.any()),
     isPublished: v.boolean(),
     createdBy: v.id("Users"),
-    toolConfig: v.optional(v.any()),
+    config: v.optional(v.any()),
+  }),
+
+  Conversations: defineTable({
+    conversationId: v.string(),
+    agentId: v.id("Agents"),
+    userId: v.id("Users"),
   }),
 });
 

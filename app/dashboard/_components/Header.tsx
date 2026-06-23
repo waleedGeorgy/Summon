@@ -7,7 +7,10 @@ const Header = () => {
 
     return (
         <header className="w-full flex items-center justify-between gap-2 px-4 py-2.5 bg-sidebar border-b">
-            <SidebarTrigger />
+            <div className="flex items-center gap-2">
+                <SidebarTrigger />
+                <h2 className="text-xl font-semibold">Dashboard</h2>
+            </div>
             <div className="flex items-center gap-2">
                 <ThemeToggleButton />
                 {!isLoaded ?

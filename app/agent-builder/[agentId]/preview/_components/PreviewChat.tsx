@@ -1,4 +1,4 @@
-import { useState, useTransition } from "react"
+import { useEffect, useRef, useState, useTransition } from "react"
 import { Loader2, RefreshCcw, SendHorizonal, XCircle } from "lucide-react"
 import Markdown from 'react-markdown'
 import { Agent } from "@/convex/schema"
@@ -19,6 +19,18 @@ const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, agent, co
     const [chatMessages, setChatMessages] = useState<{ role: 'user' | 'assistant', contents: string }[]>([]);
 
     const [isSendingMessage, startSendingMessage] = useTransition();
+
+    const lastMessageRef = useRef<HTMLDivElement | null>(null);
+    const chatContainerRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        if (lastMessageRef.current) {
+            lastMessageRef.current.scrollIntoView({
+                behavior: 'smooth',
+                block: 'end'
+            });
+        }
+    }, [chatMessages, isSendingMessage]);
 
     const sendMessage = () => {
         setChatMessages([...chatMessages, { role: 'user', contents: userChatInput }]);
@@ -53,7 +65,7 @@ const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, agent, co
 
                     if (value) {
                         const chunk = decoder.decode(value, { stream: true });
-                        
+
                         setChatMessages((prev) => {
                             const updatedChatOutput = [...prev];
                             updatedChatOutput[updatedChatOutput.length - 1] = {
@@ -78,11 +90,14 @@ const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, agent, co
             <div className="flex items-center gap-2 px-1 justify-between">
                 <h3 className="font-semibold">{agent.name || "Agent"}</h3>
                 <Button size='sm' disabled={isGeneratingConfig} onClick={generateConfigFromWorkflow}>
-                    <RefreshCcw className={`${isGeneratingConfig && 'animate-spin'}`} />Reboot agent
+                    <RefreshCcw className={`${isGeneratingConfig && 'animate-spin'}`} />Regenerate agent
                 </Button>
             </div>
             <Separator className='mt-2' />
-            <div className="flex-1 overflow-y-auto space-y-3 flex flex-col px-2 py-3">
+            <div
+                ref={chatContainerRef}
+                className="flex-1 overflow-y-auto space-y-3 flex flex-col px-2 py-3"
+            >
                 {chatMessages.length === 0 ?
                     <div className="flex items-center justify-center flex-1">
                         <p className="text-sm opacity-65 font-light">Nothing here yet. Say something to your agent!</p>
@@ -94,14 +109,20 @@ const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, agent, co
                             className={`flex px-3 py-2 max-w-[75%] rounded-lg 
                             ${message.role === 'user' ? 'self-end bg-secondary shadow' : 'self-start'}`}
                         >
-                            <div className="text-sm leading-relaxed whitespace-pre-wrap">
+                            <div
+                                className="text-sm leading-relaxed whitespace-pre-wrap"
+                                ref={idx === chatMessages.length - 1 ? lastMessageRef : null}
+                            >
                                 <Markdown>{message.contents}</Markdown>
                             </div>
                         </div>
                     ))}
                 {isSendingMessage &&
-                    <div className="flex items-center gap-2 px-2 justify-start animate-pulse">
-                        <div className="size-5 border-b-4 border-neutral-700 dark:border-neutral-400 animate-spin rounded-full" />
+                    <div
+                        className="flex items-center gap-2 px-2 justify-start animate-pulse"
+                        ref={lastMessageRef}
+                    >
+                        <div className="size-5 border-b-3 border-neutral-700 dark:border-neutral-400 animate-spin rounded-full" />
                         <span className="italic text-sm font-light">Thinking</span>
                     </div>
                 }

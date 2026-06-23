@@ -13,7 +13,7 @@ const AgentBuilderHeader = ({ agent, isPreviewMode = false }: { agent: Agent, is
   return (
     <nav className="flex items-center gap-2 justify-between px-4 py-2.5 bg-sidebar border-b">
       <div className="flex items-center gap-2">
-        <Link href='/dashboard' title="Back to dashboard">
+        <Link href='/dashboard/workflows' title="Back to dashboard">
           <ArrowLeft className="hover:text-emerald-500 transition duration-300" />
         </Link>
         <div className="flex items-center gap-3">
