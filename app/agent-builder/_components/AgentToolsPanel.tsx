@@ -35,7 +35,7 @@ const agentTools = [
     type: 'ApiNode'
   },
   {
-    name: 'If/Else',
+    name: 'If / Else',
     icon: Split,
     color: '#f97316',
     id: 'ifElse',

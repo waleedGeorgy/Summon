@@ -8,7 +8,6 @@ export const metadata: Metadata = {
 };
 
 export default function NotFound() {
-
     return (
         <div className="flex min-h-screen flex-col items-center justify-center px-4">
             <div className="text-center">

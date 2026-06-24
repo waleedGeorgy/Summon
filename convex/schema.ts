@@ -70,7 +70,7 @@ export default defineSchema({
     conversationId: v.string(),
     agentId: v.id("Agents"),
     userId: v.id("Users"),
-  }),
+  }).index("by_agent_and_user", ["agentId", "userId"]),
 });
 
 export type User = Doc<"Users">;

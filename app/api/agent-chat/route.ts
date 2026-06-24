@@ -86,7 +86,6 @@ export async function POST(req: NextRequest) {
     }
     const chatHistory = conversations.get(conversationId)!;
 
-    // Workflow config
     const workflowConfig: WorkflowConfig = {
       agents,
       tools,
@@ -96,7 +95,6 @@ export async function POST(req: NextRequest) {
         `You are ${agentName || "an AI assistant"}. Help the user with their queries.`,
     };
 
-    // Model selection
     const primaryAgent =
       agents.find((a) => a.name === primaryAgentName) || agents[0];
     const modelName = resolveModel(primaryAgent?.model);
@@ -104,10 +102,8 @@ export async function POST(req: NextRequest) {
 
     const agent = await createAgentFromWorkflow(model, workflowConfig);
 
-    // Messages for the agent
     const messages: BaseMessage[] = [...chatHistory, new HumanMessage(input)];
 
-    // Use streamEvents – we'll listen for `on_llm_stream`
     const eventStream = agent.streamEvents({ messages }, { version: "v1" });
 
     const encoder = new TextEncoder();

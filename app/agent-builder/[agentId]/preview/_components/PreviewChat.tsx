@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useTransition } from "react"
+import { KeyboardEvent, useEffect, useRef, useState, useTransition } from "react"
 import { Loader2, RefreshCcw, SendHorizonal, XCircle } from "lucide-react"
 import Markdown from 'react-markdown'
 import { Agent } from "@/convex/schema"
@@ -87,7 +87,7 @@ const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, agent, co
         })
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             sendMessage();

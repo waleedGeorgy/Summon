@@ -40,7 +40,7 @@ const IfElseNode = ({ selected, data }: { selected: boolean, data: CustomNodeSet
         <div className={`flex flex-col justify-center items-center gap-4 dark:bg-orange-700 dark:text-orange-50 bg-orange-200 pt-3 rounded-lg border relative dark:hover:brightness-110 hover:brightness-97 transition-all duration-200 ${selected && 'ring-2 ring-orange-500 dark:ring-orange-400'}`}>
             <div className="flex items-center gap-2">
                 <Split className="dark:bg-orange-900 bg-orange-300 p-2 rounded-lg size-8 dark:text-orange-50" />
-                <span>If/Else</span>
+                <span>If / Else</span>
             </div>
             <div className="max-w-56 bg-sidebar p-3 rounded-lg space-y-2">
                 <Input

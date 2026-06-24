@@ -3,7 +3,7 @@ import { MouseEvent, useTransition } from "react";
 import Link from "next/link"
 import { Agent } from "@/convex/schema"
 import { useMutation } from "convex/react";
-import { HatGlasses, CalendarCheck2, Circle, Trash2, CheckCircle, XCircle, Loader2 } from "lucide-react"
+import { CalendarCheck2, Circle, Trash2, CheckCircle, XCircle, Loader2, LucideIcon } from "lucide-react"
 import { formatDistance } from "date-fns";
 import { api } from "@/convex/_generated/api";
 import {
@@ -18,7 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
-const AgentCard = (agent: Agent) => {
+const DashboardCard = ({ agent, icon: Icon, link }: { agent: Agent, icon: LucideIcon, link: string }) => {
     const formattedDate = formatDistance(agent._creationTime, new Date(), { addSuffix: true });
 
     const deleteAgentMutation = useMutation(api.agent.deleteAgent);
@@ -47,12 +47,12 @@ const AgentCard = (agent: Agent) => {
     return (
         <Link
             className={`group hover:-translate-y-1 dark:hover:brightness-125 transition-all duration-300 cursor-pointer ${isDeleting && 'pointer-events-none'}`}
-            href={`/agent-builder/${agent._id}`}
+            href={link}
         >
             <Card size="sm" className="min-w-2xs shadow hover:shadow-lg transition-shadow duration-300">
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                        <HatGlasses className="size-4 text-emerald-600" />{agent.name}
+                        <Icon className="size-4 text-emerald-500" />{agent.name}
                     </CardTitle>
                     {agent.description && agent.description?.length > 0 ?
                         <CardDescription className="line-clamp-1">
@@ -89,4 +89,4 @@ const AgentCard = (agent: Agent) => {
     )
 }
 
-export default AgentCard
+export default DashboardCard

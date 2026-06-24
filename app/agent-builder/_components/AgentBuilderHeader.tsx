@@ -1,11 +1,12 @@
 'use client'
 import Link from "next/link";
 import { formatDistance } from "date-fns";
-import { ArrowLeft, BookOpenCheck, CalendarCheck, Circle, ClipboardEdit, Code2, Eye } from "lucide-react";
+import { ArrowLeft, CalendarCheck, Circle, ClipboardEdit, Eye } from "lucide-react";
 import { Agent } from "@/convex/schema";
 import { ThemeToggleButton } from "@/components/ThemeToggleButton";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { PublishButton } from "./PublishButton";
 
 const AgentBuilderHeader = ({ agent, isPreviewMode = false }: { agent: Agent, isPreviewMode: boolean }) => {
   const formattedDate = formatDistance(agent._creationTime, new Date(), { addSuffix: true });
@@ -29,7 +30,6 @@ const AgentBuilderHeader = ({ agent, isPreviewMode = false }: { agent: Agent, is
       </div>
       <div className="flex items-center gap-2">
         <ThemeToggleButton />
-        <Button size='sm' variant='outline'><Code2 /><span className='hidden md:inline'>Code</span></Button>
         {isPreviewMode ?
           <Link
             href={`/agent-builder/${agent._id}`}
@@ -46,7 +46,7 @@ const AgentBuilderHeader = ({ agent, isPreviewMode = false }: { agent: Agent, is
             <Eye /><span className='hidden md:inline'>Preview</span>
           </Link>
         }
-        <Button size='sm'><BookOpenCheck /><span className='hidden md:inline'>Publish</span></Button>
+        <PublishButton agentId={agent._id} agentName={agent.name} />
       </div>
     </nav>
   )

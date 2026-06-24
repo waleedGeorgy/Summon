@@ -72,3 +72,20 @@ export const updateAgentConfig = mutation({
     });
   },
 });
+
+export const togglePublishAgent = mutation({
+  args: {
+    agentId: v.id("Agents"),
+    isPublished: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    const agent = await ctx.db.get(args.agentId);
+    if (!agent) throw new Error("Agent not found");
+
+    await ctx.db.patch(args.agentId, {
+      isPublished: args.isPublished,
+    });
+
+    return { success: true };
+  },
+});

@@ -35,7 +35,7 @@ const IfElseNodeSettings = ({ selectedNode, saveFormData }: {
   return (
     <div className="min-w-82 flex flex-col justify-center gap-4 px-5">
       <div>
-        <h4 className="font-semibold text-center">If/Else</h4>
+        <h4 className="font-semibold text-center">If / Else</h4>
         <Separator className='mt-1' />
       </div>
       <FieldGroup className="gap-4">

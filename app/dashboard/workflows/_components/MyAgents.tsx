@@ -1,5 +1,6 @@
+import { Workflow } from "lucide-react";
 import { Agent } from "@/convex/schema";
-import AgentCard from "./AgentCard";
+import DashboardCard from "../../_components/DashboardCard";
 
 const MyAgents = ({ agents, isLoading }: { agents: Agent[], isLoading: boolean }) => {
     return (
@@ -10,7 +11,7 @@ const MyAgents = ({ agents, isLoading }: { agents: Agent[], isLoading: boolean }
                 ))
                 : agents && agents.length > 0 ?
                     agents.map(agent => (
-                        <AgentCard key={agent._id} {...agent} />
+                        <DashboardCard key={agent._id} agent={agent} icon={Workflow} link={`/agent-builder/${agent._id}`} />
                     ))
                     :
                     <p className="text-muted-foreground">No agents found</p>
