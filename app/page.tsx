@@ -157,7 +157,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ----- CTA / Footer-ish section ----- */}
+      {/* CTA */}
       <section className="container px-4 md:px-6 py-20 text-center border-t">
         <div className="mx-auto max-w-2xl space-y-6">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
@@ -178,10 +178,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Simple footer */}
+      {/* Footer */}
       <footer className="py-6 text-center text-sm text-muted-foreground bg-sidebar">
         <div className="container px-4 md:px-6 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p>© {new Date().getFullYear()} Summon. Build with nodes.</p>
+          <p>© {new Date().getFullYear()} Summon. All rights reserved.</p>
           <div className="flex items-center gap-4">
             <Link href="#" className="hover:underline underline-offset-4">
               Privacy

@@ -3,7 +3,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Wallet2, User2, Gem, HatGlasses, Workflow } from "lucide-react"
-import { useUser } from "@clerk/nextjs"
+import { useAuth, useUser } from "@clerk/nextjs"
 import { useQuery } from "convex/react"
 import { api } from "@/convex/_generated/api"
 import {
@@ -18,6 +18,7 @@ import {
     SidebarMenuItem,
     useSidebar,
 } from "@/components/ui/sidebar"
+import { Button } from "@/components/ui/button"
 
 const menuItems = [
     {
@@ -44,7 +45,10 @@ const menuItems = [
 
 export function DashboardSidebar() {
     const { user, isLoaded } = useUser();
-    const currentUser = useQuery(api.user.getUserById, { userId: user?.id ?? "skip" })
+    const currentUser = useQuery(api.user.getUserById, { userId: user?.id ?? "skip" });
+
+    const { has } = useAuth();
+    const isPaidUser = has({ plan: 'unlimited_plan' });
 
     const { open } = useSidebar();
 
@@ -75,18 +79,30 @@ export function DashboardSidebar() {
                 </SidebarGroup>
             </SidebarContent>
             {open &&
-                <SidebarFooter className="flex flex-row items-center gap-2 pb-5 px-5">
-                    <Gem className="size-3.5" />
-                    <div className="flex items-center gap-1">
-                        <span className="text-sm">
-                            Credits:
-                        </span>
-                        {!currentUser || !isLoaded ?
-                            <div className="w-10 h-3.5 rounded bg-neutral-600 animate-pulse" />
-                            :
-                            <span className="text-sm">{currentUser?.tokens}</span>
-                        }
+                <SidebarFooter className="flex flex-col pb-5 px-5">
+                    <div className="flex items-center gap-2">
+                        <Gem className="size-3.5" />
+                        <div className="flex items-center gap-1">
+                            <span className="text-sm">
+                                Credits:
+                            </span>
+                            {!currentUser || !isLoaded ?
+                                <div className="w-10 h-3.5 rounded bg-neutral-600 animate-pulse" />
+                                :
+                                isPaidUser ?
+                                    <span className="text-sm text-yellow-500 font-semibold">Unlimited</span>
+                                    :
+                                    <span className="text-sm">{currentUser?.tokens} / 2</span>
+                            }
+                        </div>
                     </div>
+                    {!isPaidUser &&
+                        <Link href='/dashboard/pricing'>
+                            <Button size='sm'>
+                                Upgrade to unlimited
+                            </Button>
+                        </Link>
+                    }
                 </SidebarFooter>
             }
         </Sidebar>

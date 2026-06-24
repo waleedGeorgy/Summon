@@ -7,6 +7,7 @@ import { ThemeToggleButton } from "@/components/ThemeToggleButton";
 import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { PublishButton } from "./PublishButton";
+import { CodeButton } from "./CodeButton";
 
 const AgentBuilderHeader = ({ agent, isPreviewMode = false }: { agent: Agent, isPreviewMode: boolean }) => {
   const formattedDate = formatDistance(agent._creationTime, new Date(), { addSuffix: true });
@@ -46,6 +47,7 @@ const AgentBuilderHeader = ({ agent, isPreviewMode = false }: { agent: Agent, is
             <Eye /><span className='hidden md:inline'>Preview</span>
           </Link>
         }
+        <CodeButton agentId={agent._id} agentName={agent.name} isAgentPublished={agent.isPublished} />
         <PublishButton agentId={agent._id} agentName={agent.name} />
       </div>
     </nav>

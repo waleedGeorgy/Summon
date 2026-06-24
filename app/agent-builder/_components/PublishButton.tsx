@@ -1,7 +1,9 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import { useMutation, useQuery } from "convex/react";
+import { CheckCircle, Copy, ExternalLink, Share2, Loader2, CopyCheck, CircleX } from "lucide-react";
 import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import {
   Dialog,
   DialogContent,
@@ -10,9 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Copy, ExternalLink, Share2, Loader2, CopyCheck } from "lucide-react";
 import { HighlightCodeAction } from "@/components/HighlightCodeAction";
-import { Id } from "@/convex/_generated/dataModel";
 import { toast } from "sonner";
 
 interface PublishButtonProps {
@@ -60,7 +60,6 @@ async function chatWithAgent(userId, message, conversationId = null) {
     result += chunk;
     // 'result' now contains agent's output
   }
-
   return { response: result, conversationId: newConvId };
 }
 
@@ -123,7 +122,7 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
       >
         {isPublished ? (
           <>
-            <CheckCircle className="mr-1" />
+            <CircleX className="mr-1" />
             Unpublish
           </>
         ) : (
@@ -139,7 +138,7 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
         <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <ExternalLink className="h-5 w-5" />
+              <ExternalLink className="size-5" />
               API Snippet for &quot;{agentName}&quot;
             </DialogTitle>
             <DialogDescription>

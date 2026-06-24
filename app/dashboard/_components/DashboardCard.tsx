@@ -17,11 +17,16 @@ import {
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useAuth } from "@clerk/nextjs";
 
-const DashboardCard = ({ agent, icon: Icon, link }: { agent: Agent, icon: LucideIcon, link: string }) => {
+const DashboardCard = ({ agent, icon: Icon, link, currentUserId }: { agent: Agent, icon: LucideIcon, link: string, currentUserId: string }) => {
     const formattedDate = formatDistance(agent._creationTime, new Date(), { addSuffix: true });
 
     const deleteAgentMutation = useMutation(api.agent.deleteAgent);
+    const increaseUserTokensMutation = useMutation(api.user.increaseUserTokens);
+
+    const { has } = useAuth();
+    const isPaidUser = has({ plan: 'unlimited_plan' });
 
     const [isDeleting, startDeletingAgent] = useTransition();
 
@@ -32,6 +37,11 @@ const DashboardCard = ({ agent, icon: Icon, link }: { agent: Agent, icon: Lucide
         startDeletingAgent(async () => {
             try {
                 await deleteAgentMutation({ agentId: agent._id });
+                if (!isPaidUser) {
+                    await increaseUserTokensMutation({
+                        userId: currentUserId,
+                    });
+                }
                 toast.success('Agent deleted successfully', {
                     icon: <CheckCircle className="text-emerald-500" size={18} />
                 })

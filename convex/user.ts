@@ -25,7 +25,7 @@ export const createNewUser = mutation({
         name: args.name,
         email: args.email,
         subscription: "free",
-        tokens: 5000,
+        tokens: 2,
       };
       await ctx.db.insert("Users", newUser);
     }
@@ -53,5 +53,45 @@ export const deleteUser = mutation({
       .first();
 
     if (userToDelete) await ctx.db.delete("Users", userToDelete._id);
+  },
+});
+
+export const decreaseUserTokens = mutation({
+  args: {
+    userId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const userToUpdate = await ctx.db
+      .query("Users")
+      .withIndex("by_user_id", (q) => q.eq("userId", args.userId))
+      .first();
+
+    if (!userToUpdate) return;
+
+    if (userToUpdate.tokens > 0) {
+      await ctx.db.patch(userToUpdate._id, {
+        tokens: userToUpdate.tokens - 1,
+      });
+    }
+  },
+});
+
+export const increaseUserTokens = mutation({
+  args: {
+    userId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const userToUpdate = await ctx.db
+      .query("Users")
+      .withIndex("by_user_id", (q) => q.eq("userId", args.userId))
+      .first();
+
+    if (!userToUpdate) return;
+
+    if (userToUpdate.tokens < 2) {
+      await ctx.db.patch(userToUpdate._id, {
+        tokens: userToUpdate.tokens + 1,
+      });
+    }
   },
 });

@@ -28,7 +28,7 @@ const AgentTabs = () => {
                 </TabsTrigger>
             </TabsList>
             <TabsContent value='my-agents'>
-                <MyAgents agents={agents ?? []} isLoading={!agents} />
+                <MyAgents agents={agents ?? []} isLoading={!agents} currentUserId={currentUser?.userId ?? ''} />
             </TabsContent>
             <TabsContent value='templates'><AgentTemplates /></TabsContent>
         </Tabs>

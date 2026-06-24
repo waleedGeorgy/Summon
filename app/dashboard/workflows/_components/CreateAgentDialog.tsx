@@ -2,7 +2,7 @@
 import { SubmitEvent, useState, useTransition } from "react"
 import { useMutation, useQuery } from "convex/react"
 import { useRouter } from "next/navigation";
-import { useUser } from "@clerk/nextjs";
+import { useAuth, useUser } from "@clerk/nextjs";
 import { PlusCircleIcon, Loader2, CheckCircle, XCircle } from "lucide-react"
 import { api } from "@/convex/_generated/api"
 import {
@@ -27,6 +27,9 @@ const CreateAgentDialog = () => {
 
     const [isAgentCreating, startCreatingAgent] = useTransition();
 
+    const { has } = useAuth();
+    const isPaidUser = has({ plan: 'unlimited_plan' });
+
     const maxDescriptionChars = 80;
 
     const { user } = useUser();
@@ -35,6 +38,7 @@ const CreateAgentDialog = () => {
     const router = useRouter();
 
     const createNewAgentMutation = useMutation(api.agent.createNewAgent);
+    const decreaseUserTokensMutation = useMutation(api.user.decreaseUserTokens);
 
     const createNewAgent = async (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -49,6 +53,11 @@ const CreateAgentDialog = () => {
                         description: agentDetails.description,
                         userId: currentUser?._id
                     });
+                    if (!isPaidUser) {
+                        await decreaseUserTokensMutation({
+                            userId: currentUser?.userId,
+                        });
+                    }
                 };
                 setIsDialogOpen(false);
 
@@ -72,7 +81,7 @@ const CreateAgentDialog = () => {
             <p>Build and customize your custom AI workflow</p>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger render={
-                    <Button className='mt-3' onClick={() => setIsDialogOpen(true)}>
+                    <Button className='mt-3' onClick={() => setIsDialogOpen(true)} disabled={!isPaidUser && ((currentUser?.tokens ?? 0) <= 0)}>
                         <PlusCircleIcon />
                         <span>Create</span>
                     </Button>
@@ -116,7 +125,7 @@ const CreateAgentDialog = () => {
                             <DialogClose render={
                                 <Button variant="outline" type="button">Cancel</Button>
                             } />
-                            <Button type="submit" disabled={!agentDetails.name || isAgentCreating}>
+                            <Button type="submit" disabled={!agentDetails.name || isAgentCreating || (!isPaidUser && ((currentUser?.tokens ?? 0) <= 0))}>
                                 {isAgentCreating ? <Loader2 className="animate-spin" /> : "Create"}
                             </Button>
                         </DialogFooter>
