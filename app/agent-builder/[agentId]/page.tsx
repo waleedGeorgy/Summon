@@ -1,6 +1,6 @@
 'use client'
-import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { type Edge, ReactFlowProvider } from "@xyflow/react";
 import { Circle } from "lucide-react";
 import { useQuery } from "convex/react";
@@ -16,10 +16,20 @@ const AgentBuilderPage = () => {
     const [edges, setEdges] = useState<Edge[]>([]);
     const [selectedNode, setSelectedNode] = useState<CustomNode | null>(null);
 
+    const router = useRouter();
+
     const { agentId } = useParams();
     const agent = useQuery(api.agent.getAgentById, {
         agentId: agentId as Id<'Agents'> ?? 'skip'
     });
+
+    const lockedAgent = agent && agent.status === 'locked';
+
+    useEffect(() => {
+        if (lockedAgent) {
+            router.replace(`/dashboard/workflows`);
+        }
+    }, [agentId, router, lockedAgent]);
 
     if (!agent) return (
         <div className="flex items-center justify-center h-screen flex-1">

@@ -23,7 +23,7 @@ const AgentsPage = () => {
                     [...Array(4)].map((_, id) => (
                         <div className="w-72 h-38 dark:bg-sidebar bg-neutral-400 animate-pulse rounded-xl" key={id} />
                     ))
-                    : agents && agents.length > 0 && publishedAgents ?
+                    : publishedAgents && publishedAgents.length > 0 && publishedAgents ?
                         publishedAgents.map(publishedAgent => (
                             <DashboardCard
                                 key={publishedAgent._id}
@@ -32,7 +32,7 @@ const AgentsPage = () => {
                             />
                         ))
                         :
-                        <p className="text-muted-foreground">No published agents</p>
+                        <p className="text-muted-foreground">No agents published yet.</p>
                 }
             </div>
         </div>

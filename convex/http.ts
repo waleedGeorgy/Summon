@@ -129,15 +129,32 @@ http.route({
       }
 
       try {
+        const user = await ctx.runQuery(api.user.getUserById, {
+          userId: userId,
+        });
+        if (!user) {
+          console.log(`User not found for Clerk ID: ${userId}`);
+          return new Response("User not found", {
+            status: 404,
+            headers: corsHeaders,
+          });
+        }
+
+        const previousTier = user.subscription;
+
         await ctx.runMutation(api.user.updateSubscription, {
           userId,
           subscription: tier,
           subscriptionStatus: effectiveStatus,
           currentPeriodEnd,
         });
-        console.log(
-          `Updated subscription for user ${userId}: tier=${tier}, status=${effectiveStatus}`,
-        );
+
+        if (previousTier !== tier) {
+          await ctx.runMutation(api.agent.updateAgentsStatus, {
+            userId: user._id,
+            newPlan: tier,
+          });
+        }
       } catch (error) {
         console.error("Error updating subscription:", error);
         return new Response("Error updating subscription", {

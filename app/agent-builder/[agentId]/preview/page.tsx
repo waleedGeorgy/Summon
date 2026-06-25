@@ -31,7 +31,7 @@ const WorkflowPreviewPage = () => {
         agentId: agentId as Id<'Agents'> ?? 'skip'
     });
 
-    const hasNoNodes = agent && (!agent.nodes || agent.nodes.length === 0);
+    const hasNoNodes = agent && (!agent.nodes || agent.nodes.length === 0 || agent.status === 'locked');
 
     useEffect(() => {
         if (hasNoNodes) {
@@ -196,8 +196,8 @@ const WorkflowPreviewPage = () => {
                             draggable={false}
                         >
                             <Background variant={BackgroundVariant.Dots} size={1} gap={45} />
-                            <MiniMap position="bottom-left" />
-                            <Controls position="bottom-right" />
+                            <MiniMap />
+                            <Controls />
                             <Panel position="top-left">
                                 <h3 className="text-xl font-light italic">Preview mode</h3>
                             </Panel>

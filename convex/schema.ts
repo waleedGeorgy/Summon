@@ -66,6 +66,7 @@ export default defineSchema({
     isPublished: v.boolean(),
     createdBy: v.id("Users"),
     config: v.optional(v.any()),
+    status: v.union(v.literal("active"), v.literal("locked")),
   }).index("by_created_by", ["createdBy"]),
 
   Conversations: defineTable({

@@ -3,7 +3,7 @@ import { MouseEvent, useTransition } from "react";
 import Link from "next/link"
 import { Agent } from "@/convex/schema"
 import { useMutation } from "convex/react";
-import { CalendarCheck2, Circle, Trash2, CheckCircle, XCircle, Loader2, LucideIcon } from "lucide-react"
+import { CalendarCheck2, Circle, Trash2, CheckCircle, XCircle, Loader2, LucideIcon, LockKeyhole } from "lucide-react"
 import { formatDistance } from "date-fns";
 import { api } from "@/convex/_generated/api";
 import {
@@ -55,13 +55,14 @@ const DashboardCard = ({ agent, icon: Icon, link }: { agent: Agent, icon: Lucide
 
     return (
         <Link
-            className={`group hover:-translate-y-1 dark:hover:brightness-125 transition-all duration-300 cursor-pointer ${isDeleting && 'pointer-events-none'}`}
+            className={`group hover:-translate-y-1 dark:hover:brightness-125 transition-all duration-300 cursor-pointer ${isDeleting && 'pointer-events-none'} ${agent.status === 'locked' ? 'opacity-60 pointer-events-none' : ''}`}
             href={link}
         >
             <Card size="sm" className="min-w-2xs shadow hover:shadow-lg transition-shadow duration-300">
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                        <Icon className="size-4 text-emerald-500" />{agent.name}
+                        {agent.status === 'locked' ? <LockKeyhole className="size-4 text-yellow-500" /> : <Icon className="size-4 text-emerald-500" />}
+                        <span>{agent.name}</span>
                     </CardTitle>
                     {agent.description && agent.description?.length > 0 ?
                         <CardDescription className="line-clamp-1">

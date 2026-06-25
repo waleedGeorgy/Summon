@@ -9,11 +9,27 @@ export const createNewAgent = mutation({
     userId: v.id("Users"),
   },
   handler: async (ctx, args) => {
+    const user = await ctx.db.get(args.userId);
+    if (!user) throw new Error("User not found");
+
+    if (user.subscription === "free") {
+      const activeAgents = await ctx.db
+        .query("Agents")
+        .withIndex("by_created_by", (q) => q.eq("createdBy", args.userId))
+        .filter((q) => q.eq(q.field("status"), "active"))
+        .collect();
+
+      if (activeAgents.length >= 2) {
+        throw new Error("Free plan limited to 2 agents");
+      }
+    }
+
     const result = await ctx.db.insert("Agents", {
       name: args.name,
       description: args.description,
       isPublished: false,
       createdBy: args.userId,
+      status: "active",
     });
     return result;
   },
@@ -24,7 +40,7 @@ export const fetchAllAgents = query({
   handler: async (ctx, args) => {
     const results = await ctx.db
       .query("Agents")
-      .filter((q) => q.eq(q.field("createdBy"), args.createdBy))
+      .withIndex("by_created_by", (q) => q.eq("createdBy", args.createdBy))
       .order("desc")
       .collect();
     return results;
@@ -87,5 +103,36 @@ export const togglePublishAgent = mutation({
     });
 
     return { success: true };
+  },
+});
+
+export const updateAgentsStatus = mutation({
+  args: {
+    userId: v.id("Users"),
+    newPlan: v.union(v.literal("free"), v.literal("unlimited")),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.userId, {
+      subscription: args.newPlan,
+    });
+
+    const agents = await ctx.db
+      .query("Agents")
+      .withIndex("by_created_by", (q) => q.eq("createdBy", args.userId))
+      .order("desc")
+      .collect();
+
+    if (args.newPlan === "free") {
+      for (let i = 0; i < agents.length; i++) {
+        const newStatus = i < 2 ? "active" : "locked";
+        await ctx.db.patch(agents[i]._id, { status: newStatus });
+      }
+    } else {
+      for (const agent of agents) {
+        if (agent.status === "locked") {
+          await ctx.db.patch(agent._id, { status: "active" });
+        }
+      }
+    }
   },
 });
