@@ -27,7 +27,7 @@ export const PublishButton = ({ agentId, agentName }: PublishButtonProps) => {
   const [highlightedHtml, setHighlightedHtml] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { isPaidUser } = useCurrentUser();
+  const { isPaidUser, isLoading } = useCurrentUser();
 
   const agent = useQuery(api.agent.getAgentById, { agentId: agentId });
   const togglePublish = useMutation(api.agent.togglePublishAgent);
@@ -116,7 +116,6 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
 
   return (
     <div className="flex items-center gap-2">
-      {/* Main Publish/Unpublish Button */}
       <Button
         variant={!isPaidUser ? "outline" : isPublished ? "destructive" : 'default'}
         size="sm"
@@ -130,7 +129,7 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
           </>
         ) : (
           <>
-            {isPaidUser ? <Share2 className="mr-1" /> : <LockKeyhole className="text-yellow-500" />}
+            {isLoading ? <Share2 className="mr-1" /> : isPaidUser ? <Share2 className="mr-1" /> : <LockKeyhole className="text-yellow-500 mr-1" />}
             Publish
           </>
         )}

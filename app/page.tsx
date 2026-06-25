@@ -8,38 +8,12 @@ import {
   Zap,
   BrainCircuit,
 } from "lucide-react";
-import { ThemeToggleButton } from "@/components/ThemeToggleButton";
 import { Button } from "@/components/ui/button";
 import SummonLogo from "@/public/logo.svg";
 
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col">
-      {/* ----- Header / Navigation ----- */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-        <div className="container flex h-16 items-center justify-between px-4 md:px-6">
-          {/* Logo */}
-          <div className="flex items-center gap-2 text-xl tracking-wider">
-            <div className="flex size-7 items-center justify-center">
-              <Image src={SummonLogo} alt="Summon's logo" />
-            </div>
-            <h1>Summon</h1>
-          </div>
-
-          {/* Right side controls */}
-          <div className="flex items-center gap-3">
-            <ThemeToggleButton />
-            <Show when="signed-out">
-              <SignInButton mode="modal" forceRedirectUrl={"/dashboard/workflows"}>
-                <Button size='sm' className="hidden sm:inline-flex">
-                  Sign In
-                </Button>
-              </SignInButton>
-            </Show>
-          </div>
-        </div>
-      </header>
-
       {/* ----- Hero Section ----- */}
       <section className="relative flex-1 flex items-center justify-center px-4 pt-20 pb-32 md:pt-32 md:pb-40">
         {/* Subtle background gradient */}
@@ -47,9 +21,11 @@ export default function Home() {
 
         <div className="relative z-10 mx-auto max-w-4xl text-center space-y-8">
           {/* Badge */}
-          <div className="inline-flex items-center rounded-full border px-4 py-1.5 text-sm font-medium bg-muted/50 backdrop-blur">
-            <BrainCircuit className="mr-2 size-4 text-emerald-500" />
-            Visual AI Agent Builder
+          <div className="flex items-center justify-center gap-2">
+            <div className="flex size-12 items-center justify-center">
+              <Image src={SummonLogo} alt="Summon's logo" />
+            </div>
+            <h1 className="text-5xl">Summon</h1>
           </div>
 
           <h2 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">

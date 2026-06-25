@@ -54,7 +54,7 @@ export function DashboardSidebar() {
         <Sidebar collapsible="icon">
             <SidebarHeader className="flex flex-row items-center gap-3 px-4">
                 <Image alt="Summon Logo" src={'/logo.svg'} width={30} height={30} />
-                {open && <h1 className="text-2xl tracking-wider">Summon</h1>}
+                {open && <h1 className="text-2xl">Summon</h1>}
             </SidebarHeader>
             <SidebarContent>
                 <SidebarGroup>

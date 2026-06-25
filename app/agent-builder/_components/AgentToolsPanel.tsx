@@ -72,7 +72,7 @@ const getPositionForNewNode = (existingNodes: CustomNode[]) => {
 const AgentToolsPanel = () => {
   const context = useContext(NodesContext);
 
-  const { isPaidUser } = useCurrentUser();
+  const { isPaidUser, isLoading } = useCurrentUser();
 
   const onAgentToolClick = useCallback((tool: typeof agentTools[0]) => {
     if (!context) return;
@@ -101,20 +101,31 @@ const AgentToolsPanel = () => {
     <div className="bg-sidebar/80 backdrop-blur-lg min-w-48 p-3 flex flex-col gap-1 justify-center rounded-lg border">
       <h3 className="font-semibold text-center">Nodes</h3>
       <Separator />
-      {agentTools.map(tool => (
-        <div
-          key={tool.id}
-          className={`flex items-center gap-2 justify-baseline cursor-pointer hover:bg-sidebar-accent px-3 py-2 rounded-xl transition duration-300 ${(tool.name === 'Approval' || tool.name === 'While') && !isPaidUser ? 'pointer-events-none bg-muted opacity-60' : ''}`}
-          onClick={() => onAgentToolClick(tool)}
-          aria-disabled={(tool.name === 'Approval' || tool.name === 'While') && !isPaidUser}
-        >
-          <div className='flex items-center gap-1.5'>
-            <tool.icon className="size-7 p-1 rounded" style={{ color: tool.color }} />
-            <span className="text-sm">{tool.name}</span>
+      {agentTools.map(tool => {
+        const isLocked = (tool.name === 'Approval' || tool.name === 'While') && !isPaidUser;
+
+        return (
+          <div
+            key={tool.id}
+            className={`flex items-center gap-2 justify-baseline cursor-pointer hover:bg-sidebar-accent px-3 py-2 rounded-xl transition duration-300 ${isLoading
+              ? 'pointer-events-none'
+              : isLocked
+                ? 'pointer-events-none bg-muted opacity-60'
+                : ''
+              }`}
+            onClick={() => !isLoading && onAgentToolClick(tool)}
+            aria-disabled={isLoading || isLocked}
+          >
+            <div className='flex items-center gap-1.5'>
+              <tool.icon className="size-7 p-1 rounded" style={{ color: tool.color }} />
+              <span className="text-sm">{tool.name}</span>
+            </div>
+            {!isLoading && isLocked && (
+              <LockKeyhole className="size-4 ml-auto text-yellow-500" />
+            )}
           </div>
-          {(tool.name === 'Approval' || tool.name === 'While') && !isPaidUser && <LockKeyhole className="size-4 ml-auto text-yellow-500" />}
-        </div>
-      ))}
+        );
+      })}
     </div>
   )
 }

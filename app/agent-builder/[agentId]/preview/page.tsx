@@ -31,13 +31,13 @@ const WorkflowPreviewPage = () => {
         agentId: agentId as Id<'Agents'> ?? 'skip'
     });
 
-    const hasNoNodes = agent && (!agent.nodes || agent.nodes.length === 0 || agent.status === 'locked');
+    const inaccessiblePreviewPage = agent && (!agent.nodes || agent.nodes.length === 0) || agent?.status === 'locked';
 
     useEffect(() => {
-        if (hasNoNodes) {
+        if (inaccessiblePreviewPage) {
             router.replace(`/dashboard/workflows`);
         }
-    }, [hasNoNodes, agentId, router]);
+    }, [inaccessiblePreviewPage, agentId, router, agent?.status]);
 
     const updateAgentConfig = useMutation(api.agent.updateAgentConfig);
 
@@ -169,7 +169,7 @@ const WorkflowPreviewPage = () => {
 
     if (!mounted) return null;
 
-    if (!agent || hasNoNodes) return (
+    if (!agent) return (
         <div className="flex items-center justify-center h-screen flex-1">
             <div className="flex items-center space-x-4">
                 <Circle className="size-6 animate-bounce fill-emerald-500 text-emerald-500" style={{ animationDelay: '0ms' }} />

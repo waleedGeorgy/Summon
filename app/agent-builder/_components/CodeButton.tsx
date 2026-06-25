@@ -30,7 +30,7 @@ export const CodeButton = ({ agentId, agentName, isAgentPublished }: CodeButtonP
 
     const agent = useQuery(api.agent.getAgentById, { agentId: agentId });
 
-    const { isPaidUser } = useCurrentUser();
+    const { isPaidUser, isLoading } = useCurrentUser();
 
     const snippet = `
 // How to call your "${agentName || "Agent"}"
@@ -105,9 +105,14 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
                 <Button
                     variant='outline'
                     size="sm"
-                    disabled={!agent?.config || !isAgentPublished || !isPaidUser}
+                    disabled={!agent?.config || !isAgentPublished || isLoading || (!isPaidUser && !isLoading)}
                 >
-                    {isPaidUser ? <Code2 className="mr-1" /> : <LockKeyhole className="text-yellow-500" />}
+                    {isLoading ?
+                        <Code2 className="mr-1 size-4" />
+                        : !isPaidUser ?
+                            <LockKeyhole className="text-yellow-500 mr-1 size-4" />
+                            :
+                            <Code2 className="mr-1 size-4" />}
                     Code
                 </Button>
             }>
@@ -152,7 +157,7 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
                                 className="absolute top-2 right-2"
                                 onClick={handleCopy}
                             >
-                                {copied ? <CopyCheck className=" text-green-400" /> : <Copy />}
+                                {copied ? <CopyCheck className="text-green-400" /> : <Copy />}
                             </Button>
                         </div>
                     </div>

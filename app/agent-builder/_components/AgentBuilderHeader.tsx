@@ -44,7 +44,7 @@ const AgentBuilderHeader = ({ agent, isPreviewMode = false }: { agent: Agent, is
             className={`${buttonVariants({ variant: "outline", size: "sm" })} 
             ${!agent?.nodes || agent.nodes?.length === 0 ? 'pointer-events-none opacity-50' : ''}`}
           >
-            <Eye /><span className='hidden md:inline'>Preview</span>
+            <Eye className="mr-1" /><span className='hidden md:inline'>Preview</span>
           </Link>
         }
         <CodeButton agentId={agent._id} agentName={agent.name} isAgentPublished={agent.isPublished} />

@@ -46,10 +46,10 @@ const DashboardCard = ({ agent, icon: Icon, link }: { agent: Agent, icon: Lucide
 
     return (
         <Link
-            className={`group hover:-translate-y-1 dark:hover:brightness-125 transition-all duration-300 cursor-pointer ${isDeleting && 'pointer-events-none'} ${agent.status === 'locked' ? 'opacity-60 pointer-events-none' : ''}`}
+            className={`group hover:-translate-y-1 dark:hover:brightness-125 transition-all duration-300 cursor-pointer ${isDeleting && 'pointer-events-none'} ${agent.status === 'locked' && 'opacity-75 pointer-events-none'}`}
             href={link}
         >
-            <Card size="sm" className="min-w-2xs shadow hover:shadow-lg transition-shadow duration-300">
+            <Card size="sm" className={`min-w-2xs shadow hover:shadow-lg transition-shadow duration-300 ${agent.status === 'locked' && 'outline outline-yellow-500'}`}>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                         {agent.status === 'locked' ? <LockKeyhole className="size-4 text-yellow-500" /> : <Icon className="size-4 text-emerald-500" />}
