@@ -16,6 +16,7 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar"
 import { useCurrentUser } from "@/hooks/use-current-user"
+import { useActiveAgents } from "@/hooks/use-active-agents"
 
 const menuItems = [
     {
@@ -41,7 +42,9 @@ const menuItems = [
 ];
 
 export function DashboardSidebar() {
-    const { isLoading, isPaidUser, tokens } = useCurrentUser();
+    const { isLoading, isPaidUser } = useCurrentUser();
+
+    const { remainingAgents } = useActiveAgents();
 
     const { open } = useSidebar();
 
@@ -89,7 +92,7 @@ export function DashboardSidebar() {
                                 isPaidUser ?
                                     <span className="text-sm text-yellow-500 font-semibold">Unlimited</span>
                                     :
-                                    <span className="text-sm">{tokens} / 2</span>
+                                    <span className="text-sm">{remainingAgents} / 2</span>
                             }
                         </div>
                     </div>

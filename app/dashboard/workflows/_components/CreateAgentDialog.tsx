@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { useActiveAgents } from "@/hooks/use-active-agents";
 
 const CreateAgentDialog = () => {
     const [agentDetails, setAgentDetails] = useState({ name: '', description: '' });
@@ -29,12 +30,13 @@ const CreateAgentDialog = () => {
 
     const maxDescriptionChars = 80;
 
-    const { user, isPaidUser, tokens } = useCurrentUser();
+    const { user, isPaidUser } = useCurrentUser();
+
+    const { remainingAgents } = useActiveAgents()
 
     const router = useRouter();
 
     const createNewAgentMutation = useMutation(api.agent.createNewAgent);
-    const decreaseUserTokensMutation = useMutation(api.user.decreaseUserTokens);
 
     const createNewAgent = async (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -49,11 +51,6 @@ const CreateAgentDialog = () => {
                         description: agentDetails.description,
                         userId: user?._id
                     });
-                    if (!isPaidUser) {
-                        await decreaseUserTokensMutation({
-                            userId: user?.userId,
-                        });
-                    }
                 };
                 setIsDialogOpen(false);
 
@@ -77,7 +74,7 @@ const CreateAgentDialog = () => {
             <p>Build and customize your custom AI workflow</p>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger render={
-                    <Button className='mt-3' onClick={() => setIsDialogOpen(true)} disabled={!isPaidUser && ((tokens ?? 0) <= 0)}>
+                    <Button className='mt-3' onClick={() => setIsDialogOpen(true)} disabled={!isPaidUser && ((remainingAgents ?? 0) <= 0)}>
                         <PlusCircleIcon />
                         <span>Create</span>
                     </Button>
@@ -121,7 +118,7 @@ const CreateAgentDialog = () => {
                             <DialogClose render={
                                 <Button variant="outline" type="button">Cancel</Button>
                             } />
-                            <Button type="submit" disabled={!agentDetails.name || isAgentCreating || (!isPaidUser && ((tokens ?? 0) <= 0))}>
+                            <Button type="submit" disabled={!agentDetails.name || isAgentCreating || (!isPaidUser && ((remainingAgents ?? 0) <= 0))}>
                                 {isAgentCreating ? <Loader2 className="animate-spin" /> : "Create"}
                             </Button>
                         </DialogFooter>

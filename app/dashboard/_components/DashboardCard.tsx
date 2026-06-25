@@ -17,15 +17,11 @@ import {
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { useCurrentUser } from "@/hooks/use-current-user";
 
 const DashboardCard = ({ agent, icon: Icon, link }: { agent: Agent, icon: LucideIcon, link: string }) => {
     const formattedDate = formatDistance(agent._creationTime, new Date(), { addSuffix: true });
 
     const deleteAgentMutation = useMutation(api.agent.deleteAgent);
-    const increaseUserTokensMutation = useMutation(api.user.increaseUserTokens);
-
-    const { isPaidUser, user } = useCurrentUser();
 
     const [isDeleting, startDeletingAgent] = useTransition();
 
@@ -36,11 +32,6 @@ const DashboardCard = ({ agent, icon: Icon, link }: { agent: Agent, icon: Lucide
         startDeletingAgent(async () => {
             try {
                 await deleteAgentMutation({ agentId: agent._id });
-                if (!isPaidUser && user) {
-                    await increaseUserTokensMutation({
-                        userId: user?.userId,
-                    });
-                }
                 toast.success('Agent deleted successfully', {
                     icon: <CheckCircle className="text-emerald-500" size={18} />
                 })

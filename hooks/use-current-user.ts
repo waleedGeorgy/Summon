@@ -7,7 +7,6 @@ import { api } from "@/convex/_generated/api";
  * @returns {user} the current convex user.
  * @returns {isLoading} the current loading state (true when either Clerk or user are not loaded)
  * @returns {isPaidUser} the current subscription status of the user ('free' | 'unlimited')
- * @returns {tokens} the amount of tokens the user has
  */
 export function useCurrentUser() {
   const { user, isLoaded: clerkLoaded } = useUser();
@@ -21,6 +20,5 @@ export function useCurrentUser() {
     user: currentUser,
     isLoading: !clerkLoaded || currentUser === undefined,
     isPaidUser: currentUser?.subscription === "unlimited",
-    tokens: currentUser?.tokens,
   };
 }
