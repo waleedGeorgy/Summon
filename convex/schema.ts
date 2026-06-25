@@ -55,7 +55,6 @@ export default defineSchema({
     subscription: v.union(v.literal("free"), v.literal("unlimited")),
     subscriptionStatus: v.optional(v.string()),
     currentPeriodEnd: v.optional(v.union(v.null(), v.number())),
-    tokens: v.number(),
   }).index("by_user_id", ["userId"]),
 
   Agents: defineTable({
