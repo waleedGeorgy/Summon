@@ -52,7 +52,9 @@ export default defineSchema({
     userId: v.string(),
     name: v.string(),
     email: v.string(),
-    subscription: v.optional(v.string()),
+    subscription: v.union(v.literal("free"), v.literal("unlimited")),
+    subscriptionStatus: v.optional(v.string()),
+    currentPeriodEnd: v.optional(v.union(v.null(), v.number())),
     tokens: v.number(),
   }).index("by_user_id", ["userId"]),
 
@@ -64,7 +66,7 @@ export default defineSchema({
     isPublished: v.boolean(),
     createdBy: v.id("Users"),
     config: v.optional(v.any()),
-  }),
+  }).index("by_created_by", ["createdBy"]),
 
   Conversations: defineTable({
     conversationId: v.string(),

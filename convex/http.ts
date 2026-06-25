@@ -3,6 +3,7 @@ import { Webhook } from "svix";
 import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
 import { api } from "./_generated/api";
+import { ClerkSubscriptionData } from "@/types";
 
 const http = httpRouter();
 
@@ -62,6 +63,12 @@ http.route({
       });
     }
 
+    const subscriptionEventTypes = [
+      "subscription.created",
+      "subscription.updated",
+      "subscription.active",
+    ];
+
     const eventType = event.type;
     if (eventType === "user.created" || eventType === "user.updated") {
       const { id, email_addresses, first_name, last_name } = event.data;
@@ -93,6 +100,47 @@ http.route({
       } catch (error) {
         console.log("Error deleting user", error);
         return new Response("Error deleting user", {
+          status: 500,
+          headers: corsHeaders,
+        });
+      }
+    } else if (subscriptionEventTypes.includes(eventType)) {
+      const data = event.data as unknown as ClerkSubscriptionData;
+
+      const userId = data.payer?.user_id;
+      const items = data.items || [];
+      const activeItem = items.find((item) => item.status === "active");
+
+      let tier: "free" | "unlimited" = "free";
+      let currentPeriodEnd: number | null = null;
+      let effectiveStatus: string;
+
+      if (activeItem) {
+        const slug = activeItem.plan?.slug || "";
+        tier = slug.includes("unlimited") ? "unlimited" : "free";
+        currentPeriodEnd = activeItem.period_end ?? null;
+        effectiveStatus = data.status;
+      } else {
+        tier = "free";
+        currentPeriodEnd = null;
+        effectiveStatus = ["ended", "canceled"].includes(data.status)
+          ? data.status
+          : "ended";
+      }
+
+      try {
+        await ctx.runMutation(api.user.updateSubscription, {
+          userId,
+          subscription: tier,
+          subscriptionStatus: effectiveStatus,
+          currentPeriodEnd,
+        });
+        console.log(
+          `Updated subscription for user ${userId}: tier=${tier}, status=${effectiveStatus}`,
+        );
+      } catch (error) {
+        console.error("Error updating subscription:", error);
+        return new Response("Error updating subscription", {
           status: 500,
           headers: corsHeaders,
         });

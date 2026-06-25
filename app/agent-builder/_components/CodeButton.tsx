@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import { useQuery } from "convex/react";
-import { Copy, ExternalLink, Loader2, CopyCheck, Code2 } from "lucide-react";
+import { Copy, ExternalLink, Loader2, CopyCheck, Code2, LockKeyhole } from "lucide-react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { HighlightCodeAction } from "@/components/HighlightCodeAction";
@@ -14,6 +14,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 interface CodeButtonProps {
     agentId: Id<"Agents">;
@@ -29,8 +30,10 @@ export const CodeButton = ({ agentId, agentName, isAgentPublished }: CodeButtonP
 
     const agent = useQuery(api.agent.getAgentById, { agentId: agentId });
 
+    const { isPaidUser } = useCurrentUser();
+
     const snippet = `
-// How to call your "${agentName || "Agent"}" from any app
+// How to call your "${agentName || "Agent"}"
 async function chatWithAgent(userId, message, conversationId = null) {
   const res = await fetch('${typeof window !== "undefined" ? window.location.origin : "http://localhost:3000"}/api/agent-sdk', {
     method: 'POST',
@@ -98,15 +101,16 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
 
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger
-                render={<Button
+            <DialogTrigger render={
+                <Button
                     variant='outline'
                     size="sm"
-                    disabled={!agent?.config || !isAgentPublished}
+                    disabled={!agent?.config || !isAgentPublished || !isPaidUser}
                 >
-                    <Code2 />Code
-                </Button>}
-            >
+                    {isPaidUser ? <Code2 className="mr-1" /> : <LockKeyhole className="text-yellow-500" />}
+                    Code
+                </Button>
+            }>
             </DialogTrigger>
             <DialogContent className="sm:max-w-2xl">
                 <DialogHeader>

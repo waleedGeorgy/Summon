@@ -2,7 +2,7 @@ import { Workflow } from "lucide-react";
 import { Agent } from "@/convex/schema";
 import DashboardCard from "../../_components/DashboardCard";
 
-const MyAgents = ({ agents, isLoading, currentUserId }: { agents: Agent[], isLoading: boolean, currentUserId: string }) => {
+const MyAgents = ({ agents, isLoading }: { agents: Agent[], isLoading: boolean }) => {
     return (
         <div className="flex items-center flex-wrap gap-4 md:px-12 px-6 py-4">
             {isLoading ?
@@ -11,7 +11,7 @@ const MyAgents = ({ agents, isLoading, currentUserId }: { agents: Agent[], isLoa
                 ))
                 : agents && agents.length > 0 ?
                     agents.map(agent => (
-                        <DashboardCard key={agent._id} agent={agent} icon={Workflow} link={`/agent-builder/${agent._id}`} currentUserId={currentUserId} />
+                        <DashboardCard key={agent._id} agent={agent} icon={Workflow} link={`/agent-builder/${agent._id}`} />
                     ))
                     :
                     <p className="text-muted-foreground">No agents found</p>

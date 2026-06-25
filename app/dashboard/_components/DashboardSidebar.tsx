@@ -2,10 +2,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Wallet2, User2, Gem, HatGlasses, Workflow } from "lucide-react"
-import { useAuth, useUser } from "@clerk/nextjs"
-import { useQuery } from "convex/react"
-import { api } from "@/convex/_generated/api"
+import { Wallet2, User2, Gem, HatGlasses, Workflow, Circle } from "lucide-react"
 import {
     Sidebar,
     SidebarContent,
@@ -18,7 +15,7 @@ import {
     SidebarMenuItem,
     useSidebar,
 } from "@/components/ui/sidebar"
-import { Button } from "@/components/ui/button"
+import { useCurrentUser } from "@/hooks/use-current-user"
 
 const menuItems = [
     {
@@ -44,11 +41,7 @@ const menuItems = [
 ];
 
 export function DashboardSidebar() {
-    const { user, isLoaded } = useUser();
-    const currentUser = useQuery(api.user.getUserById, { userId: user?.id ?? "skip" });
-
-    const { has } = useAuth();
-    const isPaidUser = has({ plan: 'unlimited_plan' });
+    const { isLoading, isPaidUser, tokens } = useCurrentUser();
 
     const { open } = useSidebar();
 
@@ -82,27 +75,24 @@ export function DashboardSidebar() {
                 <SidebarFooter className="flex flex-col pb-5 px-5">
                     <div className="flex items-center gap-2">
                         <Gem className="size-3.5" />
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-2">
                             <span className="text-sm">
                                 Credits:
                             </span>
-                            {!currentUser || !isLoaded ?
-                                <div className="w-10 h-3.5 rounded bg-neutral-600 animate-pulse" />
+                            {isLoading ?
+                                <div className="flex items-center space-x-1">
+                                    <Circle className="size-2.5 animate-bounce fill-emerald-500 text-emerald-500" style={{ animationDelay: '0ms' }} />
+                                    <Circle className="size-2.5 animate-bounce fill-emerald-500 text-emerald-500" style={{ animationDelay: '150ms' }} />
+                                    <Circle className="size-2.5 animate-bounce fill-emerald-500 text-emerald-500" style={{ animationDelay: '300ms' }} />
+                                </div>
                                 :
                                 isPaidUser ?
                                     <span className="text-sm text-yellow-500 font-semibold">Unlimited</span>
                                     :
-                                    <span className="text-sm">{currentUser?.tokens} / 2</span>
+                                    <span className="text-sm">{tokens} / 2</span>
                             }
                         </div>
                     </div>
-                    {!isPaidUser &&
-                        <Link href='/dashboard/pricing'>
-                            <Button size='sm'>
-                                Upgrade to unlimited
-                            </Button>
-                        </Link>
-                    }
                 </SidebarFooter>
             }
         </Sidebar>

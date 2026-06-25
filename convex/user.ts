@@ -24,7 +24,7 @@ export const createNewUser = mutation({
         userId: args.userId,
         name: args.name,
         email: args.email,
-        subscription: "free",
+        subscription: "free" as const,
         tokens: 2,
       };
       await ctx.db.insert("Users", newUser);
@@ -52,7 +52,18 @@ export const deleteUser = mutation({
       .withIndex("by_user_id", (q) => q.eq("userId", args.userId))
       .first();
 
-    if (userToDelete) await ctx.db.delete("Users", userToDelete._id);
+    if (!userToDelete) throw new Error("User not found");
+
+    const agentsToDelete = await ctx.db
+      .query("Agents")
+      .withIndex("by_created_by", (q) => q.eq("createdBy", userToDelete._id))
+      .collect();
+
+    for (const agent of agentsToDelete) {
+      await ctx.db.delete(agent._id);
+    }
+
+    await ctx.db.delete(userToDelete._id);
   },
 });
 
@@ -93,5 +104,27 @@ export const increaseUserTokens = mutation({
         tokens: userToUpdate.tokens + 1,
       });
     }
+  },
+});
+
+export const updateSubscription = mutation({
+  args: {
+    userId: v.string(),
+    subscription: v.union(v.literal("free"), v.literal("unlimited")),
+    subscriptionStatus: v.string(),
+    currentPeriodEnd: v.optional(v.union(v.null(), v.number())),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("Users")
+      .withIndex("by_user_id", (q) => q.eq("userId", args.userId))
+      .unique();
+    if (!user) return;
+
+    await ctx.db.patch(user._id, {
+      subscription: args.subscription,
+      subscriptionStatus: args.subscriptionStatus,
+      currentPeriodEnd: args.currentPeriodEnd,
+    });
   },
 });

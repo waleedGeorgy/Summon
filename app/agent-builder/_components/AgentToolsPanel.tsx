@@ -1,9 +1,10 @@
 import { useCallback, useContext } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { HatGlasses, Play, Repeat2, Split, SquareArrowRightExit, ThumbsUp, Webhook } from "lucide-react"
+import { HatGlasses, LockKeyhole, Play, Repeat2, Split, SquareArrowRightExit, ThumbsUp, Webhook } from "lucide-react"
 import type { CustomNode } from "@/convex/schema"
 import { Separator } from "@/components/ui/separator"
 import { NodesContext } from "@/context/NodesContext";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 const agentTools = [
   {
@@ -71,6 +72,8 @@ const getPositionForNewNode = (existingNodes: CustomNode[]) => {
 const AgentToolsPanel = () => {
   const context = useContext(NodesContext);
 
+  const { isPaidUser } = useCurrentUser();
+
   const onAgentToolClick = useCallback((tool: typeof agentTools[0]) => {
     if (!context) return;
 
@@ -95,17 +98,21 @@ const AgentToolsPanel = () => {
   if (!context) return null;
 
   return (
-    <div className="bg-sidebar/80 backdrop-blur-lg min-w-44 p-3 flex flex-col gap-1 justify-center rounded-lg border">
+    <div className="bg-sidebar/80 backdrop-blur-lg min-w-48 p-3 flex flex-col gap-1 justify-center rounded-lg border">
       <h3 className="font-semibold text-center">Nodes</h3>
       <Separator />
       {agentTools.map(tool => (
         <div
           key={tool.id}
-          className="flex items-center gap-2 cursor-pointer hover:bg-sidebar-accent px-3 py-2 rounded-xl transition duration-300"
+          className={`flex items-center gap-2 justify-baseline cursor-pointer hover:bg-sidebar-accent px-3 py-2 rounded-xl transition duration-300 ${(tool.name === 'Approval' || tool.name === 'While') && !isPaidUser ? 'pointer-events-none bg-muted opacity-60' : ''}`}
           onClick={() => onAgentToolClick(tool)}
+          aria-disabled={(tool.name === 'Approval' || tool.name === 'While') && !isPaidUser}
         >
-          <tool.icon className="size-7 p-1 rounded" style={{ color: tool.color }} />
-          <span className="text-sm">{tool.name}</span>
+          <div className='flex items-center gap-1.5'>
+            <tool.icon className="size-7 p-1 rounded" style={{ color: tool.color }} />
+            <span className="text-sm">{tool.name}</span>
+          </div>
+          {(tool.name === 'Approval' || tool.name === 'While') && !isPaidUser && <LockKeyhole className="size-4 ml-auto text-yellow-500" />}
         </div>
       ))}
     </div>

@@ -1,18 +1,16 @@
 'use client'
-import { useUser } from "@clerk/nextjs";
 import { HatGlasses } from "lucide-react";
 import { useQuery } from "convex/react"
 import { api } from "@/convex/_generated/api"
 import DashboardCard from "../_components/DashboardCard";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 const AgentsPage = () => {
-    const { user } = useUser();
-
-    const currentUser = useQuery(api.user.getUserById, { userId: user?.id ?? "skip" });
+    const { user } = useCurrentUser();
 
     const agents = useQuery(
         api.agent.fetchAllAgents,
-        currentUser ? { createdBy: currentUser._id } : "skip"
+        user ? { createdBy: user._id } : "skip"
     );
 
     const publishedAgents = agents?.filter((agent) => agent.isPublished === true);
@@ -27,7 +25,11 @@ const AgentsPage = () => {
                     ))
                     : agents && agents.length > 0 && publishedAgents ?
                         publishedAgents.map(publishedAgent => (
-                            <DashboardCard key={publishedAgent._id} agent={publishedAgent} icon={HatGlasses} link={`/agent-builder/${publishedAgent._id}/preview`} />
+                            <DashboardCard
+                                key={publishedAgent._id}
+                                agent={publishedAgent}
+                                icon={HatGlasses} link={`/agent-builder/${publishedAgent._id}/preview`}
+                            />
                         ))
                         :
                         <p className="text-muted-foreground">No published agents</p>

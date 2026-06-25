@@ -1,20 +1,18 @@
 'use client'
-import { useUser } from "@clerk/nextjs"
 import { useQuery } from "convex/react"
 import { NotepadText, Workflow } from "lucide-react"
 import { api } from "@/convex/_generated/api"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import MyAgents from "./MyAgents"
 import AgentTemplates from "./AgentTemplates"
+import { useCurrentUser } from "@/hooks/use-current-user"
 
 const AgentTabs = () => {
-    const { user } = useUser();
-
-    const currentUser = useQuery(api.user.getUserById, { userId: user?.id ?? "skip" });
+    const { user } = useCurrentUser();
 
     const agents = useQuery(
         api.agent.fetchAllAgents,
-        currentUser ? { createdBy: currentUser._id } : "skip"
+        user ? { createdBy: user._id } : "skip"
     );
 
     return (
@@ -28,7 +26,7 @@ const AgentTabs = () => {
                 </TabsTrigger>
             </TabsList>
             <TabsContent value='my-agents'>
-                <MyAgents agents={agents ?? []} isLoading={!agents} currentUserId={currentUser?.userId ?? ''} />
+                <MyAgents agents={agents ?? []} isLoading={!agents} />
             </TabsContent>
             <TabsContent value='templates'><AgentTemplates /></TabsContent>
         </Tabs>

@@ -51,3 +51,54 @@ export type GeneratedConfig = {
       }[]
     | undefined;
 };
+
+export interface ClerkSubscriptionPlan {
+  amount: number;
+  currency: string;
+  id: string;
+  is_recurring: boolean;
+  name: string;
+  slug: string;
+}
+
+export interface ClerkSubscriptionItem {
+  created_at: number;
+  id: string;
+  interval: string;
+  is_free_trial: boolean;
+  object: string;
+  period_end: number | null;
+  period_start: number;
+  plan: ClerkSubscriptionPlan;
+  plan_id: string;
+  status: string;
+  updated_at: number;
+}
+
+export interface ClerkSubscriptionPayer {
+  email: string;
+  first_name: string;
+  id: string;
+  image_url: string;
+  last_name: string;
+  organization_id: string;
+  organization_name: string;
+  user_id: string;
+}
+
+export interface ClerkSubscriptionData {
+  active_at: number | null;
+  canceled_at: number | null;
+  created_at: number;
+  ended_at: number | null;
+  id: string;
+  items: ClerkSubscriptionItem[];
+  latest_payment_id: string | null;
+  object: string;
+  past_due_at: number | null;
+  payer: ClerkSubscriptionPayer;
+  payer_id: string;
+  payment_source_id: string;
+  status: string;
+  updated_at: number;
+}

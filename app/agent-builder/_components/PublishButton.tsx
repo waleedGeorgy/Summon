@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import { useMutation, useQuery } from "convex/react";
-import { CheckCircle, Copy, ExternalLink, Share2, Loader2, CopyCheck, CircleX } from "lucide-react";
+import { CheckCircle, Copy, ExternalLink, Share2, Loader2, CopyCheck, CircleX, LockKeyhole } from "lucide-react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import {
@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { HighlightCodeAction } from "@/components/HighlightCodeAction";
 import { toast } from "sonner";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 interface PublishButtonProps {
   agentId: Id<"Agents">;
@@ -25,6 +26,8 @@ export const PublishButton = ({ agentId, agentName }: PublishButtonProps) => {
   const [copied, setCopied] = useState(false);
   const [highlightedHtml, setHighlightedHtml] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const { isPaidUser } = useCurrentUser();
 
   const agent = useQuery(api.agent.getAgentById, { agentId: agentId });
   const togglePublish = useMutation(api.agent.togglePublishAgent);
@@ -115,10 +118,10 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
     <div className="flex items-center gap-2">
       {/* Main Publish/Unpublish Button */}
       <Button
-        variant={isPublished ? "destructive" : "default"}
+        variant={!isPaidUser ? "outline" : isPublished ? "destructive" : 'default'}
         size="sm"
         onClick={handleTogglePublish}
-        disabled={!agent?.config}
+        disabled={!agent?.config || !isPaidUser}
       >
         {isPublished ? (
           <>
@@ -127,7 +130,7 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
           </>
         ) : (
           <>
-            <Share2 className="mr-1" />
+            {isPaidUser ? <Share2 className="mr-1" /> : <LockKeyhole className="text-yellow-500" />}
             Publish
           </>
         )}
@@ -185,7 +188,7 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
               <Button variant="outline" onClick={() => setDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button onClick={handleConfirmPublish}>
+              <Button onClick={handleConfirmPublish} disabled={!agent?.config || !isPaidUser}>
                 <CheckCircle />
                 Confirm & Publish
               </Button>
