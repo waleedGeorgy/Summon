@@ -88,7 +88,7 @@ const TemplateCard = ({ template }: { template: Template }) => {
     return (
         <Card
             size="sm"
-            className={`min-w-2xs cursor-pointer shadow hover:shadow-lg hover:-translate-y-1 dark:hover:brightness-125 transition duration-300 ${isCreatingWorkflow || !isPaidUser && (remainingAgents  <= 0) && 'opacity-60 pointer-events-none'}`}
+            className={`min-w-2xs cursor-pointer shadow hover:shadow-lg hover:-translate-y-1 dark:hover:brightness-125 transition duration-300 ${isCreatingWorkflow || (!isPaidUser && remainingAgents <= 0) ? 'opacity-60 pointer-events-none' : ''}`}
             style={{
                 background: `linear-gradient(to bottom left, ${hexColor}4D, var(--card))`
             }}
