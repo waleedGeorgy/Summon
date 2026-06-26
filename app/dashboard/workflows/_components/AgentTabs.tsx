@@ -15,6 +15,8 @@ const AgentTabs = () => {
         user ? { createdBy: user._id } : "skip"
     );
 
+    const templates = useQuery(api.agent.fetchAllTemplates);
+
     return (
         <Tabs defaultValue="my-agents">
             <TabsList className="mx-auto">
@@ -28,7 +30,7 @@ const AgentTabs = () => {
             <TabsContent value='my-agents'>
                 <MyAgents agents={agents ?? []} isLoading={!agents} />
             </TabsContent>
-            <TabsContent value='templates'><AgentTemplates /></TabsContent>
+            <TabsContent value='templates'><AgentTemplates templates={templates ?? []} isLoading={!templates} /></TabsContent>
         </Tabs>
     )
 }
