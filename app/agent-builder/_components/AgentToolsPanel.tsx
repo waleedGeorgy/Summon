@@ -98,7 +98,7 @@ const AgentToolsPanel = () => {
   if (!context) return null;
 
   return (
-    <div className="bg-sidebar/80 backdrop-blur-lg min-w-48 p-3 flex flex-col gap-1 justify-center rounded-lg border">
+    <div className="bg-sidebar/80 backdrop-blur-lg min-w-46 p-3 flex flex-col gap-1 justify-center rounded-lg border">
       <h3 className="font-semibold text-center">Nodes</h3>
       <Separator />
       {agentTools.map(tool => {

@@ -153,6 +153,7 @@ const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, agent, co
                     value={userChatInput}
                     onChange={(e) => setUserChatInput(e.target.value)}
                     onKeyDown={handleKeyDown}
+                    disabled={isSendingMessage}
                 />
                 <Button onClick={sendMessage} disabled={!userChatInput.trim() || isSendingMessage}>
                     {isSendingMessage ? <Loader2 className="animate-spin" /> : <SendHorizonal />}
