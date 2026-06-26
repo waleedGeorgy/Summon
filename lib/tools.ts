@@ -20,8 +20,8 @@ export const createToolFromConfig = (config: ToolConfig) => {
       Object.entries(config.parameters).map(([key, type]) => {
         if (type === "number") return [key, z.number()];
         return [key, z.string()];
-      })
-    )
+      }),
+    ),
   );
 
   return new DynamicStructuredTool({
@@ -36,13 +36,15 @@ export const createToolFromConfig = (config: ToolConfig) => {
         for (const key in params) {
           url = url.replace(
             `{${key}}`,
-            encodeURIComponent(String(params[key]))
+            encodeURIComponent(String(params[key])),
           );
         }
 
         // Append API key if needed
         if (config.includeApiKey && config.apiKey) {
-          url += url.includes("?") ? `&key=${config.apiKey}` : `?key=${config.apiKey}`;
+          url += url.includes("?")
+            ? `&key=${config.apiKey}`
+            : `?key=${config.apiKey}`;
         }
 
         const response = await fetch(url, {
@@ -53,7 +55,7 @@ export const createToolFromConfig = (config: ToolConfig) => {
         // Return a string – LangChain tools must return string
         return JSON.stringify(data, null, 2);
       } catch (error) {
-        console.error(`Error executing tool ${config.name}:`, error);
+        console.error("Error executing tool %s:", config.name, error);
         return JSON.stringify({ error: "Tool execution failed" });
       }
     },
