@@ -13,7 +13,37 @@ interface ToolConfig {
   assignedAgent?: string;
 }
 
+const ALLOWED_METHODS = new Set(["GET", "POST", "PUT", "PATCH", "DELETE"]);
+
+function isDisallowedHostname(hostname: string): boolean {
+  const h = hostname.toLowerCase();
+  return (
+    h === "localhost" ||
+    h === "127.0.0.1" ||
+    h === "::1" ||
+    h.startsWith("127.") ||
+    h.startsWith("10.") ||
+    h.startsWith("192.168.") ||
+    h.startsWith("169.254.") ||
+    h.endsWith(".local")
+  );
+}
+
+function validateToolBaseUrl(rawUrl: string): URL {
+  const parsed = new URL(rawUrl);
+  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+    throw new Error("Tool URL must use http or https.");
+  }
+  if (isDisallowedHostname(parsed.hostname)) {
+    throw new Error("Tool URL hostname is not allowed.");
+  }
+  return parsed;
+}
+
 export const createToolFromConfig = (config: ToolConfig) => {
+  // Validate URL up-front to avoid creating unsafe tools
+  validateToolBaseUrl(config.url);
+
   // Build Zod schema from the parameters object
   const paramSchema = z.object(
     Object.fromEntries(
@@ -40,15 +70,18 @@ export const createToolFromConfig = (config: ToolConfig) => {
           );
         }
 
+        const requestUrl = validateToolBaseUrl(url);
+
         // Append API key if needed
         if (config.includeApiKey && config.apiKey) {
-          url += url.includes("?")
-            ? `&key=${config.apiKey}`
-            : `?key=${config.apiKey}`;
+          requestUrl.searchParams.append("key", config.apiKey);
         }
 
-        const response = await fetch(url, {
-          method: config.method || "GET",
+        const method = (config.method || "GET").toUpperCase();
+        const safeMethod = ALLOWED_METHODS.has(method) ? method : "GET";
+
+        const response = await fetch(requestUrl.toString(), {
+          method: safeMethod,
         });
         const data = await response.json();
 
