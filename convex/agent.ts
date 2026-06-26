@@ -38,6 +38,9 @@ export const createNewAgent = mutation({
 export const fetchAllAgents = query({
   args: { createdBy: v.id("Users") },
   handler: async (ctx, args) => {
+    const authUser = await ctx.auth.getUserIdentity();
+    if (!authUser) throw new Error("User not authenticated");
+
     const results = await ctx.db
       .query("Agents")
       .withIndex("by_created_by", (q) => q.eq("createdBy", args.createdBy))
@@ -50,8 +53,10 @@ export const fetchAllAgents = query({
 export const getAgentById = query({
   args: { agentId: v.id("Agents") },
   handler: async (ctx, args) => {
-    const agent = await ctx.db.get(args.agentId);
+    const authUser = await ctx.auth.getUserIdentity();
+    if (!authUser) throw new Error("User not authenticated");
 
+    const agent = await ctx.db.get(args.agentId);
     if (agent) return agent;
   },
 });
@@ -63,6 +68,9 @@ export const updateAgentDetails = mutation({
     edges: v.any(),
   },
   handler: async (ctx, args) => {
+    const authUser = await ctx.auth.getUserIdentity();
+    if (!authUser) throw new Error("User not authenticated");
+
     await ctx.db.patch(args.agentId, {
       nodes: args.nodes,
       edges: args.edges,
@@ -70,9 +78,29 @@ export const updateAgentDetails = mutation({
   },
 });
 
+export const updateWorkflowNameAndDescription = mutation({
+  args: {
+    agentId: v.id("Agents"),
+    name: v.string(),
+    description: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const authUser = await ctx.auth.getUserIdentity();
+    if (!authUser) throw new Error("User not authenticated");
+
+    await ctx.db.patch(args.agentId, {
+      name: args.name,
+      description: args.description ? args.description : "",
+    });
+  },
+});
+
 export const deleteAgent = mutation({
   args: { agentId: v.id("Agents") },
   handler: async (ctx, args) => {
+    const authUser = await ctx.auth.getUserIdentity();
+    if (!authUser) throw new Error("User not authenticated");
+
     await ctx.db.delete("Agents", args.agentId);
   },
 });
@@ -83,6 +111,9 @@ export const updateAgentConfig = mutation({
     config: v.any(),
   },
   handler: async (ctx, args) => {
+    const authUser = await ctx.auth.getUserIdentity();
+    if (!authUser) throw new Error("User not authenticated");
+
     await ctx.db.patch(args.agentId, {
       config: args.config,
     });
@@ -95,6 +126,9 @@ export const togglePublishAgent = mutation({
     isPublished: v.boolean(),
   },
   handler: async (ctx, args) => {
+    const authUser = await ctx.auth.getUserIdentity();
+    if (!authUser) throw new Error("User not authenticated");
+
     const agent = await ctx.db.get(args.agentId);
     if (!agent) throw new Error("Agent not found");
 
@@ -112,6 +146,9 @@ export const updateAgentsStatus = mutation({
     newPlan: v.union(v.literal("free"), v.literal("unlimited")),
   },
   handler: async (ctx, args) => {
+    const authUser = await ctx.auth.getUserIdentity();
+    if (!authUser) throw new Error("User not authenticated");
+
     await ctx.db.patch(args.userId, {
       subscription: args.newPlan,
     });

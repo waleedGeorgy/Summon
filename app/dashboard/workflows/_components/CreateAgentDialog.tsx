@@ -60,8 +60,8 @@ const CreateAgentDialog = () => {
 
                 router.push('/agent-builder/' + agentURL);
             } catch (error) {
-                console.log("Error deleting agent: " + error);
-                toast.error('Failed to delete agent', {
+                console.log("Error creating agent: " + error);
+                toast.error('Failed to create agent', {
                     icon: <XCircle className="text-red-500" size={18} />
                 });
             }

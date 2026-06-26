@@ -2,7 +2,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Wallet2, User2, Gem, HatGlasses, Workflow, Circle } from "lucide-react"
+import { Wallet2, Gem, HatGlasses, Workflow, Circle } from "lucide-react"
 import {
     Sidebar,
     SidebarContent,
@@ -33,11 +33,6 @@ const menuItems = [
         name: 'Pricing',
         href: '/dashboard/pricing',
         icon: Wallet2,
-    },
-    {
-        name: 'Profile',
-        href: '/dashboard/profile',
-        icon: User2,
     },
 ];
 

@@ -165,7 +165,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET(_req: NextRequest) {
+export async function GET() {
   const conversationId = uuidv4();
   return NextResponse.json({ conversationId });
 }

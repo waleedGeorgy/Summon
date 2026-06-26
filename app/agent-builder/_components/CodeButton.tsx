@@ -23,7 +23,6 @@ interface CodeButtonProps {
 }
 
 export const CodeButton = ({ agentId, agentName, isAgentPublished }: CodeButtonProps) => {
-    const [dialogOpen, setDialogOpen] = useState(false);
     const [copied, setCopied] = useState(false);
     const [highlightedHtml, setHighlightedHtml] = useState("");
     const [loading, setLoading] = useState(false);
@@ -86,12 +85,12 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
     }, [snippet]);
 
     useEffect(() => {
-        if (dialogOpen && !highlightedHtml && !loading) {
+        if (!highlightedHtml && !loading) {
             queueMicrotask(() => {
                 loadHighlightedCode();
             })
         }
-    }, [dialogOpen, highlightedHtml, loadHighlightedCode, loading]);
+    }, [highlightedHtml, loadHighlightedCode, loading]);
 
     const handleCopy = async () => {
         await navigator.clipboard.writeText(snippet);
@@ -100,7 +99,7 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
     };
 
     return (
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <Dialog>
             <DialogTrigger render={
                 <Button
                     variant='outline'
@@ -108,11 +107,11 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
                     disabled={!agent?.config || !isAgentPublished || isLoading || (!isPaidUser && !isLoading)}
                 >
                     {isLoading ?
-                        <Code2 className="mr-1 size-4" />
+                        <Code2 className="size-4" />
                         : !isPaidUser ?
-                            <LockKeyhole className="text-yellow-500 mr-1 size-4" />
+                            <LockKeyhole className="text-yellow-500 size-4" />
                             :
-                            <Code2 className="mr-1 size-4" />}
+                            <Code2 className="size-4" />}
                     Code
                 </Button>
             }>

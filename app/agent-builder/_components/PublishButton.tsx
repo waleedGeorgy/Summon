@@ -124,12 +124,12 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
       >
         {isPublished ? (
           <>
-            <CircleX className="mr-1" />
+            <CircleX />
             Unpublish
           </>
         ) : (
           <>
-            {isLoading ? <Share2 className="mr-1" /> : isPaidUser ? <Share2 className="mr-1" /> : <LockKeyhole className="text-yellow-500 mr-1" />}
+            {isLoading ? <Share2 /> : isPaidUser ? <Share2 /> : <LockKeyhole className="text-yellow-500" />}
             Publish
           </>
         )}
