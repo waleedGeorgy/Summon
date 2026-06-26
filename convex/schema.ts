@@ -68,6 +68,15 @@ export default defineSchema({
     status: v.union(v.literal("active"), v.literal("locked")),
   }).index("by_created_by", ["createdBy"]),
 
+  Templates: defineTable({
+    name: v.string(),
+    description: v.optional(v.string()),
+    nodes: v.optional(v.array(CustomNode)),
+    edges: v.optional(v.any()),
+    icon: v.string(),
+    color: v.string(),
+  }),
+
   Conversations: defineTable({
     conversationId: v.string(),
     agentId: v.id("Agents"),
@@ -78,3 +87,4 @@ export default defineSchema({
 export type User = Doc<"Users">;
 export type Agent = Doc<"Agents">;
 export type Conversation = Doc<"Conversations">;
+export type Template = Doc<"Templates">;

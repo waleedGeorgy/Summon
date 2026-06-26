@@ -32,7 +32,7 @@ const CreateAgentDialog = () => {
 
     const { user, isPaidUser } = useCurrentUser();
 
-    const { remainingAgents } = useActiveAgents()
+    const { remainingAgents } = useActiveAgents();
 
     const router = useRouter();
 

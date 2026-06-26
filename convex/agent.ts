@@ -7,6 +7,8 @@ export const createNewAgent = mutation({
     name: v.string(),
     description: v.string(),
     userId: v.id("Users"),
+    nodes: v.optional(v.array(CustomNode)),
+    edges: v.optional(v.any()),
   },
   handler: async (ctx, args) => {
     const user = await ctx.db.get(args.userId);
@@ -30,6 +32,8 @@ export const createNewAgent = mutation({
       isPublished: false,
       createdBy: args.userId,
       status: "active",
+      nodes: args.nodes ?? [],
+      edges: args.edges ?? [],
     });
     return result;
   },
@@ -38,9 +42,6 @@ export const createNewAgent = mutation({
 export const fetchAllAgents = query({
   args: { createdBy: v.id("Users") },
   handler: async (ctx, args) => {
-    const authUser = await ctx.auth.getUserIdentity();
-    if (!authUser) throw new Error("User not authenticated");
-
     const results = await ctx.db
       .query("Agents")
       .withIndex("by_created_by", (q) => q.eq("createdBy", args.createdBy))
@@ -50,12 +51,17 @@ export const fetchAllAgents = query({
   },
 });
 
+export const fetchAllTemplates = query({
+  args: {},
+  handler: async (ctx) => {
+    const results = await ctx.db.query("Templates").collect();
+    return results;
+  },
+});
+
 export const getAgentById = query({
   args: { agentId: v.id("Agents") },
   handler: async (ctx, args) => {
-    const authUser = await ctx.auth.getUserIdentity();
-    if (!authUser) throw new Error("User not authenticated");
-
     const agent = await ctx.db.get(args.agentId);
     if (agent) return agent;
   },
@@ -68,9 +74,6 @@ export const updateAgentDetails = mutation({
     edges: v.any(),
   },
   handler: async (ctx, args) => {
-    const authUser = await ctx.auth.getUserIdentity();
-    if (!authUser) throw new Error("User not authenticated");
-
     await ctx.db.patch(args.agentId, {
       nodes: args.nodes,
       edges: args.edges,
@@ -85,9 +88,6 @@ export const updateWorkflowNameAndDescription = mutation({
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const authUser = await ctx.auth.getUserIdentity();
-    if (!authUser) throw new Error("User not authenticated");
-
     await ctx.db.patch(args.agentId, {
       name: args.name,
       description: args.description ? args.description : "",
@@ -98,9 +98,6 @@ export const updateWorkflowNameAndDescription = mutation({
 export const deleteAgent = mutation({
   args: { agentId: v.id("Agents") },
   handler: async (ctx, args) => {
-    const authUser = await ctx.auth.getUserIdentity();
-    if (!authUser) throw new Error("User not authenticated");
-
     await ctx.db.delete("Agents", args.agentId);
   },
 });
@@ -126,9 +123,6 @@ export const togglePublishAgent = mutation({
     isPublished: v.boolean(),
   },
   handler: async (ctx, args) => {
-    const authUser = await ctx.auth.getUserIdentity();
-    if (!authUser) throw new Error("User not authenticated");
-
     const agent = await ctx.db.get(args.agentId);
     if (!agent) throw new Error("Agent not found");
 
@@ -146,9 +140,6 @@ export const updateAgentsStatus = mutation({
     newPlan: v.union(v.literal("free"), v.literal("unlimited")),
   },
   handler: async (ctx, args) => {
-    const authUser = await ctx.auth.getUserIdentity();
-    if (!authUser) throw new Error("User not authenticated");
-
     await ctx.db.patch(args.userId, {
       subscription: args.newPlan,
     });
