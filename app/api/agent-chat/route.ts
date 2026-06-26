@@ -3,6 +3,8 @@ import { v4 as uuidv4 } from "uuid";
 import { HumanMessage, AIMessage, BaseMessage } from "@langchain/core/messages";
 import { createAgentFromWorkflow, WorkflowConfig } from "@/lib/agent";
 import { createOpenRouterModel } from "@/config/openAi";
+import { auth } from "@clerk/nextjs/server";
+import { aj } from "@/config/arcjet";
 
 export interface AgentConfig {
   id: string;
@@ -63,6 +65,19 @@ function resolveModel(model?: string) {
 }
 
 export async function POST(req: NextRequest) {
+  const { userId } = await auth();
+
+  if (!userId) throw new Error("Unauthorized");
+
+  const decision = await aj.protect(req, { userId, requested: 1 });
+
+  if (decision.isDenied()) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      { status: 429 },
+    );
+  }
+
   try {
     const body: RequestBody = await req.json();
     const {

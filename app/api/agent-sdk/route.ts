@@ -4,11 +4,26 @@ import { api } from "@/convex/_generated/api";
 import { HumanMessage, AIMessage, BaseMessage } from "@langchain/core/messages";
 import { createOpenRouterModel } from "@/config/openAi";
 import { createAgentFromWorkflow, WorkflowConfig } from "@/lib/agent";
+import { auth } from "@clerk/nextjs/server";
+import { aj } from "@/config/arcjet";
 
 // In‑memory conversation cache (you could also move this to Convex for persistence)
 const conversations = new Map<string, BaseMessage[]>();
 
 export async function POST(req: NextRequest) {
+  const { userId } = await auth();
+
+  if (!userId) throw new Error("Unauthorized");
+
+  const decision = await aj.protect(req, { userId, requested: 1 });
+
+  if (decision.isDenied()) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      { status: 429 },
+    );
+  }
+
   try {
     const {
       agentId,
