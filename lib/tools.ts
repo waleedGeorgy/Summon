@@ -55,7 +55,7 @@ export const createToolFromConfig = (config: ToolConfig) => {
   );
 
   return new DynamicStructuredTool({
-    name: config.name.replace(/\s+/g, "_").toLowerCase(), // valid identifier
+    name: config.name.replace(/\s+/g, "_").toLowerCase(),
     description: config.description,
     schema: paramSchema,
     func: async (params: Record<string, unknown>) => {
@@ -85,7 +85,6 @@ export const createToolFromConfig = (config: ToolConfig) => {
         });
         const data = await response.json();
 
-        // Return a string – LangChain tools must return string
         return JSON.stringify(data, null, 2);
       } catch (error) {
         console.error("Error executing tool %s:", config.name, error);

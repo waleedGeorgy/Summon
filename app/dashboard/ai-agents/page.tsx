@@ -1,6 +1,6 @@
 'use client'
-import { HatGlasses } from "lucide-react";
 import { useQuery } from "convex/react"
+import { HatGlasses } from "lucide-react";
 import { api } from "@/convex/_generated/api"
 import DashboardCard from "../_components/DashboardCard";
 import { useCurrentUser } from "@/hooks/use-current-user";
