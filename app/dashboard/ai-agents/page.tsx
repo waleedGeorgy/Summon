@@ -1,17 +1,10 @@
 'use client'
-import { useQuery } from "convex/react"
 import { HatGlasses } from "lucide-react";
-import { api } from "@/convex/_generated/api"
 import DashboardCard from "../_components/DashboardCard";
-import { useCurrentUser } from "@/hooks/use-current-user";
+import { useActiveAgents } from "@/hooks/use-active-agents";
 
 const AgentsPage = () => {
-    const { user } = useCurrentUser();
-
-    const agents = useQuery(
-        api.agent.fetchAllAgents,
-        user ? { createdBy: user._id } : "skip"
-    );
+    const { agents } = useActiveAgents();
 
     const publishedAgents = agents?.filter((agent) => agent.isPublished === true);
 

@@ -145,7 +145,6 @@ const WorkflowPreviewPage = () => {
                 });
                 console.log('Error generating agent configuration ' + error)
             }
-
         });
     }
 

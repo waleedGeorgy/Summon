@@ -5,15 +5,10 @@ import { api } from "@/convex/_generated/api"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import MyAgents from "./MyAgents"
 import AgentTemplates from "./AgentTemplates"
-import { useCurrentUser } from "@/hooks/use-current-user"
+import { useActiveAgents } from "@/hooks/use-active-agents"
 
 const AgentTabs = () => {
-    const { user } = useCurrentUser();
-
-    const agents = useQuery(
-        api.agent.fetchAllAgents,
-        user ? { createdBy: user._id } : "skip"
-    );
+    const { agents } = useActiveAgents();
 
     const templates = useQuery(api.agent.fetchAllTemplates);
 

@@ -19,6 +19,7 @@ export function useActiveAgents() {
   const remainingAgents = 2 - activeAgents;
 
   return {
+    agents,
     activeAgents,
     remainingAgents,
   };
