@@ -34,15 +34,24 @@ function validateToolBaseUrl(rawUrl: string): URL {
   if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
     throw new Error("Tool URL must use http or https.");
   }
+  if (parsed.username || parsed.password) {
+    throw new Error("Tool URL must not include credentials.");
+  }
   if (isDisallowedHostname(parsed.hostname)) {
     throw new Error("Tool URL hostname is not allowed.");
   }
   return parsed;
 }
 
+function assertSameOrigin(baseUrl: URL, requestUrl: URL): void {
+  if (baseUrl.origin !== requestUrl.origin) {
+    throw new Error("Tool request URL must keep the same origin as the configured URL.");
+  }
+}
+
 export const createToolFromConfig = (config: ToolConfig) => {
   // Validate URL up-front to avoid creating unsafe tools
-  validateToolBaseUrl(config.url);
+  const baseUrl = validateToolBaseUrl(config.url);
 
   // Build Zod schema from the parameters object
   const paramSchema = z.object(
@@ -71,6 +80,7 @@ export const createToolFromConfig = (config: ToolConfig) => {
         }
 
         const requestUrl = validateToolBaseUrl(url);
+        assertSameOrigin(baseUrl, requestUrl);
 
         // Append API key if needed
         if (config.includeApiKey && config.apiKey) {
