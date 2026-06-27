@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { HighlightCodeAction } from "@/components/HighlightCodeAction";
 import { toast } from "sonner";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { getBaseUrl } from "@/lib/base-url";
 
 interface PublishButtonProps {
   agentId: Id<"Agents">;
@@ -37,7 +38,7 @@ export const PublishButton = ({ agentId, agentName }: PublishButtonProps) => {
   const snippet = `
 // How to call your "${agentName || "Agent"}" from any app
 async function chatWithAgent(userId, message, conversationId = null) {
-  const res = await fetch('${typeof window !== "undefined" ? window.location.origin : "http://localhost:3000"}/api/agent-sdk', {
+  const res = await fetch('${getBaseUrl()}/api/agent-sdk', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

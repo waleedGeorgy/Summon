@@ -43,17 +43,10 @@ function validateToolBaseUrl(rawUrl: string): URL {
   return parsed;
 }
 
-function assertSameOrigin(baseUrl: URL, requestUrl: URL): void {
-  if (baseUrl.origin !== requestUrl.origin) {
-    throw new Error("Tool request URL must keep the same origin as the configured URL.");
-  }
-}
-
 export const createToolFromConfig = (config: ToolConfig) => {
-  // Validate URL up-front to avoid creating unsafe tools
   const baseUrl = validateToolBaseUrl(config.url);
+  const allowedOrigin = baseUrl.origin;
 
-  // Build Zod schema from the parameters object
   const paramSchema = z.object(
     Object.fromEntries(
       Object.entries(config.parameters).map(([key, type]) => {
@@ -71,7 +64,6 @@ export const createToolFromConfig = (config: ToolConfig) => {
       try {
         let url = config.url;
 
-        // Replace URL parameters
         for (const key in params) {
           url = url.replace(
             `{${key}}`,
@@ -80,9 +72,13 @@ export const createToolFromConfig = (config: ToolConfig) => {
         }
 
         const requestUrl = validateToolBaseUrl(url);
-        assertSameOrigin(baseUrl, requestUrl);
 
-        // Append API key if needed
+        if (requestUrl.origin !== allowedOrigin) {
+          throw new Error(
+            `Tool origin mismatch: expected ${allowedOrigin} but got ${requestUrl.origin}`,
+          );
+        }
+
         if (config.includeApiKey && config.apiKey) {
           requestUrl.searchParams.append("key", config.apiKey);
         }

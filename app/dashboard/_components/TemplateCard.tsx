@@ -42,7 +42,6 @@ const tailwindColors: Record<string, string> = {
 };
 
 const TemplateCard = ({ template }: { template: Template }) => {
-    console.log(template)
     const IconComponent = icons[template.icon as keyof typeof icons] as LucideIcon;
     const hexColor = tailwindColors[template.color] || "#64748b";
 

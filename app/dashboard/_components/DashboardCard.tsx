@@ -55,13 +55,13 @@ const DashboardCard = ({ agent, icon: Icon, link }: { agent: Agent, icon: Lucide
                         {agent.status === 'locked' ? <LockKeyhole className="size-4 text-yellow-500" /> : <Icon className="size-4 text-emerald-500" />}
                         <span>{agent.name}</span>
                     </CardTitle>
-                    {agent.description && agent.description?.length > 0 ?
-                        <CardDescription className="line-clamp-1">
-                            {agent.description}
-                        </CardDescription>
-                        :
-                        <span className="italic text-neutral-400">No description</span>
-                    }
+                    <CardDescription className="line-clamp-1">
+                        {agent.description && agent.description?.length > 0 ?
+                            agent.description
+                            :
+                            <span className="italic text-neutral-400">No description</span>
+                        }
+                    </CardDescription>
                     <CardAction>
                         <Button
                             size='icon-sm'
