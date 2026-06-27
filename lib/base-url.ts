@@ -3,5 +3,5 @@ export const getBaseUrl = () => {
 
   if (process.env.NODE_ENV === "development") return "http://localhost:3000";
 
-  return process.env.NEXT_PUBLIC_APP_URL || "https://summon-azure.vercel.app";
+  return process.env.NEXT_PUBLIC_APP_URL;
 };
