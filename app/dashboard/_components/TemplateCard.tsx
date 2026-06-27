@@ -112,13 +112,13 @@ const TemplateCard = ({ template }: { template: Template }) => {
                     }
                 </CardAction>
             </CardHeader>
-            {template.description && template.description?.length > 0 ?
-                <CardContent className="line-clamp-2 leading-relaxed max-w-70">
-                    {template.description}
-                </CardContent>
-                :
-                <span className="italic text-neutral-400">No description</span>
-            }
+            <CardContent className="line-clamp-2 leading-relaxed max-w-70">
+                {template.description && template.description?.length > 0 ?
+                    template.description
+                    :
+                    <span className="italic text-neutral-400">No description</span>
+                }
+            </CardContent>
         </Card>
     )
 }
