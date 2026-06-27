@@ -5,12 +5,12 @@ import { HumanMessage, AIMessage, BaseMessage } from "@langchain/core/messages";
 import { createOpenRouterModel } from "@/config/openAi";
 import { createAgentFromWorkflow, WorkflowConfig } from "@/lib/agent";
 import { auth } from "@clerk/nextjs/server";
+import { aj } from "@/convex/arcjet";
 
 // In‑memory conversation cache (you could also move this to Convex for persistence)
 const conversations = new Map<string, BaseMessage[]>();
 
 export async function POST(req: NextRequest) {
-  const { aj } = await import("@/config/arcjet");
   const { userId } = await auth();
 
   if (!userId) throw new Error("Unauthorized");
