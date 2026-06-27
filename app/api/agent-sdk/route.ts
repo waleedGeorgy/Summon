@@ -5,7 +5,7 @@ import { HumanMessage, AIMessage, BaseMessage } from "@langchain/core/messages";
 import { createOpenRouterModel } from "@/config/openAi";
 import { createAgentFromWorkflow, WorkflowConfig } from "@/lib/agent";
 import { auth } from "@clerk/nextjs/server";
-import { aj } from "@/convex/arcjet";
+import { aj } from "@/config/arcjet";
 
 // In‑memory conversation cache (you could also move this to Convex for persistence)
 const conversations = new Map<string, BaseMessage[]>();

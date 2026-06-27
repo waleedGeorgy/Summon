@@ -4,7 +4,7 @@ import { HumanMessage, AIMessage, BaseMessage } from "@langchain/core/messages";
 import { createAgentFromWorkflow, WorkflowConfig } from "@/lib/agent";
 import { createOpenRouterModel } from "@/config/openAi";
 import { auth } from "@clerk/nextjs/server";
-import { aj } from "@/convex/arcjet";
+import { aj } from "@/config/arcjet";
 
 export interface AgentConfig {
   id: string;
