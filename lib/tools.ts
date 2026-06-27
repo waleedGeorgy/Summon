@@ -14,6 +14,12 @@ interface ToolConfig {
 }
 
 const ALLOWED_METHODS = new Set(["GET", "POST", "PUT", "PATCH", "DELETE"]);
+const ALLOWED_TOOL_ORIGINS = new Set(
+  (process.env.TOOL_ALLOWED_ORIGINS || "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean),
+);
 
 function isDisallowedHostname(hostname: string): boolean {
   const h = hostname.toLowerCase();
@@ -39,6 +45,9 @@ function validateToolBaseUrl(rawUrl: string): URL {
   }
   if (isDisallowedHostname(parsed.hostname)) {
     throw new Error("Tool URL hostname is not allowed.");
+  }
+  if (!ALLOWED_TOOL_ORIGINS.has(parsed.origin)) {
+    throw new Error("Tool URL origin is not in the allowed list.");
   }
   return parsed;
 }
