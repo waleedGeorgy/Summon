@@ -28,8 +28,6 @@ const CreateAgentDialog = () => {
 
     const [isAgentCreating, startCreatingAgent] = useTransition();
 
-    const maxDescriptionChars = 80;
-
     const { user, isPaidUser } = useCurrentUser();
 
     const { remainingAgents } = useActiveAgents();
@@ -37,6 +35,8 @@ const CreateAgentDialog = () => {
     const router = useRouter();
 
     const createNewAgentMutation = useMutation(api.agent.createNewAgent);
+
+    const maxDescriptionChars = 80;
 
     const createNewAgent = async (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
