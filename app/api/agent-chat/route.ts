@@ -90,9 +90,7 @@ export async function POST(req: NextRequest) {
       primaryAgentName,
     } = body;
 
-    if (!input) {
-      return NextResponse.json({ error: "Input is required" }, { status: 400 });
-    }
+    if (!input) return NextResponse.json({ error: "Input is required" }, { status: 400 });
 
     // Conversation handling
     const conversationId = typeof convId === "string" ? convId : uuidv4();
@@ -158,6 +156,13 @@ export async function POST(req: NextRequest) {
         } catch (error) {
           console.error("Streaming error:", error);
           controller.error(error);
+          return NextResponse.json(
+            {
+              error: "Streaming error",
+              details: error instanceof Error ? error.message : "Unknown error",
+            },
+            { status: 500 },
+          );
         }
       },
     });

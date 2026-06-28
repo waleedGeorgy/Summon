@@ -52,15 +52,21 @@ const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, agent, co
                     }),
                 });
 
-                if (response.status === 429) {
-                    const data = await response.json();
-                    toast.error(`Rate limit exceeded. Try again in ${data.retryAfter} seconds.`, {
+                if (!response.ok) {
+                    if (response.status === 429) {
+                        const data = await response.json();
+                        toast.error(`Rate limit exceeded. Try again in ${data.retryAfter} seconds.`, {
+                            icon: <XCircle className="text-red-500" size={18} />
+                        });
+                        return;
+                    }
+
+                    const errorData = await response.json();
+                    toast.error(errorData.error || 'Error generating response', {
                         icon: <XCircle className="text-red-500" size={18} />
                     });
                     return;
                 }
-
-                if (!response.ok) return;
 
                 const reader = response.body?.getReader();
                 if (!reader) return;
