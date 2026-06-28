@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { fetchQuery, fetchMutation } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
 import { HumanMessage, AIMessage, BaseMessage } from "@langchain/core/messages";
-import { createOpenRouterModel } from "@/config/openAi";
 import { createAgentFromWorkflow, WorkflowConfig } from "@/lib/agent";
 import { auth } from "@clerk/nextjs/server";
 import { aj } from "@/config/arcjet";
+import { createOpenRouterModel } from "@/config/init-ai";
 
 // In‑memory conversation cache (you could also move this to Convex for persistence)
 const conversations = new Map<string, BaseMessage[]>();
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
     };
 
     // 5. Model selection (you can also store the model on the agent)
-    const model = createOpenRouterModel("google/gemma-4-31b-it:free"); // or from agent config
+    const model = createOpenRouterModel("google/gemma-4-31b-it:free");
 
     // 6. Create the agent and stream
     const langchainAgent = await createAgentFromWorkflow(model, workflowConfig);

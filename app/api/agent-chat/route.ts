@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 import { HumanMessage, AIMessage, BaseMessage } from "@langchain/core/messages";
 import { createAgentFromWorkflow, WorkflowConfig } from "@/lib/agent";
-import { createOpenRouterModel } from "@/config/openAi";
 import { auth } from "@clerk/nextjs/server";
 import { aj } from "@/config/arcjet";
+import { createOpenRouterModel } from "@/config/init-ai";
 
 export interface AgentConfig {
   id: string;
@@ -90,7 +90,8 @@ export async function POST(req: NextRequest) {
       primaryAgentName,
     } = body;
 
-    if (!input) return NextResponse.json({ error: "Input is required" }, { status: 400 });
+    if (!input)
+      return NextResponse.json({ error: "Input is required" }, { status: 400 });
 
     // Conversation handling
     const conversationId = typeof convId === "string" ? convId : uuidv4();
