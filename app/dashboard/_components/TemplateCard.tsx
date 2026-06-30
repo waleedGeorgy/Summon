@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/card"
 import { toast } from "sonner";
 import { useCurrentUser } from "@/hooks/use-current-user";
-import { useActiveAgents } from "@/hooks/use-active-agents";
+import { useWorkflows } from "@/hooks/use-workflows";
 
 const tailwindColors: Record<string, string> = {
     "slate-500": "#64748b",
@@ -47,9 +47,9 @@ const TemplateCard = ({ template }: { template: Template }) => {
 
     const { user, isPaidUser } = useCurrentUser();
 
-    const { remainingAgents } = useActiveAgents();
+    const { remainingWorkflows } = useWorkflows();
 
-    const createWorkflowFromTemplate = useMutation(api.agent.createNewAgent);
+    const createWorkflowFromTemplate = useMutation(api.workflow.createNewWorkflow);
 
     const router = useRouter();
 
@@ -87,7 +87,7 @@ const TemplateCard = ({ template }: { template: Template }) => {
     return (
         <Card
             size="sm"
-            className={`min-w-2xs cursor-pointer shadow hover:shadow-lg hover:-translate-y-1 dark:hover:brightness-125 transition duration-300 ${isCreatingWorkflow || (!isPaidUser && remainingAgents <= 0) ? 'opacity-60 pointer-events-none' : ''}`}
+            className={`min-w-2xs cursor-pointer shadow hover:shadow-lg hover:-translate-y-1 dark:hover:brightness-125 transition duration-300 ${isCreatingWorkflow || (!isPaidUser && remainingWorkflows <= 0) ? 'opacity-60 pointer-events-none' : ''}`}
             style={{
                 background: `linear-gradient(to bottom left, ${hexColor}4D, var(--card))`
             }}

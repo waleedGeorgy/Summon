@@ -1,7 +1,7 @@
 import { Template } from "@/convex/schema"
 import TemplateCard from "../../_components/TemplateCard"
 
-const AgentTemplates = ({ templates, isLoading }: { templates: Template[], isLoading: boolean }) => {
+const WorkflowTemplates = ({ templates, isLoading }: { templates: Template[], isLoading: boolean }) => {
     return (
         <div className="flex flex-wrap gap-4 md:px-12 px-6 py-4">
             {isLoading ?
@@ -19,4 +19,4 @@ const AgentTemplates = ({ templates, isLoading }: { templates: Template[], isLoa
     )
 }
 
-export default AgentTemplates
+export default WorkflowTemplates

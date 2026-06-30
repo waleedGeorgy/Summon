@@ -1,11 +1,11 @@
-import AgentTabs from "./_components/AgentTabs"
-import CreateAgentDialog from "./_components/CreateAgentDialog"
+import CreateWorkflowDialog from "./_components/CreateWorkflowDialog"
+import WorkflowsTabs from "./_components/WorkflowsTabs"
 
 const DashboardPage = () => {
     return (
         <div className="space-y-10">
-            <CreateAgentDialog />
-            <AgentTabs />
+            <CreateWorkflowDialog />
+            <WorkflowsTabs />
         </div>
     )
 }

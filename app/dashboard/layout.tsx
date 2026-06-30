@@ -2,14 +2,14 @@
 import { ReactNode } from "react"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { DashboardSidebar } from "./_components/DashboardSidebar"
-import Header from "./_components/Header"
+import DashboardHeader from "./_components/DashboardHeader"
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
     return (
         <SidebarProvider>
             <DashboardSidebar />
             <div className="w-full">
-                <Header />
+                <DashboardHeader />
                 {children}
             </div>
         </SidebarProvider>

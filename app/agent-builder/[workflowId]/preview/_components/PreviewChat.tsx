@@ -1,7 +1,7 @@
 import { KeyboardEvent, useEffect, useRef, useState, useTransition } from "react"
 import { Loader2, RefreshCcw, SendHorizonal, XCircle } from "lucide-react"
 import Markdown from 'react-markdown'
-import { Agent } from "@/convex/schema"
+import { Workflow } from "@/convex/schema"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
@@ -10,11 +10,11 @@ import { toast } from "sonner"
 interface PreviewChatProps {
     generateConfigFromWorkflow: () => void,
     isGeneratingConfig: boolean,
-    agent: Agent,
+    workflow: Workflow,
     conversationId: string | null
 }
 
-const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, agent, conversationId }: PreviewChatProps) => {
+const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, workflow, conversationId }: PreviewChatProps) => {
     const [userChatInput, setUserChatInput] = useState('');
     const [chatMessages, setChatMessages] = useState<{ role: 'user' | 'assistant', contents: string }[]>([]);
 
@@ -45,9 +45,9 @@ const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, agent, co
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         input: userChatInput,
-                        tools: agent?.config?.tools || [],
-                        agents: agent?.config?.agents || [],
-                        agentName: agent?.name,
+                        tools: workflow?.agentConfig?.tools || [],
+                        agents: workflow?.agentConfig?.agents || [],
+                        agentName: workflow?.name,
                         convId: conversationId,
                     }),
                 });
@@ -112,7 +112,7 @@ const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, agent, co
     return (
         <div className="w-full h-full px-2 py-3 flex flex-col">
             <div className="flex items-center gap-2 px-1 justify-between">
-                <h3 className="font-semibold">{agent.name || "Agent"}</h3>
+                <h3 className="font-semibold">{workflow.name || "Agent"}</h3>
                 <Button size='sm' disabled={isGeneratingConfig} onClick={generateConfigFromWorkflow}>
                     <RefreshCcw className={`${isGeneratingConfig && 'animate-spin'}`} />Regenerate agent
                 </Button>

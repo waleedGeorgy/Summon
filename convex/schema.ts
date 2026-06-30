@@ -57,14 +57,14 @@ export default defineSchema({
     currentPeriodEnd: v.optional(v.union(v.null(), v.number())),
   }).index("by_user_id", ["userId"]),
 
-  Agents: defineTable({
+  Workflows: defineTable({
     name: v.string(),
     description: v.optional(v.string()),
     nodes: v.optional(v.array(CustomNode)),
     edges: v.optional(v.any()),
     isPublished: v.boolean(),
     createdBy: v.id("Users"),
-    config: v.optional(v.any()),
+    agentConfig: v.optional(v.any()),
     status: v.union(v.literal("active"), v.literal("locked")),
   }).index("by_created_by", ["createdBy"]),
 
@@ -79,12 +79,12 @@ export default defineSchema({
 
   Conversations: defineTable({
     conversationId: v.string(),
-    agentId: v.id("Agents"),
+    agentId: v.id("Workflows"),
     userId: v.id("Users"),
   }).index("by_agent_and_user", ["agentId", "userId"]),
 });
 
 export type User = Doc<"Users">;
-export type Agent = Doc<"Agents">;
+export type Workflow = Doc<"Workflows">;
 export type Conversation = Doc<"Conversations">;
 export type Template = Doc<"Templates">;

@@ -8,10 +8,10 @@
  * @module
  */
 
-import type * as agent from "../agent.js";
 import type * as conversation from "../conversation.js";
 import type * as http from "../http.js";
 import type * as user from "../user.js";
+import type * as workflow from "../workflow.js";
 
 import type {
   ApiFromModules,
@@ -20,10 +20,10 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
-  agent: typeof agent;
   conversation: typeof conversation;
   http: typeof http;
   user: typeof user;
+  workflow: typeof workflow;
 }>;
 
 /**

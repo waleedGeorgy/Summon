@@ -1,9 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { useQuery } from "convex/react";
 import { Copy, ExternalLink, Loader2, CopyCheck, Code2, LockKeyhole } from "lucide-react";
-import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
 import { HighlightCodeAction } from "@/components/HighlightCodeAction";
 import {
     Dialog,
@@ -16,30 +13,23 @@ import {
 import { Button } from "@/components/ui/button";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { getBaseUrl } from "@/lib/base-url";
+import { Workflow } from "@/convex/schema";
 
-interface CodeButtonProps {
-    agentId: Id<"Agents">;
-    agentName?: string;
-    isAgentPublished: boolean;
-}
-
-export const CodeButton = ({ agentId, agentName, isAgentPublished }: CodeButtonProps) => {
+export const CodeButton = ({ workflow }: { workflow: Workflow }) => {
     const [copied, setCopied] = useState(false);
     const [highlightedHtml, setHighlightedHtml] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const agent = useQuery(api.agent.getAgentById, { agentId: agentId });
-
     const { isPaidUser, isLoading } = useCurrentUser();
 
     const snippet = `
-// How to call your "${agentName || "Agent"}"
+// How to call your "${workflow.name || "Agent"}"
 async function chatWithAgent(userId, message, conversationId = null) {
   const res = await fetch('${getBaseUrl()}/api/agent-sdk', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      agentId: '${agentId}',
+      agentId: '${workflow._id}',
       userId: userId,
       input: message,
       conversationId: conversationId,
@@ -105,7 +95,7 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
                 <Button
                     variant='outline'
                     size="sm"
-                    disabled={!agent?.config || !isAgentPublished || isLoading || (!isPaidUser && !isLoading)}
+                    disabled={!workflow?.agentConfig || !workflow.isPublished || isLoading || (!isPaidUser && !isLoading)}
                 >
                     {isLoading ?
                         <Code2 className="size-4" />
@@ -121,7 +111,7 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                         <ExternalLink className="size-5" />
-                        API Snippet for &quot;{agentName}&quot;
+                        API Snippet for &quot;{workflow?._id}&quot;
                     </DialogTitle>
                     <DialogDescription>
                         Copy this code into any JavaScript / TypeScript app to use your agent.

@@ -2,7 +2,7 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { CustomNode } from "./schema";
 
-export const createNewAgent = mutation({
+export const createNewWorkflow = mutation({
   args: {
     name: v.string(),
     description: v.string(),
@@ -15,18 +15,17 @@ export const createNewAgent = mutation({
     if (!user) throw new Error("User not found");
 
     if (user.subscription === "free") {
-      const activeAgents = await ctx.db
-        .query("Agents")
+      const activeWorkflows = await ctx.db
+        .query("Workflows")
         .withIndex("by_created_by", (q) => q.eq("createdBy", args.userId))
         .filter((q) => q.eq(q.field("status"), "active"))
         .collect();
 
-      if (activeAgents.length >= 2) {
+      if (activeWorkflows.length >= 2)
         throw new Error("Free plan limited to 2 agents");
-      }
     }
 
-    const result = await ctx.db.insert("Agents", {
+    const insertedWorkflowId = await ctx.db.insert("Workflows", {
       name: args.name,
       description: args.description,
       isPublished: false,
@@ -35,46 +34,46 @@ export const createNewAgent = mutation({
       nodes: args.nodes ?? [],
       edges: args.edges ?? [],
     });
-    return result;
+    return insertedWorkflowId;
   },
 });
 
-export const fetchAllAgents = query({
+export const fetchAllWorkflows = query({
   args: { createdBy: v.id("Users") },
   handler: async (ctx, args) => {
-    const results = await ctx.db
-      .query("Agents")
+    const workflows = await ctx.db
+      .query("Workflows")
       .withIndex("by_created_by", (q) => q.eq("createdBy", args.createdBy))
       .order("desc")
       .collect();
-    return results;
+    return workflows;
   },
 });
 
 export const fetchAllTemplates = query({
   args: {},
   handler: async (ctx) => {
-    const results = await ctx.db.query("Templates").collect();
-    return results;
+    const templates = await ctx.db.query("Templates").collect();
+    return templates;
   },
 });
 
-export const getAgentById = query({
-  args: { agentId: v.id("Agents") },
+export const getWorkflowById = query({
+  args: { workflowId: v.id("Workflows") },
   handler: async (ctx, args) => {
-    const agent = await ctx.db.get(args.agentId);
-    if (agent) return agent;
+    const workflow = await ctx.db.get(args.workflowId);
+    if (workflow) return workflow;
   },
 });
 
-export const updateAgentDetails = mutation({
+export const updateWorkflowNodesAndEdges = mutation({
   args: {
-    agentId: v.id("Agents"),
+    workflowId: v.id("Workflows"),
     nodes: v.array(CustomNode),
     edges: v.any(),
   },
   handler: async (ctx, args) => {
-    await ctx.db.patch(args.agentId, {
+    await ctx.db.patch(args.workflowId, {
       nodes: args.nodes,
       edges: args.edges,
     });
@@ -83,50 +82,50 @@ export const updateAgentDetails = mutation({
 
 export const updateWorkflowNameAndDescription = mutation({
   args: {
-    agentId: v.id("Agents"),
+    workflowId: v.id("Workflows"),
     name: v.string(),
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    await ctx.db.patch(args.agentId, {
+    await ctx.db.patch(args.workflowId, {
       name: args.name,
       description: args.description ? args.description : "",
     });
   },
 });
 
-export const deleteAgent = mutation({
-  args: { agentId: v.id("Agents") },
+export const deleteWorkflow = mutation({
+  args: { workflowId: v.id("Workflows") },
   handler: async (ctx, args) => {
-    await ctx.db.delete("Agents", args.agentId);
+    await ctx.db.delete("Workflows", args.workflowId);
   },
 });
 
-export const updateAgentConfig = mutation({
+export const updateWorkflowConfig = mutation({
   args: {
-    agentId: v.id("Agents"),
+    workflowId: v.id("Workflows"),
     config: v.any(),
   },
   handler: async (ctx, args) => {
     const authUser = await ctx.auth.getUserIdentity();
     if (!authUser) throw new Error("User not authenticated");
 
-    await ctx.db.patch(args.agentId, {
-      config: args.config,
+    await ctx.db.patch(args.workflowId, {
+      agentConfig: args.config,
     });
   },
 });
 
-export const togglePublishAgent = mutation({
+export const togglePublishStatus = mutation({
   args: {
-    agentId: v.id("Agents"),
+    workflowId: v.id("Workflows"),
     isPublished: v.boolean(),
   },
   handler: async (ctx, args) => {
-    const agent = await ctx.db.get(args.agentId);
-    if (!agent) throw new Error("Agent not found");
+    const workflow = await ctx.db.get(args.workflowId);
+    if (!workflow) throw new Error("Workflow not found");
 
-    await ctx.db.patch(args.agentId, {
+    await ctx.db.patch(args.workflowId, {
       isPublished: args.isPublished,
     });
 
@@ -134,7 +133,7 @@ export const togglePublishAgent = mutation({
   },
 });
 
-export const updateAgentsStatus = mutation({
+export const updateWorkflowStatus = mutation({
   args: {
     userId: v.id("Users"),
     newPlan: v.union(v.literal("free"), v.literal("unlimited")),
@@ -144,21 +143,21 @@ export const updateAgentsStatus = mutation({
       subscription: args.newPlan,
     });
 
-    const agents = await ctx.db
-      .query("Agents")
+    const workflows = await ctx.db
+      .query("Workflows")
       .withIndex("by_created_by", (q) => q.eq("createdBy", args.userId))
       .order("desc")
       .collect();
 
     if (args.newPlan === "free") {
-      for (let i = 0; i < agents.length; i++) {
+      for (let i = 0; i < workflows.length; i++) {
         const newStatus = i < 2 ? "active" : "locked";
-        await ctx.db.patch(agents[i]._id, { status: newStatus });
+        await ctx.db.patch(workflows[i]._id, { status: newStatus });
       }
     } else {
-      for (const agent of agents) {
-        if (agent.status === "locked") {
-          await ctx.db.patch(agent._id, { status: "active" });
+      for (const workflow of workflows) {
+        if (workflow.status === "locked") {
+          await ctx.db.patch(workflow._id, { status: "active" });
         }
       }
     }

@@ -20,35 +20,35 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { useCurrentUser } from "@/hooks/use-current-user";
-import { useActiveAgents } from "@/hooks/use-active-agents";
+import { useWorkflows } from "@/hooks/use-workflows";
 
-const CreateAgentDialog = () => {
-    const [agentDetails, setAgentDetails] = useState({ name: '', description: '' });
+const CreateWorkflowDialog = () => {
+    const [workflowDetails, setWorkflowDetails] = useState({ name: '', description: '' });
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-    const [isAgentCreating, startCreatingAgent] = useTransition();
+    const [isWorkflowCreating, startCreatingWorkflow] = useTransition();
 
     const { user, isPaidUser } = useCurrentUser();
 
-    const { remainingAgents } = useActiveAgents();
+    const { remainingWorkflows } = useWorkflows();
 
     const router = useRouter();
 
-    const createNewAgentMutation = useMutation(api.agent.createNewAgent);
+    const createNewAgentMutation = useMutation(api.workflow.createNewWorkflow);
 
     const maxDescriptionChars = 80;
 
     const createNewAgent = async (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        startCreatingAgent(async () => {
+        startCreatingWorkflow(async () => {
             let agentURL;
 
             try {
                 if (user) {
                     agentURL = await createNewAgentMutation({
-                        name: agentDetails.name,
-                        description: agentDetails.description,
+                        name: workflowDetails.name,
+                        description: workflowDetails.description,
                         userId: user?._id
                     });
                 };
@@ -74,7 +74,7 @@ const CreateAgentDialog = () => {
             <p>Build and customize your custom AI workflow</p>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger render={
-                    <Button className='mt-3' onClick={() => setIsDialogOpen(true)} disabled={!isPaidUser && ((remainingAgents ?? 0) <= 0)}>
+                    <Button className='mt-3' onClick={() => setIsDialogOpen(true)} disabled={!isPaidUser && ((remainingWorkflows ?? 0) <= 0)}>
                         <PlusCircleIcon />
                         <span>Create</span>
                     </Button>
@@ -94,23 +94,23 @@ const CreateAgentDialog = () => {
                                     id="agent-name"
                                     name="name"
                                     autoFocus
-                                    onChange={e => setAgentDetails({ ...agentDetails, name: e.target.value })}
-                                    disabled={isAgentCreating}
+                                    onChange={e => setWorkflowDetails({ ...workflowDetails, name: e.target.value })}
+                                    disabled={isWorkflowCreating}
                                 />
                             </Field>
                             <Field>
                                 <Label htmlFor="agent-desc">
                                     Description
                                     <span className="text-sm text-muted-foreground ml-auto">
-                                        {agentDetails.description.length}/{maxDescriptionChars}
+                                        {workflowDetails.description.length}/{maxDescriptionChars}
                                     </span>
                                 </Label>
                                 <Input
                                     id="agent-desc"
                                     maxLength={80}
                                     name="desc"
-                                    onChange={e => setAgentDetails({ ...agentDetails, description: e.target.value })}
-                                    disabled={isAgentCreating}
+                                    onChange={e => setWorkflowDetails({ ...workflowDetails, description: e.target.value })}
+                                    disabled={isWorkflowCreating}
                                 />
                             </Field>
                         </FieldGroup>
@@ -118,8 +118,8 @@ const CreateAgentDialog = () => {
                             <DialogClose render={
                                 <Button variant="outline" type="button">Cancel</Button>
                             } />
-                            <Button type="submit" disabled={!agentDetails.name || isAgentCreating || (!isPaidUser && ((remainingAgents ?? 0) <= 0))}>
-                                {isAgentCreating ? <Loader2 className="animate-spin" /> : "Create"}
+                            <Button type="submit" disabled={!workflowDetails.name || isWorkflowCreating || (!isPaidUser && ((remainingWorkflows ?? 0) <= 0))}>
+                                {isWorkflowCreating ? <Loader2 className="animate-spin" /> : "Create"}
                             </Button>
                         </DialogFooter>
                     </form>
@@ -129,4 +129,4 @@ const CreateAgentDialog = () => {
     )
 }
 
-export default CreateAgentDialog
+export default CreateWorkflowDialog

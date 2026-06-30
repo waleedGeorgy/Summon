@@ -2,25 +2,25 @@ import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
 import { useCurrentUser } from "./use-current-user";
 
-export function useActiveAgents() {
+export function useWorkflows() {
   const { user } = useCurrentUser();
 
-  const agents = useQuery(
-    api.agent.fetchAllAgents,
+  const workflows = useQuery(
+    api.workflow.fetchAllWorkflows,
     user ? { createdBy: user._id } : "skip",
   );
 
-  const activeAgents =
-    agents?.reduce(
+  const activeWorkflows =
+    workflows?.reduce(
       (count, agent) => count + (agent.status === "active" ? 1 : 0),
       0,
     ) ?? 0;
 
-  const remainingAgents = 2 - activeAgents;
+  const remainingWorkflows = 2 - activeWorkflows;
 
   return {
-    agents,
-    activeAgents,
-    remainingAgents,
+    workflows,
+    activeWorkflows,
+    remainingWorkflows,
   };
 }

@@ -16,7 +16,7 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar"
 import { useCurrentUser } from "@/hooks/use-current-user"
-import { useActiveAgents } from "@/hooks/use-active-agents"
+import { useWorkflows } from "@/hooks/use-workflows"
 
 const menuItems = [
     {
@@ -39,7 +39,7 @@ const menuItems = [
 export function DashboardSidebar() {
     const { isLoading, isPaidUser } = useCurrentUser();
 
-    const { remainingAgents } = useActiveAgents();
+    const { remainingWorkflows } = useWorkflows();
 
     const { open } = useSidebar();
 
@@ -87,7 +87,7 @@ export function DashboardSidebar() {
                                 isPaidUser ?
                                     <span className="text-sm text-yellow-500 font-semibold">Unlimited</span>
                                     :
-                                    <span className="text-sm">{remainingAgents} / 2</span>
+                                    <span className="text-sm">{remainingWorkflows} / 2</span>
                             }
                         </div>
                     </div>

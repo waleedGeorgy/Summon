@@ -33,7 +33,9 @@ export async function POST(req: NextRequest) {
     } = await req.json();
 
     // 1. Fetch the agent from Convex
-    const agent = await fetchQuery(api.agent.getAgentById, { agentId });
+    const agent = await fetchQuery(api.workflow.getWorkflowById, {
+      workflowId: agentId,
+    });
     if (!agent || !agent.isPublished) {
       return NextResponse.json(
         { error: "Agent not found or not published" },
@@ -62,10 +64,10 @@ export async function POST(req: NextRequest) {
 
     // 4. Build workflow config from the agent’s stored toolConfig
     const workflowConfig: WorkflowConfig = {
-      agents: agent.config?.agents || [],
-      tools: agent.config?.tools || [],
+      agents: agent.agentConfig?.agents || [],
+      tools: agent.agentConfig?.tools || [],
       primaryAgentName: agent.name || "AI Assistant",
-      systemPrompt: agent.config?.systemPrompt || `You are ${agent.name}.`,
+      systemPrompt: agent.agentConfig?.systemPrompt || `You are ${agent.name}.`,
     };
 
     // 5. Model selection (you can also store the model on the agent)

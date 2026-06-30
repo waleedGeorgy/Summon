@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 export default function PricingPage() {
     const { isLoaded } = useUser();
     const [isMounted, setIsMounted] = useState(false);
+
     const { resolvedTheme } = useTheme();
     const isDark = resolvedTheme === "dark";
 
@@ -21,10 +22,7 @@ export default function PricingPage() {
                 <h2 className="text-2xl md:px-12 px-6 mt-12">Pricing plans</h2>
                 <div className="flex items-center flex-wrap gap-4 md:px-12 px-6 py-4">
                     {[...Array(2)].map((_, id) => (
-                        <div
-                            className="w-150 h-75 dark:bg-sidebar bg-neutral-400 animate-pulse rounded-xl"
-                            key={id}
-                        />
+                        <div className="w-150 h-75 dark:bg-sidebar bg-neutral-400 animate-pulse rounded-xl" key={id} />
                     ))}
                 </div>
             </div>

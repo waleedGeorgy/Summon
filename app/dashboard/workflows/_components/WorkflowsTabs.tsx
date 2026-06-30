@@ -2,15 +2,15 @@
 import { useQuery } from "convex/react"
 import { NotepadText, Workflow } from "lucide-react"
 import { api } from "@/convex/_generated/api"
+import WorkflowTemplates from "./WorkflowTemplates"
+import MyWorkflows from "./MyWorkflows"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import MyAgents from "./MyAgents"
-import AgentTemplates from "./AgentTemplates"
-import { useActiveAgents } from "@/hooks/use-active-agents"
+import { useWorkflows } from "@/hooks/use-workflows"
 
-const AgentTabs = () => {
-    const { agents } = useActiveAgents();
+const WorkflowsTabs = () => {
+    const { workflows } = useWorkflows();
 
-    const templates = useQuery(api.agent.fetchAllTemplates);
+    const templates = useQuery(api.workflow.fetchAllTemplates);
 
     return (
         <Tabs defaultValue="my-agents">
@@ -23,11 +23,11 @@ const AgentTabs = () => {
                 </TabsTrigger>
             </TabsList>
             <TabsContent value='my-agents'>
-                <MyAgents agents={agents ?? []} isLoading={!agents} />
+                <MyWorkflows workflows={workflows ?? []} isLoading={!workflows} />
             </TabsContent>
-            <TabsContent value='templates'><AgentTemplates templates={templates ?? []} isLoading={!templates} /></TabsContent>
+            <TabsContent value='templates'><WorkflowTemplates templates={templates ?? []} isLoading={!templates} /></TabsContent>
         </Tabs>
     )
 }
 
-export default AgentTabs
+export default WorkflowsTabs

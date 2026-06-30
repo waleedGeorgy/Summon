@@ -53,13 +53,13 @@ export const deleteUser = mutation({
 
     if (!userToDelete) throw new Error("User not found");
 
-    const agentsToDelete = await ctx.db
-      .query("Agents")
+    const workflowsToDelete = await ctx.db
+      .query("Workflows")
       .withIndex("by_created_by", (q) => q.eq("createdBy", userToDelete._id))
       .collect();
 
-    for (const agent of agentsToDelete) {
-      await ctx.db.delete(agent._id);
+    for (const workflow of workflowsToDelete) {
+      await ctx.db.delete(workflow._id);
     }
 
     await ctx.db.delete(userToDelete._id);

@@ -1,10 +1,10 @@
 'use client'
 import { HatGlasses } from "lucide-react";
 import DashboardCard from "../_components/DashboardCard";
-import { useActiveAgents } from "@/hooks/use-active-agents";
+import { useWorkflows } from "@/hooks/use-workflows";
 
 const AgentsPage = () => {
-    const { agents } = useActiveAgents();
+    const { workflows: agents } = useWorkflows();
 
     const publishedAgents = agents?.filter((agent) => agent.isPublished === true);
 
@@ -20,7 +20,7 @@ const AgentsPage = () => {
                         publishedAgents.map(publishedAgent => (
                             <DashboardCard
                                 key={publishedAgent._id}
-                                agent={publishedAgent}
+                                workflow={publishedAgent}
                                 icon={HatGlasses} link={`/agent-builder/${publishedAgent._id}/preview`}
                             />
                         ))

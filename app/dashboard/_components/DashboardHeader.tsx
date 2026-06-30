@@ -2,7 +2,7 @@ import { UserButton, useUser } from "@clerk/nextjs"
 import { ThemeToggleButton } from "@/components/ThemeToggleButton"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 
-const Header = () => {
+const DashboardHeader = () => {
     const { isLoaded } = useUser();
 
     return (
@@ -27,4 +27,4 @@ const Header = () => {
     )
 }
 
-export default Header
+export default DashboardHeader

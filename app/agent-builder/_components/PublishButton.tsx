@@ -1,9 +1,8 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { useMutation, useQuery } from "convex/react";
+import { useMutation } from "convex/react";
 import { CheckCircle, Copy, ExternalLink, Share2, Loader2, CopyCheck, CircleX, LockKeyhole } from "lucide-react";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
 import {
   Dialog,
   DialogContent,
@@ -16,13 +15,9 @@ import { HighlightCodeAction } from "@/components/HighlightCodeAction";
 import { toast } from "sonner";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { getBaseUrl } from "@/lib/base-url";
+import { Workflow } from "@/convex/schema";
 
-interface PublishButtonProps {
-  agentId: Id<"Agents">;
-  agentName?: string;
-}
-
-export const PublishButton = ({ agentId, agentName }: PublishButtonProps) => {
+export const PublishButton = ({ workflow }: { workflow: Workflow }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [highlightedHtml, setHighlightedHtml] = useState("");
@@ -30,19 +25,18 @@ export const PublishButton = ({ agentId, agentName }: PublishButtonProps) => {
 
   const { isPaidUser, isLoading } = useCurrentUser();
 
-  const agent = useQuery(api.agent.getAgentById, { agentId: agentId });
-  const togglePublish = useMutation(api.agent.togglePublishAgent);
+  const togglePublish = useMutation(api.workflow.togglePublishStatus);
 
-  const isPublished = agent?.isPublished ?? false;
+  const isPublished = workflow?.isPublished ?? false;
 
   const snippet = `
-// How to call your "${agentName || "Agent"}" from any app
+// How to call your "${workflow.name || "Agent"}" from any app
 async function chatWithAgent(userId, message, conversationId = null) {
   const res = await fetch('${getBaseUrl()}/api/agent-sdk', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      agentId: '${agentId}',
+      agentId: '${workflow._id}',
       userId: userId,
       input: message,
       conversationId: conversationId,
@@ -104,11 +98,11 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
 
   const handleTogglePublish = async () => {
     if (!isPublished) setDialogOpen(true);
-    else await togglePublish({ agentId: agentId, isPublished: false });
+    else await togglePublish({ workflowId: workflow._id, isPublished: false });
   };
 
   const handleConfirmPublish = async () => {
-    await togglePublish({ agentId: agentId, isPublished: true });
+    await togglePublish({ workflowId: workflow._id, isPublished: true });
     setDialogOpen(false);
     toast.success('AI agent published', {
       icon: <CheckCircle className="text-emerald-500" size={18} />
@@ -121,7 +115,7 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
         variant={!isPaidUser ? "outline" : isPublished ? "destructive" : 'default'}
         size="sm"
         onClick={handleTogglePublish}
-        disabled={!agent?.config || !isPaidUser}
+        disabled={!workflow?.agentConfig || !isPaidUser}
       >
         {isPublished ? (
           <>
@@ -142,7 +136,7 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <ExternalLink className="size-5" />
-              API Snippet for &quot;{agentName}&quot;
+              API Snippet for &quot;{workflow.name}&quot;
             </DialogTitle>
             <DialogDescription>
               Copy this code into any JavaScript / TypeScript app to use your agent.
@@ -188,7 +182,7 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
               <Button variant="outline" onClick={() => setDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button onClick={handleConfirmPublish} disabled={!agent?.config || !isPaidUser}>
+              <Button onClick={handleConfirmPublish} disabled={!workflow?.agentConfig || !isPaidUser}>
                 <CheckCircle />
                 Confirm & Publish
               </Button>

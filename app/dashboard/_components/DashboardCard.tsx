@@ -1,7 +1,6 @@
 'use client'
 import { MouseEvent, useTransition } from "react";
 import Link from "next/link"
-import { Agent } from "@/convex/schema"
 import { useMutation } from "convex/react";
 import { CalendarCheck2, Circle, Trash2, CheckCircle, XCircle, Loader2, LucideIcon, LockKeyhole } from "lucide-react"
 import { formatDistance } from "date-fns";
@@ -17,11 +16,12 @@ import {
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Workflow } from "@/convex/schema";
 
-const DashboardCard = ({ agent, icon: Icon, link }: { agent: Agent, icon: LucideIcon, link: string }) => {
-    const formattedDate = formatDistance(agent._creationTime, new Date(), { addSuffix: true });
+const DashboardCard = ({ workflow, icon: Icon, link }: { workflow: Workflow, icon: LucideIcon, link: string }) => {
+    const formattedDate = formatDistance(workflow._creationTime, new Date(), { addSuffix: true });
 
-    const deleteAgentMutation = useMutation(api.agent.deleteAgent);
+    const deleteAgentMutation = useMutation(api.workflow.deleteWorkflow);
 
     const [isDeleting, startDeletingAgent] = useTransition();
 
@@ -31,7 +31,7 @@ const DashboardCard = ({ agent, icon: Icon, link }: { agent: Agent, icon: Lucide
 
         startDeletingAgent(async () => {
             try {
-                await deleteAgentMutation({ agentId: agent._id });
+                await deleteAgentMutation({ workflowId: workflow._id });
                 toast.success('Agent deleted successfully', {
                     icon: <CheckCircle className="text-emerald-500" size={18} />
                 })
@@ -46,18 +46,18 @@ const DashboardCard = ({ agent, icon: Icon, link }: { agent: Agent, icon: Lucide
 
     return (
         <Link
-            className={`group hover:-translate-y-1 dark:hover:brightness-125 transition-all duration-300 cursor-pointer ${isDeleting && 'pointer-events-none'} ${agent.status === 'locked' && 'opacity-75 pointer-events-none'}`}
+            className={`group hover:-translate-y-1 dark:hover:brightness-125 transition-all duration-300 cursor-pointer ${isDeleting && 'pointer-events-none'} ${workflow.status === 'locked' && 'opacity-75 pointer-events-none'}`}
             href={link}
         >
-            <Card size="sm" className={`min-w-2xs shadow hover:shadow-lg transition-shadow duration-300 ${agent.status === 'locked' && 'outline outline-yellow-500'}`}>
+            <Card size="sm" className={`min-w-2xs shadow hover:shadow-lg transition-shadow duration-300 ${workflow.status === 'locked' && 'outline outline-yellow-500'}`}>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                        {agent.status === 'locked' ? <LockKeyhole className="size-4 text-yellow-500" /> : <Icon className="size-4 text-emerald-500" />}
-                        <span>{agent.name}</span>
+                        {workflow.status === 'locked' ? <LockKeyhole className="size-4 text-yellow-500" /> : <Icon className="size-4 text-emerald-500" />}
+                        <span>{workflow.name}</span>
                     </CardTitle>
                     <CardDescription className="line-clamp-1">
-                        {agent.description && agent.description?.length > 0 ?
-                            agent.description
+                        {workflow.description && workflow.description?.length > 0 ?
+                            workflow.description
                             :
                             <span className="italic text-neutral-400">No description</span>
                         }
@@ -75,7 +75,7 @@ const DashboardCard = ({ agent, icon: Icon, link }: { agent: Agent, icon: Lucide
                 </CardHeader>
                 <CardContent className="flex items-center gap-2">
                     <span>Published</span>
-                    {agent.isPublished ?
+                    {workflow.isPublished ?
                         <small><Circle className="size-3.5 text-green-500 fill-green-500" /></small>
                         :
                         <small><Circle className="size-3.5 text-red-500 fill-red-500" /></small>

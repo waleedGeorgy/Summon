@@ -8,30 +8,30 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import type { CustomNode } from "@/convex/schema"
 import { NodesContext } from "@/context/NodesContext";
-import AgentBuilderHeader from "../_components/AgentBuilderHeader"
-import AgentBuilderBody from "../_components/AgentBuilderBody";
+import WorkflowBuilder from "../_components/WorkflowBuilder";
+import WorkflowHeader from "../_components/WorkflowHeader";
 
-const AgentBuilderPage = () => {
+const WorkflowBuilderPage = () => {
     const [nodes, setNodes] = useState<CustomNode[]>([]);
     const [edges, setEdges] = useState<Edge[]>([]);
     const [selectedNode, setSelectedNode] = useState<CustomNode | null>(null);
 
     const router = useRouter();
 
-    const { agentId } = useParams();
-    const agent = useQuery(api.agent.getAgentById, {
-        agentId: agentId as Id<'Agents'> ?? 'skip'
+    const { workflowId } = useParams();
+    const workflow = useQuery(api.workflow.getWorkflowById, {
+        workflowId: workflowId as Id<'Workflows'> ?? 'skip'
     });
 
-    const lockedAgent = agent && agent.status === 'locked';
+    const lockedWorkflow = workflow && workflow.status === 'locked';
 
     useEffect(() => {
-        if (lockedAgent) {
+        if (lockedWorkflow) {
             router.replace(`/dashboard/workflows`);
         }
-    }, [agentId, router, lockedAgent]);
+    }, [router, lockedWorkflow]);
 
-    if (!agent) return (
+    if (!workflow) return (
         <div className="flex items-center justify-center h-screen flex-1">
             <div className="flex items-center space-x-4">
                 <Circle className="size-6 animate-bounce fill-emerald-500 text-emerald-500" style={{ animationDelay: '0ms' }} />
@@ -45,12 +45,12 @@ const AgentBuilderPage = () => {
         <NodesContext.Provider value={{ nodes, setNodes, edges, setEdges, selectedNode, setSelectedNode }}>
             <ReactFlowProvider>
                 <div className="h-screen flex flex-col">
-                    {agent && <AgentBuilderHeader agent={agent} isPreviewMode={false} />}
-                    {agent && <AgentBuilderBody agent={agent} />}
+                    {workflow && <WorkflowHeader workflow={workflow} isPreviewMode={false} />}
+                    {workflow && <WorkflowBuilder workflow={workflow} />}
                 </div>
             </ReactFlowProvider>
         </NodesContext.Provider>
     )
 }
 
-export default AgentBuilderPage
+export default WorkflowBuilderPage

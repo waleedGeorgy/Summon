@@ -20,7 +20,7 @@ import {
 import { CheckCircle, Loader2, Save, XCircle } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useMutation } from "convex/react";
-import { Agent, CustomNode } from "@/convex/schema";
+import { Workflow, CustomNode } from "@/convex/schema";
 import { api } from "@/convex/_generated/api";
 import { NodesContext } from "@/context/NodesContext";
 import AgentToolsPanel from "./AgentToolsPanel";
@@ -30,7 +30,7 @@ import { Button } from "@/components/ui/button";
 import { Kbd, KbdGroup } from "@/components/ui/kbd"
 import { toast } from "sonner";
 
-const AgentBuilderBody = ({ agent }: { agent: Agent }) => {
+const WorkflowBuilder = ({ workflow }: { workflow: Workflow }) => {
     const { resolvedTheme } = useTheme();
 
     const [isAgentSaving, startAgentSaving] = useTransition();
@@ -41,11 +41,11 @@ const AgentBuilderBody = ({ agent }: { agent: Agent }) => {
     const { nodes, setNodes, edges, setEdges, setSelectedNode } = context;
 
     useEffect(() => {
-        if (agent) {
-            setNodes(agent.nodes as CustomNode[]);
-            setEdges(agent.edges as Edge[]);
+        if (workflow) {
+            setNodes(workflow.nodes as CustomNode[]);
+            setEdges(workflow.edges as Edge[]);
         }
-    }, [agent, setNodes, setEdges]);
+    }, [setNodes, setEdges, workflow]);
 
     const onNodesChange = useCallback(
         (changes: NodeChange[]) => setNodes((nds) => applyNodeChanges(changes, nds) as CustomNode[]),
@@ -60,13 +60,13 @@ const AgentBuilderBody = ({ agent }: { agent: Agent }) => {
         [setEdges],
     );
 
-    const updateAgentMutation = useMutation(api.agent.updateAgentDetails);
+    const updateWorkflowMutation = useMutation(api.workflow.updateWorkflowNodesAndEdges);
 
     const saveAgentState = useCallback(async () => {
         startAgentSaving(async () => {
             try {
-                await updateAgentMutation({
-                    agentId: agent._id,
+                await updateWorkflowMutation({
+                    workflowId: workflow._id,
                     nodes,
                     edges
                 });
@@ -80,7 +80,7 @@ const AgentBuilderBody = ({ agent }: { agent: Agent }) => {
                 });
             }
         })
-    }, [updateAgentMutation, agent._id, nodes, edges]);
+    }, [updateWorkflowMutation, workflow._id, nodes, edges]);
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -155,4 +155,4 @@ const AgentBuilderBody = ({ agent }: { agent: Agent }) => {
     )
 }
 
-export default AgentBuilderBody
+export default WorkflowBuilder

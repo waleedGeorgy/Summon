@@ -9,7 +9,6 @@ import { useTheme } from "next-themes";
 import { CustomNode } from "@/convex/schema";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import AgentBuilderHeader from "../../_components/AgentBuilderHeader";
 import { nodeTypes } from "../../_components/AgentBuilderNodesList";
 import { Button } from "@/components/ui/button";
 import PreviewChat from "./_components/PreviewChat";
@@ -20,26 +19,27 @@ import {
 } from "@/components/ui/resizable";
 import { toast } from "sonner";
 import { GeneratedConfig } from "@/types";
+import WorkflowHeader from "../../_components/WorkflowHeader";
 
 const WorkflowPreviewPage = () => {
     const { resolvedTheme } = useTheme();
 
     const router = useRouter();
 
-    const { agentId } = useParams();
-    const agent = useQuery(api.agent.getAgentById, {
-        agentId: agentId as Id<'Agents'> ?? 'skip'
+    const { workflowId } = useParams();
+    const workflow = useQuery(api.workflow.getWorkflowById, {
+        workflowId: workflowId as Id<'Workflows'> ?? 'skip'
     });
 
-    const inaccessiblePreviewPage = agent && (!agent.nodes || agent.nodes.length === 0) || agent?.status === 'locked';
+    const inaccessiblePreviewPage = workflow && (!workflow.nodes || workflow.nodes.length === 0) || workflow?.status === 'locked';
 
     useEffect(() => {
         if (inaccessiblePreviewPage) {
             router.replace(`/dashboard/workflows`);
         }
-    }, [inaccessiblePreviewPage, agentId, router, agent?.status]);
+    }, [inaccessiblePreviewPage, router, workflow?.status]);
 
-    const updateAgentConfig = useMutation(api.agent.updateAgentConfig);
+    const updateAgentConfig = useMutation(api.workflow.updateWorkflowConfig);
 
     const [mounted, setMounted] = useState(false);
     const [generatedWorkflow, setGeneratedWorkflow] = useState<GeneratedConfig | null>(null);
@@ -53,13 +53,13 @@ const WorkflowPreviewPage = () => {
     }
 
     const generateWorkflow = useCallback(() => {
-        const edgeMap = agent?.edges.reduce((acc: Record<string, Edge[]>, edge: Edge) => {
+        const edgeMap = workflow?.edges.reduce((acc: Record<string, Edge[]>, edge: Edge) => {
             if (!acc[edge.source]) acc[edge.source] = [];
             acc[edge.source].push(edge);
             return acc;
         }, {} as Record<string, Edge[]>);
 
-        const flow = agent?.nodes?.map((node: CustomNode) => {
+        const flow = workflow?.nodes?.map((node: CustomNode) => {
             const connectedEdges = edgeMap[node.id] || [];
 
             let next = null;
@@ -117,14 +117,14 @@ const WorkflowPreviewPage = () => {
             }
         });
 
-        const startNode = agent?.nodes?.find((n: CustomNode) => n.type === 'StartNode');
+        const startNode = workflow?.nodes?.find((n: CustomNode) => n.type === 'StartNode');
 
         const config = {
             startNode: startNode?.id || null,
             flow
         }
         setGeneratedWorkflow(config);
-    }, [agent]);
+    }, [workflow]);
 
     const generateConfigFromWorkflow = () => {
         startGeneratingConfig(async () => {
@@ -132,8 +132,8 @@ const WorkflowPreviewPage = () => {
                 const result = await axios.post('/api/generate-config', {
                     generatedWorkflow: generatedWorkflow
                 });
-                if (agent) {
-                    await updateAgentConfig({ agentId: agent?._id, config: result.data });
+                if (workflow) {
+                    await updateAgentConfig({ workflowId: workflow?._id, config: result.data });
 
                     toast.success('Agent configuration generated', {
                         icon: <CheckCircle className="text-emerald-500" size={18} />
@@ -155,20 +155,20 @@ const WorkflowPreviewPage = () => {
     }, []);
 
     useEffect(() => {
-        if (agent) queueMicrotask(() => {
+        if (workflow) queueMicrotask(() => {
             generateWorkflow();
         })
-    }, [agent, generateWorkflow]);
+    }, [generateWorkflow, workflow]);
 
     useEffect(() => {
-        if (agent) queueMicrotask(() => {
+        if (workflow) queueMicrotask(() => {
             getConversationId();
         })
-    }, [agent]);
+    }, [workflow]);
 
     if (!mounted) return null;
 
-    if (!agent) return (
+    if (!workflow) return (
         <div className="flex items-center justify-center h-screen flex-1">
             <div className="flex items-center space-x-4">
                 <Circle className="size-6 animate-bounce fill-emerald-500 text-emerald-500" style={{ animationDelay: '0ms' }} />
@@ -182,13 +182,13 @@ const WorkflowPreviewPage = () => {
 
     return (
         <div className="h-screen flex flex-col">
-            {agent && <AgentBuilderHeader agent={agent} isPreviewMode={true} />}
+            {workflow && <WorkflowHeader workflow={workflow} isPreviewMode={true} />}
             <ResizablePanelGroup orientation="horizontal" className="flex-1 w-full">
                 <ResizablePanel defaultSize='70%' minSize='40%' collapsible={true}>
                     <div className="h-full w-full">
                         <ReactFlow
-                            nodes={agent?.nodes || []}
-                            edges={agent?.edges || []}
+                            nodes={workflow?.nodes || []}
+                            edges={workflow?.edges || []}
                             fitView={true}
                             nodeTypes={nodeTypes}
                             colorMode={flowColorMode}
@@ -206,7 +206,7 @@ const WorkflowPreviewPage = () => {
                 <ResizableHandle withHandle className="px-1.5 hover:bg-primary transition duration-200" />
                 <ResizablePanel defaultSize='30%' minSize='25%' collapsible={true}>
                     <div className="h-full border-l bg-sidebar">
-                        {!agent.config ?
+                        {!workflow.agentConfig ?
                             <div className="flex items-center justify-center h-full">
                                 <Button
                                     size="lg"
@@ -220,7 +220,7 @@ const WorkflowPreviewPage = () => {
                             <PreviewChat
                                 generateConfigFromWorkflow={generateConfigFromWorkflow}
                                 isGeneratingConfig={isGeneratingConfig}
-                                agent={agent}
+                                workflow={workflow}
                                 conversationId={conversationId}
                             />
                         }

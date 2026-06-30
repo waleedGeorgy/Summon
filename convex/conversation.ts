@@ -4,7 +4,7 @@ import { mutation, query } from "./_generated/server";
 
 export const getConversationById = query({
   args: {
-    agentId: v.id("Agents"),
+    agentId: v.id("Workflows"),
     userId: v.id("Users"),
   },
   handler: async (ctx, args) => {
@@ -21,7 +21,7 @@ export const getConversationById = query({
 
 export const ensureConversation = mutation({
   args: {
-    agentId: v.id("Agents"),
+    agentId: v.id("Workflows"),
     userId: v.id("Users"),
   },
   handler: async (ctx, args) => {

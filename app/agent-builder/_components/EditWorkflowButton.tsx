@@ -12,21 +12,21 @@ import { Field, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { api } from "@/convex/_generated/api"
-import { Agent } from "@/convex/schema"
+import { Workflow } from "@/convex/schema"
 import { useMutation } from "convex/react"
 import { CheckCircle, Edit, Loader2, XCircle } from "lucide-react"
 import { SubmitEvent, useState, useTransition } from "react"
 import { toast } from "sonner"
 
-const EditWorkflowButton = ({ agent }: { agent: Agent }) => {
-    const [workflowDetails, setWorkflowDetails] = useState({ name: agent.name, description: agent.description });
+const EditWorkflowButton = ({ workflow }: { workflow: Workflow }) => {
+    const [workflowDetails, setWorkflowDetails] = useState({ name: workflow.name, description: workflow.description });
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const maxDescriptionChars = 80;
 
     const [isWorkflowUpdating, startWorkflowUpdating] = useTransition();
 
-    const updateWorkflowDetails = useMutation(api.agent.updateWorkflowNameAndDescription);
+    const updateWorkflowDetails = useMutation(api.workflow.updateWorkflowNameAndDescription);
 
     const onWorkflowFormSubmit = (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -34,7 +34,7 @@ const EditWorkflowButton = ({ agent }: { agent: Agent }) => {
         startWorkflowUpdating(async () => {
             try {
                 await updateWorkflowDetails({
-                    agentId: agent._id,
+                    workflowId: workflow._id,
                     name: workflowDetails.name,
                     description: workflowDetails.description
                 });

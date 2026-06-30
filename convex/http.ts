@@ -150,7 +150,7 @@ http.route({
         });
 
         if (previousTier !== tier) {
-          await ctx.runMutation(api.agent.updateAgentsStatus, {
+          await ctx.runMutation(api.workflow.updateWorkflowStatus, {
             userId: user._id,
             newPlan: tier,
           });
