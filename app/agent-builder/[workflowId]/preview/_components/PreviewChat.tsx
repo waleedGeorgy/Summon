@@ -1,5 +1,5 @@
-import { KeyboardEvent, useEffect, useRef, useState, useTransition } from "react"
-import { Loader2, RefreshCcw, SendHorizonal, XCircle } from "lucide-react"
+import { Fragment, KeyboardEvent, useEffect, useRef, useState, useTransition } from "react"
+import { BrainCircuit, RefreshCcw, SendHorizonal, XCircle } from "lucide-react"
 import Markdown from 'react-markdown'
 import { Workflow } from "@/convex/schema"
 import { Button } from "@/components/ui/button"
@@ -16,10 +16,11 @@ interface PreviewChatProps {
 
 const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, workflow, conversationId }: PreviewChatProps) => {
     const [userChatInput, setUserChatInput] = useState('');
-    const [chatMessages, setChatMessages] = useState<{ role: 'user' | 'assistant', contents: string }[]>([]);
+    const [chatMessages, setChatMessages] = useState<{ role: 'user' | 'assistant', contents: string, hasError?: boolean }[]>([]);
 
     const [isSendingMessage, startSendingMessage] = useTransition();
-
+    
+    const focusRef = useRef<HTMLInputElement | null>(null);
     const lastMessageRef = useRef<HTMLDivElement | null>(null);
     const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -34,6 +35,8 @@ const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, workflow,
 
     const sendMessage = () => {
         if (!userChatInput.trim() || isSendingMessage) return;
+
+        const messageIndex = chatMessages.length;
 
         setChatMessages([...chatMessages, { role: 'user', contents: userChatInput }]);
         setUserChatInput('');
@@ -55,6 +58,13 @@ const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, workflow,
                 if (!response.ok) {
                     if (response.status === 429) {
                         const data = await response.json();
+
+                        setChatMessages((prev) =>
+                            prev.map((msg, idx) =>
+                                idx === messageIndex ? { ...msg, hasError: true } : msg
+                            )
+                        );
+
                         toast.error(`Rate limit exceeded. Try again in ${data.retryAfter} seconds.`, {
                             icon: <XCircle className="text-red-500" size={18} />
                         });
@@ -62,6 +72,13 @@ const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, workflow,
                     }
 
                     const errorData = await response.json();
+
+                    setChatMessages((prev) =>
+                        prev.map((msg, idx) =>
+                            idx === messageIndex ? { ...msg, hasError: true } : msg
+                        )
+                    );
+
                     toast.error(errorData.error || 'Error generating response', {
                         icon: <XCircle className="text-red-500" size={18} />
                     });
@@ -94,6 +111,12 @@ const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, workflow,
                     }
                 }
             } catch (error) {
+                setChatMessages((prev) =>
+                    prev.map((msg, idx) =>
+                        idx === messageIndex ? { ...msg, hasError: true } : msg
+                    )
+                );
+
                 toast.error('Error generating agent output', {
                     icon: <XCircle className="text-red-500" size={18} />
                 });
@@ -114,7 +137,7 @@ const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, workflow,
             <div className="flex items-center gap-2 px-1 justify-between">
                 <h3 className="font-semibold">{workflow.name || "Agent"}</h3>
                 <Button size='sm' disabled={isGeneratingConfig} onClick={generateConfigFromWorkflow}>
-                    <RefreshCcw className={`${isGeneratingConfig && 'animate-spin'}`} />Regenerate agent
+                    <BrainCircuit className={`${isGeneratingConfig && 'animate-spin'}`} />Regenerate agent
                 </Button>
             </div>
             <Separator className='mt-2' />
@@ -124,29 +147,48 @@ const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, workflow,
             >
                 {chatMessages.length === 0 ?
                     <div className="flex items-center justify-center flex-1">
-                        <p className="text-sm opacity-65 font-light">Nothing here yet. Say something to your agent!</p>
+                        <p className="text-sm opacity-65 font-light">Say something to your agent!</p>
                     </div>
                     :
                     chatMessages.map((message, idx) => (
-                        <div
-                            key={idx}
-                            className={`flex px-3.5 py-2 max-w-[75%] rounded-lg 
-                            ${message.role === 'user' ? 'self-end bg-secondary shadow' : 'self-start'}`}
-                        >
+                        <Fragment key={idx}>
                             <div
-                                className="text-sm leading-relaxed whitespace-pre-wrap"
-                                ref={idx === chatMessages.length - 1 ? lastMessageRef : null}
+                                className={`flex px-3.5 py-2 max-w-[75%] rounded-lg
+                                    ${message.role === 'user' ? 'self-end shadow bg-secondary rounded-br-none' : 'self-start rounded-bl-none'}`}
                             >
-                                <Markdown>{message.contents}</Markdown>
+                                <div className="text-sm leading-relaxed whitespace-pre-wrap">
+                                    <Markdown>{message.contents}</Markdown>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                            <div className="self-end flex flex-row-reverse items-center gap-2 -mt-3">
+                                {message.hasError && (
+                                    <div className=" text-xs text-destructive flex items-center gap-1 px-1">
+                                        <XCircle size={13} />
+                                        Error generating response
+                                    </div>
+                                )}
+                                {message.role === 'user' && message.hasError && (
+                                    <Button
+                                        variant="outline"
+                                        size="xs"
+                                        onClick={() => {
+                                            setUserChatInput(message.contents);
+                                            focusRef.current?.focus()
+                                        }}
+                                    >
+                                        <RefreshCcw />Retry
+                                    </Button>
+                                )}
+                            </div>
+                        </Fragment>
+                    ))
+                }
                 {isSendingMessage &&
                     <div
-                        className="flex items-center gap-2 px-2 justify-start animate-pulse"
+                        className="flex items-center gap-2.5 px-2 justify-start animate-pulse"
                         ref={lastMessageRef}
                     >
-                        <div className="size-5 border-b-3 border-neutral-700 dark:border-neutral-400 animate-spin rounded-full" />
+                        <div className="size-4 border-b-2 border-dotted border-neutral-700 dark:border-neutral-400 animate-spin rounded-full" />
                         <span className="italic text-sm font-light">Thinking</span>
                     </div>
                 }
@@ -160,9 +202,10 @@ const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, workflow,
                     onChange={(e) => setUserChatInput(e.target.value)}
                     onKeyDown={handleKeyDown}
                     disabled={isSendingMessage}
+                    ref={focusRef}
                 />
                 <Button onClick={sendMessage} disabled={!userChatInput.trim() || isSendingMessage}>
-                    {isSendingMessage ? <Loader2 className="animate-spin" /> : <SendHorizonal />}
+                    <SendHorizonal />
                 </Button>
             </div>
         </div>
