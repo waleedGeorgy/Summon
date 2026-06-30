@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import SummonLogo from "@/public/logo.svg";
 import { motion, useInView } from "framer-motion";
+import { ThemeToggleButton } from "@/components/ThemeToggleButton";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -111,11 +112,12 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col">
+      <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-secondary/20 dark:from-primary/10 dark:to-secondary/10 pointer-events-none" aria-hidden={true} />
+      <header className="flex items-center justify-end p-4">
+        <ThemeToggleButton />
+      </header>
       {/* ----- Hero Section ----- */}
       <section className="relative flex-1 flex items-center justify-center px-4 pt-20 pb-32 md:pt-32 md:pb-40">
-        {/* Subtle background gradient */}
-        <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-secondary/20 dark:from-primary/10 dark:to-secondary/10 pointer-events-none" />
-
         <motion.div
           className="relative z-10 mx-auto max-w-4xl text-center space-y-8"
           variants={containerVariants}
@@ -124,22 +126,32 @@ export default function Home() {
         >
           {/* Badge */}
           <motion.div
-            className="flex items-center justify-center gap-2"
+            className="flex items-center justify-center gap-3"
             variants={itemVariants}
           >
-            <motion.div
-              className="flex size-12 items-center justify-center"
-              variants={fadeInScale}
-            >
-              <Image src={SummonLogo} alt="Summon's logo" />
+            <motion.div variants={fadeInScale} className="bg-sidebar p-1.5 rounded-lg relative border dark:border-0">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{
+                  opacity: [0, 0.6, 0.4, 1],
+                }}
+                transition={{
+                  delay: 0.6,
+                  duration: 4,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  ease: "easeInOut"
+                }}
+                className="absolute -inset-1 bg-linear-to-br from-emerald-500 to-indigo-500 -z-10 rounded-lg blur-lg"
+              />
+              <Image src={SummonLogo} alt="Summon's logo" className="size-12 relative z-10" />
             </motion.div>
             <motion.h1 className="text-5xl" variants={itemVariants}>
               Summon
             </motion.h1>
           </motion.div>
-
           <motion.h2
-            className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl"
+            className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl"
             variants={itemVariants}
           >
             Build intelligent agents
@@ -148,7 +160,6 @@ export default function Home() {
               node by node.
             </span>
           </motion.h2>
-
           <motion.p
             className="mx-auto max-w-2xl text-lg text-muted-foreground md:text-xl leading-relaxed"
             variants={itemVariants}
@@ -160,7 +171,6 @@ export default function Home() {
             intuitive graph-based editor. Chain prompts, tools, and logic
             visually — no messy code required.
           </motion.p>
-
           {/* Hero CTAs */}
           <motion.div
             className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
@@ -180,7 +190,6 @@ export default function Home() {
               </Button>
             </Link>
           </motion.div>
-
           {/* Trusted by / subtle stats */}
           <motion.div
             className="pt-8 flex items-center justify-center gap-8 text-sm text-muted-foreground"
@@ -213,7 +222,6 @@ export default function Home() {
           </motion.div>
         </motion.div>
       </section>
-
       {/* ----- Features Section with Scroll Animation ----- */}
       <motion.section
         ref={featuresRef}
@@ -233,7 +241,6 @@ export default function Home() {
               visually to create complex, autonomous behaviors.
             </p>
           </motion.div>
-
           <div className="grid gap-8 md:grid-cols-3">
             {/* Feature 1 */}
             <motion.div
@@ -249,7 +256,6 @@ export default function Home() {
                 agent&apos;s decision flow at a glance using React Flow.
               </p>
             </motion.div>
-
             {/* Feature 2 */}
             <motion.div
               className="group relative rounded-2xl border bg-card p-6 shadow-sm transition-shadow hover:shadow-md"
@@ -264,7 +270,6 @@ export default function Home() {
                 blocks. Each node runs its task when triggered.
               </p>
             </motion.div>
-
             {/* Feature 3 */}
             <motion.div
               className="group relative rounded-2xl border bg-card p-6 shadow-sm transition-shadow hover:shadow-md"
@@ -282,7 +287,6 @@ export default function Home() {
           </div>
         </div>
       </motion.section>
-
       {/* ----- CTA Section with Scroll Animation ----- */}
       <motion.section
         ref={ctaRef}
@@ -306,7 +310,6 @@ export default function Home() {
             Join developers and creators who build autonomous workflows
             visually.
           </motion.p>
-
           <motion.div variants={ctaItemVariants}>
             <Show when="signed-out">
               <SignInButton mode="modal" forceRedirectUrl={"/dashboard/workflows"}>
@@ -319,7 +322,6 @@ export default function Home() {
           </motion.div>
         </div>
       </motion.section>
-
       {/* Footer */}
       <footer className="py-6 text-center text-sm text-muted-foreground bg-sidebar">
         <div className="container px-4 md:px-6 flex flex-col sm:flex-row items-center justify-between gap-2">
