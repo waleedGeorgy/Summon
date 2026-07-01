@@ -55,7 +55,7 @@ const featuresContainerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.25,
+      staggerChildren: 0.2,
       delayChildren: 0.4,
     },
   },
@@ -107,7 +107,7 @@ export default function Home() {
   const ctaRef = useRef(null);
   const isCtaInView = useInView(ctaRef, {
     once: true,
-    margin: "-100px",
+    margin: "-70px",
   });
 
   return (
