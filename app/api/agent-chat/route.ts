@@ -72,8 +72,13 @@ export async function POST(req: NextRequest) {
   const decision = await aj.protect(req, { userId, requested: 1 });
 
   if (decision.isDenied()) {
+    const retryAfter = decision.ttl || 60;
+
     return NextResponse.json(
-      { error: "Too many requests. Please try again later." },
+      {
+        error: "Too many requests. Please try again later.",
+        retryAfter,
+      },
       { status: 429 },
     );
   }

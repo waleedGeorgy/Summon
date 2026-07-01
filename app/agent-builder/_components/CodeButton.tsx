@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { Copy, ExternalLink, Loader2, CopyCheck, Code2, LockKeyhole } from "lucide-react";
+import { Copy, Loader2, CopyCheck, Code2, LockKeyhole, CodeSquare } from "lucide-react";
 import { HighlightCodeAction } from "@/components/HighlightCodeAction";
 import {
     Dialog,
@@ -98,11 +98,11 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
                     disabled={!workflow?.agentConfig || !workflow.isPublished || isLoading || (!isPaidUser && !isLoading)}
                 >
                     {isLoading ?
-                        <Code2 className="size-4" />
+                        <Code2 />
                         : !isPaidUser ?
-                            <LockKeyhole className="text-yellow-500 size-4" />
+                            <LockKeyhole className="text-yellow-500" />
                             :
-                            <Code2 className="size-4" />}
+                            <Code2 />}
                     Code
                 </Button>
             }>
@@ -110,8 +110,8 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
             <DialogContent className="sm:max-w-2xl">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        <ExternalLink className="size-5" />
-                        API Snippet for &quot;{workflow?._id}&quot;
+                        <CodeSquare className="size-4.5" />
+                        API Snippet for &quot;{workflow?.name}&quot;
                     </DialogTitle>
                     <DialogDescription>
                         Copy this code into any JavaScript / TypeScript app to use your agent.
@@ -122,7 +122,6 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
                         <p className="text-sm text-muted-foreground">
                             Replace <code className="px-1 py-0.5 bg-muted rounded">userId</code> with your own user identifier and <code className="px-1 py-0.5 bg-muted rounded">conversationId</code> with the value returned by the first call.
                         </p>
-
                         {/* Code Block */}
                         <div className="relative rounded-md border bg-[#282c34] max-h-[60vh] overflow-auto">
                             {loading && !highlightedHtml ? (

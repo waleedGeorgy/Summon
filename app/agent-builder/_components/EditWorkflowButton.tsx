@@ -63,7 +63,7 @@ const EditWorkflowButton = ({ workflow }: { workflow: Workflow }) => {
             <DialogContent>
                 <form onSubmit={onWorkflowFormSubmit}>
                     <DialogHeader>
-                        <DialogTitle className='text-xl'>Edit workflow details</DialogTitle>
+                        <DialogTitle className='text-xl'>Edit workflow</DialogTitle>
                     </DialogHeader>
                     <FieldGroup className="my-4">
                         <Field>

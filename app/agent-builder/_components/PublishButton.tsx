@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import { useMutation } from "convex/react";
-import { CheckCircle, Copy, ExternalLink, Share2, Loader2, CopyCheck, CircleX, LockKeyhole } from "lucide-react";
+import { CheckCircle, Copy, Share2, Loader2, CopyCheck, CircleX, LockKeyhole, CodeSquare } from "lucide-react";
 import { api } from "@/convex/_generated/api";
 import {
   Dialog,
@@ -117,25 +117,24 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
         onClick={handleTogglePublish}
         disabled={!workflow?.agentConfig || !isPaidUser}
       >
-        {isPublished ? (
+        {isPublished ?
           <>
             <CircleX />
             Unpublish
           </>
-        ) : (
+          :
           <>
             {isLoading ? <Share2 /> : isPaidUser ? <Share2 /> : <LockKeyhole className="text-yellow-500" />}
             Publish
           </>
-        )}
+        }
       </Button>
-
       {/* Dialog with Code Snippet */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <ExternalLink className="size-5" />
+              <CodeSquare className="size-4.5" />
               API Snippet for &quot;{workflow.name}&quot;
             </DialogTitle>
             <DialogDescription>
@@ -147,7 +146,6 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
               <p className="text-sm text-muted-foreground">
                 Replace <code className="px-1 py-0.5 bg-muted rounded">userId</code> with your own user identifier and <code className="px-1 py-0.5 bg-muted rounded">conversationId</code> with the value returned by the first call.
               </p>
-
               {/* Code Block */}
               <div className="relative rounded-md border bg-[#282c34] max-h-[60vh] overflow-auto">
                 {loading && !highlightedHtml ? (
@@ -164,7 +162,6 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
                     {snippet}
                   </pre>
                 )}
-
                 {/* Copy Button */}
                 <Button
                   variant="ghost"
@@ -176,7 +173,6 @@ chatWithAgent(userId, "Hello, what can you do?").then(({ conversationId }) => {
                 </Button>
               </div>
             </div>
-
             {/* Action Buttons */}
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => setDialogOpen(false)}>

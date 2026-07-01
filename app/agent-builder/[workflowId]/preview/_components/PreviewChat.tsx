@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { toast } from "sonner"
+import { addSeconds, formatDistanceToNowStrict } from "date-fns"
 
 interface PreviewChatProps {
     generateConfigFromWorkflow: () => void,
@@ -19,7 +20,7 @@ const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, workflow,
     const [chatMessages, setChatMessages] = useState<{ role: 'user' | 'assistant', contents: string, hasError?: boolean }[]>([]);
 
     const [isSendingMessage, startSendingMessage] = useTransition();
-    
+
     const focusRef = useRef<HTMLInputElement | null>(null);
     const lastMessageRef = useRef<HTMLDivElement | null>(null);
     const chatContainerRef = useRef<HTMLDivElement | null>(null);
@@ -65,7 +66,11 @@ const PreviewChat = ({ generateConfigFromWorkflow, isGeneratingConfig, workflow,
                             )
                         );
 
-                        toast.error(`Rate limit exceeded. Try again in ${data.retryAfter} seconds.`, {
+                        const retryAfterSeconds = parseInt(data.retryAfter) || 60;
+                        const retryDate = addSeconds(new Date(), retryAfterSeconds);
+                        const formattedTime = formatDistanceToNowStrict(retryDate);
+
+                        toast.error(`Rate limit exceeded. Try again in ${formattedTime}.`, {
                             icon: <XCircle className="text-red-500" size={18} />
                         });
                         return;

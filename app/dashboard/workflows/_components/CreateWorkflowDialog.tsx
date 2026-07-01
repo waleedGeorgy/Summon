@@ -82,9 +82,9 @@ const CreateWorkflowDialog = () => {
                 <DialogContent>
                     <form onSubmit={createNewAgent}>
                         <DialogHeader>
-                            <DialogTitle className='text-xl'>Enter agent details</DialogTitle>
+                            <DialogTitle className='text-xl'>Create a new workflow</DialogTitle>
                             <DialogDescription>
-                                Start off by naming your AI agent, and optionally giving it a brief description
+                                Start off by naming your workflow, and optionally giving it a brief description
                             </DialogDescription>
                         </DialogHeader>
                         <FieldGroup className="my-4">

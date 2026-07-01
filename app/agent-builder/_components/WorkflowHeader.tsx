@@ -1,7 +1,7 @@
 'use client'
 import Link from "next/link";
 import { formatDistance } from "date-fns";
-import { ArrowLeft, CalendarCheck, Circle, ClipboardEdit } from "lucide-react";
+import { ArrowLeft, CalendarCheck, Circle, ClipboardEdit, Hammer } from "lucide-react";
 import { Workflow } from "@/convex/schema";
 import { ThemeToggleButton } from "@/components/ThemeToggleButton";
 import { buttonVariants } from "@/components/ui/button";
@@ -48,7 +48,8 @@ const WorkflowHeader = ({ workflow, isPreviewMode = false }: { workflow: Workflo
             className={`${buttonVariants({ variant: "outline", size: "sm" })} 
             ${!workflow?.nodes || workflow.nodes?.length === 0 ? 'pointer-events-none opacity-50' : ''}`}
           >
-            <span className='hidden lg:inline'>Preview & Build</span>
+            <Hammer />
+            <span className='hidden lg:inline'>Build</span>
           </Link>
         }
         <CodeButton workflow={workflow} />
