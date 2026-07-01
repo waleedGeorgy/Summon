@@ -21,7 +21,8 @@ const AgentsPage = () => {
                             <DashboardCard
                                 key={publishedAgent._id}
                                 workflow={publishedAgent}
-                                icon={HatGlasses} link={`/agent-builder/${publishedAgent._id}/preview`}
+                                icon={HatGlasses}
+                                link={`/agent-builder/${publishedAgent._id}/preview`}
                             />
                         ))
                         :

@@ -11,7 +11,12 @@ const MyWorkflows = ({ workflows, isLoading }: { workflows: Workflow[], isLoadin
                 ))
                 : workflows && workflows.length > 0 ?
                     workflows.map(workflow => (
-                        <DashboardCard key={workflow._id} workflow={workflow} icon={WorkflowIcon} link={`/agent-builder/${workflow._id}`} />
+                        <DashboardCard
+                            key={workflow._id}
+                            workflow={workflow}
+                            icon={WorkflowIcon}
+                            link={`/agent-builder/${workflow._id}`}
+                        />
                     ))
                     :
                     <p className="text-muted-foreground">No agents found</p>

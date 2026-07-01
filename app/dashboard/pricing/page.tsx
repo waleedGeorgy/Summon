@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 
 export default function PricingPage() {
     const { isLoaded } = useUser();
+    
     const [isMounted, setIsMounted] = useState(false);
 
     const { resolvedTheme } = useTheme();

@@ -3,6 +3,7 @@ import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Show, SignInButton } from "@clerk/nextjs";
+import { motion, useInView } from "framer-motion";
 import {
   ArrowRight,
   GitBranch,
@@ -11,9 +12,8 @@ import {
   BrainCircuit,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import SummonLogo from "@/public/logo.svg";
-import { motion, useInView } from "framer-motion";
 import { ThemeToggleButton } from "@/components/ThemeToggleButton";
+import SummonLogo from "@/public/logo.svg";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -55,8 +55,8 @@ const featuresContainerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.2,
+      staggerChildren: 0.25,
+      delayChildren: 0.4,
     },
   },
 };
@@ -99,11 +99,11 @@ const ctaItemVariants = {
 
 export default function Home() {
   const featuresRef = useRef(null);
+
   const isFeaturesInView = useInView(featuresRef, {
     once: true,
     margin: "-100px",
   });
-
   const ctaRef = useRef(null);
   const isCtaInView = useInView(ctaRef, {
     once: true,
@@ -112,12 +112,12 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col">
-      <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-secondary/20 dark:from-primary/10 dark:to-secondary/10 pointer-events-none" aria-hidden={true} />
+      <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-secondary/20 dark:from-primary/12 dark:to-background pointer-events-none" aria-hidden={true} />
       <header className="flex items-center justify-end p-4">
         <ThemeToggleButton />
       </header>
       {/* ----- Hero Section ----- */}
-      <section className="relative flex-1 flex items-center justify-center px-4 pt-20 pb-32 md:pt-32 md:pb-40">
+      <section className="relative flex-1 flex items-center justify-center px-4 mt-16 mb-34 md:mt-22 md:mb-40">
         <motion.div
           className="relative z-10 mx-auto max-w-4xl text-center space-y-8"
           variants={containerVariants}
@@ -142,16 +142,16 @@ export default function Home() {
                   repeatType: "reverse",
                   ease: "easeInOut"
                 }}
-                className="absolute -inset-1 bg-linear-to-br from-emerald-500 to-indigo-500 -z-10 rounded-lg blur-lg"
+                className="absolute -inset-2 bg-linear-to-br from-emerald-500 to-indigo-500 -z-10 rounded-lg blur-xl"
               />
-              <Image src={SummonLogo} alt="Summon's logo" className="size-12 relative z-10" />
+              <Image src={SummonLogo} alt="Summon's logo" className="size-9 md:size-12 relative z-10" />
             </motion.div>
-            <motion.h1 className="text-5xl" variants={itemVariants}>
+            <motion.h1 className="text-3xl md:text-5xl" variants={itemVariants}>
               Summon
             </motion.h1>
           </motion.div>
           <motion.h2
-            className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl"
+            className="text-4xl font-bold sm:text-5xl md:text-6xl lg:text-7xl"
             variants={itemVariants}
           >
             Build intelligent agents
@@ -178,14 +178,14 @@ export default function Home() {
           >
             <Show when="signed-out">
               <SignInButton mode="modal" forceRedirectUrl={"/dashboard/workflows"}>
-                <Button size="lg" className="w-full sm:w-auto group text-base">
+                <Button size="lg" className="group md:text-base">
                   Start building free
-                  <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  <ArrowRight className="transition-transform duration-300 group-hover:translate-x-1" />
                 </Button>
               </SignInButton>
             </Show>
             <Link href="#features">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto text-base">
+              <Button variant="outline" size="lg" className='md:text-base'>
                 How it works
               </Button>
             </Link>
@@ -196,27 +196,27 @@ export default function Home() {
             variants={itemVariants}
           >
             <motion.div
-              className="flex items-center gap-2"
+              className="flex items-center gap-1.5"
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400 }}
             >
-              <Zap className="h-4 w-4 text-amber-500" />
+              <Zap className="size-4 text-amber-500" />
               <span>Visual editor</span>
             </motion.div>
             <motion.div
-              className="flex items-center gap-2"
+              className="flex items-center gap-1.5"
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400 }}
             >
-              <Layers className="h-4 w-4 text-indigo-500" />
+              <Layers className="size-4 text-indigo-500" />
               <span>Reusable nodes</span>
             </motion.div>
             <motion.div
-              className="flex items-center gap-2"
+              className="flex items-center gap-1.5"
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400 }}
             >
-              <GitBranch className="h-4 w-4 text-emerald-500" />
+              <GitBranch className="size-4 text-emerald-500" />
               <span>Branching logic</span>
             </motion.div>
           </motion.div>
@@ -233,7 +233,7 @@ export default function Home() {
       >
         <div className="mx-auto max-w-6xl space-y-16">
           <motion.div className="text-center space-y-4" variants={featureCardVariants}>
-            <h3 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            <h3 className="text-3xl font-bold sm:text-4xl">
               Design intelligence like a circuit board
             </h3>
             <p className="mx-auto max-w-2xl text-muted-foreground text-lg">
@@ -297,7 +297,7 @@ export default function Home() {
       >
         <div className="mx-auto max-w-2xl space-y-6">
           <motion.h2
-            className="text-3xl font-bold tracking-tight sm:text-4xl"
+            className="text-3xl font-bold sm:text-4xl"
             variants={ctaItemVariants}
           >
             Ready to summon your first agent?
@@ -313,9 +313,9 @@ export default function Home() {
           <motion.div variants={ctaItemVariants}>
             <Show when="signed-out">
               <SignInButton mode="modal" forceRedirectUrl={"/dashboard/workflows"}>
-                <Button size="lg" className="group text-base">
+                <Button size="lg" className="group md:text-base">
                   Get started free
-                  <ArrowRight className=" h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  <ArrowRight className="transition-transform duration-300 group-hover:translate-x-1" />
                 </Button>
               </SignInButton>
             </Show>
